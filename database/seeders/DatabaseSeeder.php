@@ -18,7 +18,10 @@ class DatabaseSeeder extends Seeder
             SectorSeeder::class,
             CompanySeeder::class,
             DepartmentSeeder::class,
+            EmployeeSeeder::class,
             FormTemplateSeeder::class,
+            RiskSeeder::class,
+            ReportSeeder::class,
         ]);
     }
 }

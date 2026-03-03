@@ -1,7 +1,7 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head } from "@inertiajs/vue3";
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import { usePage } from "@inertiajs/vue3";
 
 defineOptions({ layout: AuthenticatedLayout });
@@ -9,59 +9,36 @@ defineOptions({ layout: AuthenticatedLayout });
 const page = usePage();
 const user = computed(() => page.props.auth?.user);
 
-// Fake data for charts and statistics
-const stats = ref({
-    industries: {
-        total: 12,
-        active: 10,
-        growth: 8.5,
-    },
-    sectors: {
-        total: 45,
-        active: 42,
-        growth: 12.3,
-    },
-    companies: {
-        total: 156,
-        active: 148,
-        growth: 15.7,
-    },
-    employees: {
-        total: 1245,
-        active: 1189,
-        growth: 9.2,
-    },
+const stats = computed(() => page.props.stats ?? {
+    industries: { total: 0, active: 0, growth: 0 },
+    sectors: { total: 0, active: 0, growth: 0 },
+    companies: { total: 0, active: 0, growth: 0 },
+    employees: { total: 0, active: 0, growth: 0 },
 });
 
-const chartData = ref({
-    industriesGrowth: [12, 15, 18, 14, 16, 20, 12],
-    companiesGrowth: [120, 135, 142, 138, 145, 156, 148],
-    monthlyReports: [45, 52, 48, 61, 55, 67, 58],
-    monthlyIncidents: [8, 12, 6, 15, 10, 9, 11],
+const chartData = computed(() => page.props.chartData ?? {
+    monthLabels: [],
+    companiesPerMonth: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    reportsPerMonth: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    risksPerMonth: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
 });
 
-// Fake data for reports and incidents charts (same as Companies Dashboard)
-const fakeData = ref({
-    reports: {
-        total: 156,
-        thisMonth: 23,
-        pending: 12,
-        completed: 144,
-    },
-    incidents: {
-        total: 45,
-        thisMonth: 8,
-        resolved: 38,
-        pending: 7,
-    },
-});
+const reportsData = computed(() => page.props.reportsData ?? { total: 0, thisMonth: 0, pending: 0, completed: 0 });
+const incidentsData = computed(() => page.props.incidentsData ?? { total: 0, thisMonth: 0, resolved: 0, pending: 0 });
+const recentActivities = computed(() => page.props.recentActivities ?? []);
 
-const recentActivities = ref([
-    { type: 'company', action: 'New company registered', name: 'Tech Corp', time: '2 hours ago' },
-    { type: 'employee', action: 'New employee added', name: 'John Doe', time: '5 hours ago' },
-    { type: 'sector', action: 'Sector updated', name: 'Manufacturing', time: '1 day ago' },
-    { type: 'industry', action: 'Industry created', name: 'Healthcare', time: '2 days ago' },
-]);
+function barHeight(values, index) {
+    const max = Math.max(...values, 1);
+    return (values[index] / max) * 100;
+}
+
+function reportPct(completed, total) {
+    return total ? Math.round((completed / total) * 100) : 0;
+}
+
+function incidentPct(resolved, total) {
+    return total ? Math.round((resolved / total) * 100) : 0;
+}
 </script>
 
 <template>
@@ -163,36 +140,52 @@ const recentActivities = ref([
 
         <!-- Charts Section -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Growth Chart -->
+            <!-- Companies per Month -->
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Growth Overview</h3>
-                <div class="h-64 flex items-end justify-between space-x-2">
-                    <div v-for="(value, index) in chartData.industriesGrowth" :key="index" class="flex-1 flex flex-col items-center">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Companies per Month</h3>
+                <div class="h-64 flex items-end justify-between space-x-1 overflow-x-auto pb-2">
+                    <div v-for="(value, index) in chartData.companiesPerMonth" :key="'co-' + index" class="flex-1 min-w-[24px] flex flex-col items-center">
                         <div 
-                            class="w-full bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-lg hover:from-blue-600 hover:to-blue-500 transition-all cursor-pointer"
-                            :style="`height: ${(value / Math.max(...chartData.industriesGrowth)) * 100}%`"
-                            :title="`${value} industries`"
-                        ></div>
-                        <span class="text-xs text-gray-500 dark:text-gray-400 mt-2">{{ ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][index] }}</span>
-                    </div>
-                </div>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-4 text-center">Industries growth over the week</p>
-            </div>
-
-            <!-- Companies Chart -->
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Companies Registration</h3>
-                <div class="h-64 flex items-end justify-between space-x-2">
-                    <div v-for="(value, index) in chartData.companiesGrowth" :key="index" class="flex-1 flex flex-col items-center">
-                        <div 
-                            class="w-full bg-gradient-to-t from-purple-500 to-purple-400 rounded-t-lg hover:from-purple-600 hover:to-purple-500 transition-all cursor-pointer"
-                            :style="`height: ${(value / Math.max(...chartData.companiesGrowth)) * 100}%`"
+                            class="w-full bg-gradient-to-t from-purple-500 to-purple-400 rounded-t-lg hover:from-purple-600 hover:to-purple-500 transition-all cursor-pointer min-h-[4px]"
+                            :style="`height: ${barHeight(chartData.companiesPerMonth, index)}%`"
                             :title="`${value} companies`"
                         ></div>
-                        <span class="text-xs text-gray-500 dark:text-gray-400 mt-2">{{ ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][index] }}</span>
+                        <span class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mt-2 truncate max-w-full" :title="chartData.monthLabels[index]">{{ chartData.monthLabels[index] }}</span>
                     </div>
                 </div>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-4 text-center">New companies registered this week</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-4 text-center">New companies registered (last 12 months)</p>
+            </div>
+
+            <!-- Reports per Month -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Reports per Month</h3>
+                <div class="h-64 flex items-end justify-between space-x-1 overflow-x-auto pb-2">
+                    <div v-for="(value, index) in chartData.reportsPerMonth" :key="'rep-' + index" class="flex-1 min-w-[24px] flex flex-col items-center">
+                        <div 
+                            class="w-full bg-gradient-to-t from-teal-500 to-teal-400 rounded-t-lg hover:from-teal-600 hover:to-teal-500 transition-all cursor-pointer min-h-[4px]"
+                            :style="`height: ${barHeight(chartData.reportsPerMonth, index)}%`"
+                            :title="`${value} reports`"
+                        ></div>
+                        <span class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mt-2 truncate max-w-full">{{ chartData.monthLabels[index] }}</span>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-4 text-center">Reports created (last 12 months)</p>
+            </div>
+
+            <!-- Risks per Month -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Risks per Month</h3>
+                <div class="h-64 flex items-end justify-between space-x-1 overflow-x-auto pb-2">
+                    <div v-for="(value, index) in chartData.risksPerMonth" :key="'risk-' + index" class="flex-1 min-w-[24px] flex flex-col items-center">
+                        <div 
+                            class="w-full bg-gradient-to-t from-amber-500 to-amber-400 rounded-t-lg hover:from-amber-600 hover:to-amber-500 transition-all cursor-pointer min-h-[4px]"
+                            :style="`height: ${barHeight(chartData.risksPerMonth, index)}%`"
+                            :title="`${value} risks`"
+                        ></div>
+                        <span class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mt-2 truncate max-w-full">{{ chartData.monthLabels[index] }}</span>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-4 text-center">Risks identified (last 12 months)</p>
             </div>
 
             <!-- Reports Overview Chart -->
@@ -201,45 +194,45 @@ const recentActivities = ref([
                 <div class="space-y-4">
                     <div>
                         <div class="flex justify-between mb-2">
-                            <span class="text-sm text-gray-600 dark:text-gray-400">Completed</span>
-                            <span class="text-sm font-medium text-gray-900 dark:text-white">{{ fakeData.reports.completed }}</span>
+                            <span class="text-sm text-gray-600 dark:text-gray-400">Approved</span>
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">{{ reportsData.completed }}</span>
                         </div>
                         <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                            <div class="bg-blue-600 h-2.5 rounded-full" :style="`width: ${(fakeData.reports.completed / fakeData.reports.total) * 100}%`"></div>
+                            <div class="bg-blue-600 h-2.5 rounded-full" :style="`width: ${reportPct(reportsData.completed, reportsData.total)}%`"></div>
                         </div>
                     </div>
                     <div>
                         <div class="flex justify-between mb-2">
                             <span class="text-sm text-gray-600 dark:text-gray-400">Pending</span>
-                            <span class="text-sm font-medium text-gray-900 dark:text-white">{{ fakeData.reports.pending }}</span>
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">{{ reportsData.pending }}</span>
                         </div>
                         <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                            <div class="bg-yellow-600 h-2.5 rounded-full" :style="`width: ${(fakeData.reports.pending / fakeData.reports.total) * 100}%`"></div>
+                            <div class="bg-yellow-600 h-2.5 rounded-full" :style="`width: ${reportPct(reportsData.pending, reportsData.total)}%`"></div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Incidents Status Chart -->
+            <!-- Incidents/Risks Status Chart -->
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Incidents Status</h3>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Risks Status</h3>
                 <div class="space-y-4">
                     <div>
                         <div class="flex justify-between mb-2">
                             <span class="text-sm text-gray-600 dark:text-gray-400">Resolved</span>
-                            <span class="text-sm font-medium text-gray-900 dark:text-white">{{ fakeData.incidents.resolved }}</span>
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">{{ incidentsData.resolved }}</span>
                         </div>
                         <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                            <div class="bg-green-600 h-2.5 rounded-full" :style="`width: ${(fakeData.incidents.resolved / fakeData.incidents.total) * 100}%`"></div>
+                            <div class="bg-green-600 h-2.5 rounded-full" :style="`width: ${incidentPct(incidentsData.resolved, incidentsData.total)}%`"></div>
                         </div>
                     </div>
                     <div>
                         <div class="flex justify-between mb-2">
                             <span class="text-sm text-gray-600 dark:text-gray-400">Pending</span>
-                            <span class="text-sm font-medium text-gray-900 dark:text-white">{{ fakeData.incidents.pending }}</span>
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">{{ incidentsData.pending }}</span>
                         </div>
                         <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                            <div class="bg-red-600 h-2.5 rounded-full" :style="`width: ${(fakeData.incidents.pending / fakeData.incidents.total) * 100}%`"></div>
+                            <div class="bg-red-600 h-2.5 rounded-full" :style="`width: ${incidentPct(incidentsData.pending, incidentsData.total)}%`"></div>
                         </div>
                     </div>
                 </div>
@@ -249,7 +242,7 @@ const recentActivities = ref([
         <!-- Recent Activities -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Recent Activities</h3>
-            <div class="space-y-4">
+            <div v-if="recentActivities.length" class="space-y-4">
                 <div v-for="(activity, index) in recentActivities" :key="index" class="flex items-center space-x-4 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                     <div :class="{
                         'bg-blue-100 dark:bg-blue-900': activity.type === 'company',
@@ -277,6 +270,7 @@ const recentActivities = ref([
                     <span class="text-xs text-gray-400 dark:text-gray-500">{{ activity.time }}</span>
                 </div>
             </div>
+            <p v-else class="text-sm text-gray-500 dark:text-gray-400 py-4">No recent activity yet.</p>
         </div>
     </div>
 </template>

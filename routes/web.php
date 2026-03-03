@@ -44,9 +44,9 @@ Route::get('/blog', function () {
 })->name('blog.index');
 
 // Admin Dashboard
-Route::get('/dashboard', function () {
-    return Inertia::render('Admin/Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', \App\Http\Controllers\Admin\DashboardController::class)
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 // Admin Authenticated Routes
 Route::middleware('auth')->group(function () {

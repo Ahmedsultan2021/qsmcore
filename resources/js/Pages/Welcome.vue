@@ -12,6 +12,7 @@ const props = defineProps({
 const activeFeature = ref(0)
 const activeTestimonial = ref(0)
 const isScrolled = ref(false)
+const mobileMenuOpen = ref(false)
 
 const features = [
     {
@@ -63,14 +64,14 @@ const testimonials = [
         name: 'Sarah Johnson',
         role: 'Safety Director',
         company: 'TechCorp Industries',
-        content: 'QSM has transformed how we manage safety incidents. The real-time tracking and automated workflows have reduced our response time by 60%.',
+        content: 'QSMCore has transformed how we manage safety incidents. The real-time tracking and automated workflows have reduced our response time by 60%.',
         avatar: '👩‍💼'
     },
     {
         name: 'Michael Chen',
         role: 'Quality Manager',
         company: 'Global Manufacturing Co.',
-        content: 'The multi-industry support and comprehensive reporting features make QSM indispensable for our operations across 15 different sectors.',
+        content: 'The multi-industry support and comprehensive reporting features make QSMCore indispensable for our operations across 15 different sectors.',
         avatar: '👨‍💼'
     },
     {
@@ -105,16 +106,16 @@ const howItWorks = [
 
 const faqs = [
     {
-        question: 'What industries does QSM support?',
-        answer: 'QSM supports a wide range of industries including manufacturing, healthcare, construction, energy, transportation, and more. Our flexible system can be customized to meet the specific needs of any industry.'
+        question: 'What industries does QSMCore support?',
+        answer: 'QSMCore supports a wide range of industries including manufacturing, healthcare, construction, energy, transportation, and more. Our flexible system can be customized to meet the specific needs of any industry.'
     },
     {
         question: 'How secure is my data?',
-        answer: 'We take data security seriously. QSM uses enterprise-grade encryption, regular security audits, role-based access controls, and complies with major data protection regulations including GDPR and SOC 2.'
+        answer: 'We take data security seriously. QSMCore uses enterprise-grade encryption, regular security audits, role-based access controls, and complies with major data protection regulations including GDPR and SOC 2.'
     },
     {
-        question: 'Can I integrate QSM with existing systems?',
-        answer: 'Yes! QSM offers robust API integrations and can connect with most enterprise systems including ERP, HRIS, and other business management platforms.'
+        question: 'Can I integrate QSMCore with existing systems?',
+        answer: 'Yes! QSMCore offers robust API integrations and can connect with most enterprise systems including ERP, HRIS, and other business management platforms.'
     },
     {
         question: 'What kind of support do you provide?',
@@ -138,48 +139,79 @@ onMounted(() => {
 </script>
 
 <template>
-    <Head title="Quality & Safety Management System" />
+    <Head title="QSMCore - Quality & Safety Management" />
 
     <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
         <!-- Navigation -->
         <nav :class="['bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-200/50 sticky top-0 z-50 transition-all duration-300', isScrolled ? 'bg-white/95 shadow-md' : '']">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between items-center h-20">
-                    <div class="flex items-center space-x-3">
-                        <div class="bg-gradient-to-br from-blue-600 to-indigo-600 p-2 rounded-xl shadow-lg">
-                            <img src="/logos/logo-width.png" class="h-10 w-auto" alt="QSM Logo" />
+                <div class="flex justify-between items-center h-16 sm:h-20">
+                    <div class="flex items-center space-x-2 sm:space-x-3 min-w-0">
+                        <div class="bg-gradient-to-br from-blue-600 to-indigo-600 p-1.5 sm:p-2 rounded-lg sm:rounded-xl shadow-lg flex-shrink-0">
+                            <img src="/logos/logo-width.png" class="h-8 sm:h-10 w-auto" alt="QSMCore Logo" />
                         </div>
-                        <div>
-                            <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                                QSM
+                        <div class="min-w-0">
+                            <h1 class="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent truncate">
+                                QSMCore
                             </h1>
-                            <p class="text-xs text-gray-500">Quality & Safety Management</p>
+                            <p class="text-xs text-gray-500 hidden sm:block">Quality & Safety Management</p>
                         </div>
                     </div>
-                    <div class="flex items-center space-x-6">
-                        <Link href="/" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+                    <!-- Desktop nav -->
+                    <div class="hidden lg:flex items-center space-x-4 xl:space-x-6">
+                        <Link href="/" class="text-gray-700 hover:text-blue-600 font-medium transition-colors whitespace-nowrap">
                             Home
                         </Link>
                         <Link 
                             :href="route('blog.index')" 
-                            class="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                            class="text-gray-700 hover:text-blue-600 font-medium transition-colors whitespace-nowrap"
                         >
                             Blog
                         </Link>
                         <Link 
                             :href="route('login')" 
-                            class="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                            class="text-gray-700 hover:text-blue-600 font-medium transition-colors whitespace-nowrap"
                         >
                             Admin Portal
                         </Link>
                         <Link 
                             :href="route('companies.login')" 
-                            class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-2.5 rounded-lg hover:from-blue-700 hover:to-indigo-700 font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5"
+                            class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 xl:px-6 py-2 xl:py-2.5 rounded-lg hover:from-blue-700 hover:to-indigo-700 font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 whitespace-nowrap text-sm xl:text-base"
                         >
                             Company Portal
                         </Link>
                     </div>
+                    <!-- Mobile menu button -->
+                    <button
+                        type="button"
+                        class="lg:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        aria-label="Toggle menu"
+                        @click="mobileMenuOpen = !mobileMenuOpen"
+                    >
+                        <svg v-if="!mobileMenuOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                        <svg v-else class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
                 </div>
+                <!-- Mobile menu -->
+                <Transition
+                    enter-active-class="transition ease-out duration-200"
+                    enter-from-class="opacity-0 -translate-y-2"
+                    enter-to-class="opacity-100 translate-y-0"
+                    leave-active-class="transition ease-in duration-150"
+                    leave-from-class="opacity-100 translate-y-0"
+                    leave-to-class="opacity-0 -translate-y-2"
+                >
+                    <div v-show="mobileMenuOpen" class="lg:hidden border-t border-gray-200 py-4 space-y-1">
+                        <Link href="/" class="block py-2 px-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium" @click="mobileMenuOpen = false">Home</Link>
+                        <Link :href="route('blog.index')" class="block py-2 px-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium" @click="mobileMenuOpen = false">Blog</Link>
+                        <Link :href="route('login')" class="block py-2 px-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium" @click="mobileMenuOpen = false">Admin Portal</Link>
+                        <Link :href="route('companies.login')" class="block py-3 px-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg font-semibold text-center hover:from-blue-700 hover:to-indigo-700" @click="mobileMenuOpen = false">Company Portal</Link>
+                    </div>
+                </Transition>
             </div>
         </nav>
 
@@ -189,34 +221,34 @@ onMounted(() => {
             <div class="absolute top-0 right-0 w-96 h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
             <div class="absolute bottom-0 left-0 w-96 h-96 bg-indigo-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse delay-1000"></div>
             
-            <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
+            <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-32">
                 <div class="text-center">
-                    <div class="inline-block mb-6">
-                        <span class="px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold">
+                    <div class="inline-block mb-4 sm:mb-6">
+                        <span class="px-3 py-1.5 sm:px-4 sm:py-2 bg-blue-100 text-blue-800 rounded-full text-xs sm:text-sm font-semibold">
                             Enterprise Quality Management
                         </span>
                     </div>
-                    <h1 class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight">
+                    <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-4 sm:mb-6 leading-tight">
                         <span class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
                             Quality & Safety
                         </span>
                         <br>
                         <span class="text-gray-900">Management System</span>
                     </h1>
-                    <p class="text-xl md:text-2xl text-gray-600 mb-4 max-w-3xl mx-auto leading-relaxed">
+                    <p class="text-base sm:text-xl md:text-2xl text-gray-600 mb-3 sm:mb-4 max-w-3xl mx-auto leading-relaxed px-1">
                         Streamline your organization's quality and safety processes with our comprehensive digital platform
                     </p>
-                    <p class="text-lg text-gray-500 mb-12 max-w-2xl mx-auto">
+                    <p class="text-sm sm:text-lg text-gray-500 mb-8 sm:mb-12 max-w-2xl mx-auto px-1">
                         Track incidents, manage corrective actions, and ensure compliance across multiple industries with ease
                     </p>
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                    <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center px-2">
                         <Link
                             :href="route('login')"
-                            class="group relative px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold text-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-2xl hover:shadow-blue-500/50 transform hover:-translate-y-1 overflow-hidden"
+                            class="w-full sm:w-auto group relative px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold text-base sm:text-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-2xl hover:shadow-blue-500/50 transform hover:-translate-y-1 overflow-hidden text-center"
                         >
-                            <span class="relative z-10 flex items-center">
+                            <span class="relative z-10 flex items-center justify-center">
                                 Admin Portal
-                                <svg class="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                                 </svg>
                             </span>
@@ -224,11 +256,11 @@ onMounted(() => {
                         </Link>
                         <Link
                             :href="route('companies.login')"
-                            class="group px-8 py-4 bg-white text-blue-600 border-2 border-blue-600 rounded-xl font-bold text-lg hover:bg-blue-50 transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1"
+                            class="w-full sm:w-auto group px-6 sm:px-8 py-3 sm:py-4 bg-white text-blue-600 border-2 border-blue-600 rounded-xl font-bold text-base sm:text-lg hover:bg-blue-50 transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 text-center"
                         >
-                            <span class="flex items-center">
+                            <span class="flex items-center justify-center">
                                 Company Portal
-                                <svg class="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                                 </svg>
                             </span>
@@ -239,25 +271,25 @@ onMounted(() => {
         </section>
 
         <!-- Features Section -->
-        <section class="py-24 bg-white/50 backdrop-blur-sm">
+        <section class="py-16 sm:py-24 bg-white/50 backdrop-blur-sm">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-20">
-                    <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                <div class="text-center mb-12 sm:mb-20">
+                    <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 px-2">
                         Powerful Features for
                         <span class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                             Modern Organizations
                         </span>
                     </h2>
-                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    <p class="text-base sm:text-xl text-gray-600 max-w-2xl mx-auto px-2">
                         Everything you need to manage quality and safety across your entire organization
                     </p>
                 </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
                     <div 
                         v-for="(feature, index) in features" 
                         :key="index"
-                        class="group relative bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100"
+                        class="group relative bg-white rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100"
                     >
                         <div :class="['absolute top-0 right-0 w-32 h-32 bg-gradient-to-br', feature.bgColor, 'rounded-bl-full opacity-50 group-hover:opacity-100 transition-opacity']"></div>
                         <div class="relative">
@@ -266,7 +298,7 @@ onMounted(() => {
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="feature.icon" />
                                 </svg>
                             </div>
-                            <h3 class="text-2xl font-bold text-gray-900 mb-3">{{ feature.title }}</h3>
+                            <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-2 sm:mb-3">{{ feature.title }}</h3>
                             <p class="text-gray-600 leading-relaxed">
                                 {{ feature.description }}
                             </p>
@@ -277,27 +309,27 @@ onMounted(() => {
         </section>
 
         <!-- How It Works Section -->
-        <section class="py-24 bg-gradient-to-br from-gray-50 to-blue-50">
+        <section class="py-16 sm:py-24 bg-gradient-to-br from-gray-50 to-blue-50">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-20">
-                    <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                <div class="text-center mb-12 sm:mb-20">
+                    <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 px-2">
                         How It
                         <span class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                             Works
                         </span>
                     </h2>
-                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                        Get started with QSM in three simple steps
+                    <p class="text-base sm:text-xl text-gray-600 max-w-2xl mx-auto px-2">
+                        Get started with QSMCore in three simple steps
                     </p>
                 </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 relative">
                     <div 
                         v-for="(step, index) in howItWorks" 
                         :key="index"
                         class="relative"
                     >
-                        <div class="relative bg-white rounded-2xl p-8 shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+                        <div class="relative bg-white rounded-2xl p-6 sm:p-8 shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
                             <div class="absolute -top-6 -left-6 w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg">
                                 {{ step.step }}
                             </div>
@@ -307,7 +339,7 @@ onMounted(() => {
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="step.icon" />
                                     </svg>
                                 </div>
-                                <h3 class="text-2xl font-bold text-gray-900 mb-3">{{ step.title }}</h3>
+                                <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-2 sm:mb-3">{{ step.title }}</h3>
                                 <p class="text-gray-600 leading-relaxed">
                                     {{ step.description }}
                                 </p>
@@ -322,20 +354,20 @@ onMounted(() => {
         </section>
 
         <!-- Benefits Section -->
-        <section class="py-24 bg-white">
+        <section class="py-16 sm:py-24 bg-white">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-center">
                     <div>
-                        <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+                        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 sm:mb-6 px-1">
                             Why Choose
                             <span class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                                QSM?
+                                QSMCore?
                             </span>
                         </h2>
-                        <p class="text-xl text-gray-600 mb-8">
+                        <p class="text-base sm:text-xl text-gray-600 mb-6 sm:mb-8 px-1">
                             Experience the difference with our comprehensive quality and safety management platform
                         </p>
-                        <div class="space-y-6">
+                        <div class="space-y-4 sm:space-y-6">
                             <div class="flex items-start space-x-4">
                                 <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg flex items-center justify-center">
                                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -343,7 +375,7 @@ onMounted(() => {
                                     </svg>
                                 </div>
                                 <div>
-                                    <h3 class="text-xl font-bold text-gray-900 mb-2">Reduce Response Time</h3>
+                                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-1 sm:mb-2">Reduce Response Time</h3>
                                     <p class="text-gray-600">Automated workflows and real-time notifications help you respond to incidents 60% faster.</p>
                                 </div>
                             </div>
@@ -354,7 +386,7 @@ onMounted(() => {
                                     </svg>
                                 </div>
                                 <div>
-                                    <h3 class="text-xl font-bold text-gray-900 mb-2">Improve Compliance</h3>
+                                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-1 sm:mb-2">Improve Compliance</h3>
                                     <p class="text-gray-600">Stay ahead of regulations with automated compliance tracking and comprehensive audit trails.</p>
                                 </div>
                             </div>
@@ -365,15 +397,15 @@ onMounted(() => {
                                     </svg>
                                 </div>
                                 <div>
-                                    <h3 class="text-xl font-bold text-gray-900 mb-2">Data-Driven Decisions</h3>
+                                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-1 sm:mb-2">Data-Driven Decisions</h3>
                                     <p class="text-gray-600">Powerful analytics and reporting tools provide insights to make informed decisions.</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="relative">
-                        <div class="bg-gradient-to-br from-blue-600 to-indigo-600 rounded-3xl p-8 shadow-2xl">
-                            <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 mb-6">
+                    <div class="relative order-first lg:order-none">
+                        <div class="bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-2xl">
+                            <div class="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6">
                                 <div class="flex items-center justify-between mb-4">
                                     <span class="text-white/80 text-sm">Incidents Resolved</span>
                                     <span class="text-white font-bold text-2xl">94%</span>
@@ -392,7 +424,7 @@ onMounted(() => {
                                     </div>
                                 </div>
                             </div>
-                            <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
+                            <div class="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6">
                                 <h4 class="text-white font-bold text-lg mb-4">Key Metrics</h4>
                                 <div class="space-y-3">
                                     <div class="flex items-center justify-between">
@@ -417,22 +449,22 @@ onMounted(() => {
         </section>
 
         <!-- Testimonials Section -->
-        <section class="py-24 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+        <section class="py-16 sm:py-24 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-20">
-                    <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                <div class="text-center mb-12 sm:mb-20">
+                    <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 px-2">
                         Trusted by
                         <span class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                             Industry Leaders
                         </span>
                     </h2>
-                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                        See what our customers have to say about QSM
+                    <p class="text-base sm:text-xl text-gray-600 max-w-2xl mx-auto px-2">
+                        See what our customers have to say about QSMCore
                     </p>
                 </div>
                 
-                <div class="relative max-w-4xl mx-auto">
-                    <div class="overflow-hidden rounded-3xl">
+                <div class="relative max-w-4xl mx-auto px-2 sm:px-4">
+                    <div class="overflow-hidden rounded-2xl sm:rounded-3xl">
                         <div 
                             class="flex transition-transform duration-500 ease-in-out"
                             :style="{ transform: `translateX(-${activeTestimonial * 100}%)` }"
@@ -440,11 +472,11 @@ onMounted(() => {
                             <div 
                                 v-for="(testimonial, index) in testimonials" 
                                 :key="index"
-                                class="min-w-full px-8"
+                                class="min-w-full px-4 sm:px-8"
                             >
-                                <div class="bg-white rounded-2xl p-8 md:p-12 shadow-2xl">
-                                    <div class="text-6xl mb-6">{{ testimonial.avatar }}</div>
-                                    <p class="text-xl md:text-2xl text-gray-700 mb-8 leading-relaxed italic">
+                                <div class="bg-white rounded-xl sm:rounded-2xl p-6 sm:p-8 md:p-12 shadow-2xl">
+                                    <div class="text-5xl sm:text-6xl mb-4 sm:mb-6">{{ testimonial.avatar }}</div>
+                                    <p class="text-base sm:text-xl md:text-2xl text-gray-700 mb-6 sm:mb-8 leading-relaxed italic">
                                         "{{ testimonial.content }}"
                                     </p>
                                     <div class="flex items-center space-x-4">
@@ -474,21 +506,21 @@ onMounted(() => {
         </section>
 
         <!-- Blog Section -->
-        <section v-if="blogPosts && blogPosts.length > 0" class="py-24 bg-white">
+        <section v-if="blogPosts && blogPosts.length > 0" class="py-16 sm:py-24 bg-white">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-20">
-                    <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                <div class="text-center mb-12 sm:mb-20">
+                    <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 px-2">
                         Latest from
                         <span class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                            QSM Blog
+                            QSMCore Blog
                         </span>
                     </h2>
-                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    <p class="text-base sm:text-xl text-gray-600 max-w-2xl mx-auto px-2">
                         Stay updated with the latest insights, news, and best practices in quality and safety management
                     </p>
                 </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
                     <div
                         v-for="post in blogPosts"
                         :key="post.id"
@@ -537,47 +569,47 @@ onMounted(() => {
         </section>
 
         <!-- Stats Section -->
-        <section class="py-20 bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+        <section class="py-12 sm:py-20 bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-                    <div>
-                        <div class="text-4xl md:text-5xl font-bold mb-2">100+</div>
-                        <div class="text-blue-100">Companies</div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8 text-center">
+                    <div class="py-4">
+                        <div class="text-2xl sm:text-4xl md:text-5xl font-bold mb-1 sm:mb-2">100+</div>
+                        <div class="text-blue-100 text-sm sm:text-base">Companies</div>
                     </div>
-                    <div>
-                        <div class="text-4xl md:text-5xl font-bold mb-2">50+</div>
-                        <div class="text-blue-100">Industries</div>
+                    <div class="py-4">
+                        <div class="text-2xl sm:text-4xl md:text-5xl font-bold mb-1 sm:mb-2">50+</div>
+                        <div class="text-blue-100 text-sm sm:text-base">Industries</div>
                     </div>
-                    <div>
-                        <div class="text-4xl md:text-5xl font-bold mb-2">1000+</div>
-                        <div class="text-blue-100">Active Users</div>
+                    <div class="py-4">
+                        <div class="text-2xl sm:text-4xl md:text-5xl font-bold mb-1 sm:mb-2">1000+</div>
+                        <div class="text-blue-100 text-sm sm:text-base">Active Users</div>
                     </div>
-                    <div>
-                        <div class="text-4xl md:text-5xl font-bold mb-2">99.9%</div>
-                        <div class="text-blue-100">Uptime</div>
+                    <div class="py-4">
+                        <div class="text-2xl sm:text-4xl md:text-5xl font-bold mb-1 sm:mb-2">99.9%</div>
+                        <div class="text-blue-100 text-sm sm:text-base">Uptime</div>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- Footer -->
-        <footer class="bg-gray-900 text-white py-12">
+        <footer class="bg-gray-900 text-white py-10 sm:py-12">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-                    <div>
-                        <div class="flex items-center space-x-3 mb-4">
-                            <div class="bg-gradient-to-br from-blue-600 to-indigo-600 p-2 rounded-lg">
-                                <img src="/logos/logo-width.png" class="h-8 w-auto" alt="QSM Logo" />
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 mb-6 sm:mb-8">
+                    <div class="sm:col-span-2 md:col-span-1">
+                        <div class="flex items-center space-x-2 sm:space-x-3 mb-3 sm:mb-4">
+                            <div class="bg-gradient-to-br from-blue-600 to-indigo-600 p-1.5 sm:p-2 rounded-lg flex-shrink-0">
+                                <img src="/logos/logo-width.png" class="h-6 sm:h-8 w-auto" alt="QSMCore Logo" />
                             </div>
-                            <h3 class="text-xl font-bold">QSM</h3>
+                            <h3 class="text-lg sm:text-xl font-bold">QSMCore</h3>
                         </div>
-                        <p class="text-gray-400">
+                        <p class="text-gray-400 text-sm sm:text-base">
                             Quality & Safety Management System - Empowering organizations to achieve excellence in quality and safety standards.
                         </p>
                     </div>
                     <div>
-                        <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
-                        <ul class="space-y-2 text-gray-400">
+                        <h4 class="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Quick Links</h4>
+                        <ul class="space-y-1.5 sm:space-y-2 text-gray-400 text-sm sm:text-base">
                             <li><Link href="/" class="hover:text-white transition-colors">Home</Link></li>
                             <li><Link :href="route('blog.index')" class="hover:text-white transition-colors">Blog</Link></li>
                             <li><Link :href="route('login')" class="hover:text-white transition-colors">Admin Portal</Link></li>
@@ -585,16 +617,16 @@ onMounted(() => {
                         </ul>
                     </div>
                     <div>
-                        <h4 class="text-lg font-semibold mb-4">Contact</h4>
-                        <ul class="space-y-2 text-gray-400">
+                        <h4 class="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Contact</h4>
+                        <ul class="space-y-1.5 sm:space-y-2 text-gray-400 text-sm sm:text-base break-words">
                             <li>Email: support@qsm.com</li>
                             <li>Phone: +1 (555) 123-4567</li>
                             <li>Address: 123 Business St, Suite 100</li>
                         </ul>
                     </div>
                 </div>
-                <div class="border-t border-gray-800 pt-8 text-center text-gray-400">
-                    <p>&copy; 2025 Quality & Safety Management System. All rights reserved.</p>
+                <div class="border-t border-gray-800 pt-6 sm:pt-8 text-center text-gray-400 text-sm sm:text-base">
+                    <p>&copy; 2025 QSMCore. All rights reserved.</p>
                 </div>
             </div>
         </footer>

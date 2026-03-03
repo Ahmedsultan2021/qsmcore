@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
             [
                 'fname' => 'Emira',
                 'lname' => 'Abo Deif',
-                'email' => 'EngEmira@batu.com',
+                'email' => 'EngEmira@qsmcore.com',
                 'password' => Hash::make('123456789'),
             ],
         ]);

@@ -26,8 +26,11 @@ Route::get('/', function () {
         ->take(6)
         ->get();
     
+    $industries = \App\Models\Industry::orderBy('name')->get();
+    
     return Inertia::render('Welcome', [
         'blogPosts' => $blogPosts,
+        'industries' => $industries,
     ]);
 })->name('welcome');
 

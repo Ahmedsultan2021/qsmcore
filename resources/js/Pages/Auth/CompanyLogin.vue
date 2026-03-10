@@ -23,7 +23,7 @@ const submit = () => {
         <div class="max-w-md w-full space-y-8">
             <div>
                 <div class="flex justify-center">
-                    <img src="/logos/logo-width.png" class="h-16 w-auto" alt="QSMCore Logo" />
+                    <img src="/logos/lo.png" class="h-16 w-auto" alt="QSMCore Logo" />
                 </div>
                 <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
                     Companies Portal

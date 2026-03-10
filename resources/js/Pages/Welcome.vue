@@ -1,12 +1,65 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 
 const props = defineProps({
     blogPosts: {
         type: Array,
         default: () => []
+    },
+    industries: {
+        type: Array,
+        default: () => []
     }
+})
+
+// Icon mapping for industries (Heroicons paths)
+const industryIcons = {
+    'aviation': 'M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z',
+    'manufacturing': 'M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z',
+    'services': 'M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0M12 12.75h.008v.008H12v-.008z',
+    'technology': 'M5.25 14.25h13.5m-13.5 0a3 3 0 01-3-3m3 3a3 3 0 100 6h13.5a3 3 0 100-6m-16.5-3a3 3 0 013-3h13.5a3 3 0 013 3m-19.5 0a4.5 4.5 0 01.9-2.7L5.737 5.1a3.375 3.375 0 012.7-1.35h7.126c1.062 0 2.062.5 2.7 1.35l2.587 3.45a4.5 4.5 0 01.9 2.7m0 0a3 3 0 01-3 3m0 3h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008zm-3 6h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008z',
+    'healthcare': 'M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z',
+    'construction': 'M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z',
+    'education': 'M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5',
+    'retail': 'M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.75-5.925V5.1',
+    'energy': 'M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z',
+    'oil': 'M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75M18.75 4.97A48.416 48.416 0 0012 4.5c-2.291 0-4.545.16-6.75.47m13.5 0c1.01.143 2.01.288 3 .486m-3-.486l2.484 2.484a.75.75 0 01-1.061 1.061M18.75 4.97l-2.484 2.484a.75.75 0 001.061-1.061m0 0l2.484-2.484M18.75 4.97v2.25m0 2.25v-2.25m0 2.25l2.484 2.484M12 20.25l-2.484-2.484a.75.75 0 011.061-1.061M12 20.25v-2.25m0 2.25v2.25m0-2.25l-2.484-2.484M5.25 4.97l2.484 2.484a.75.75 0 01-1.061 1.061L4.189 4.97',
+    'transportation': 'M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9H4.5a2.25 2.25 0 01-2.25-2.25V6.75A2.25 2.25 0 014.5 4.5h15A2.25 2.25 0 0121.75 6.75v9.75a2.25 2.25 0 01-2.25 2.25h-6m-9 0V9.375m0 0a2.25 2.25 0 002.25 2.25h.096a2.25 2.25 0 001.591-.659l2.122-2.121a2.25 2.25 0 011.591-.659H18.75M8.25 18.75V9.375m0 0a2.25 2.25 0 012.25-2.25h.096a2.25 2.25 0 011.591.659l2.122 2.121a2.25 2.25 0 001.591.659H18.75',
+    'logistics': 'M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9H4.5a2.25 2.25 0 01-2.25-2.25V6.75A2.25 2.25 0 014.5 4.5h15A2.25 2.25 0 0121.75 6.75v9.75a2.25 2.25 0 01-2.25 2.25h-6m-9 0V9.375m0 0a2.25 2.25 0 002.25 2.25h.096a2.25 2.25 0 001.591-.659l2.122-2.121a2.25 2.25 0 011.591-.659H18.75M8.25 18.75V9.375m0 0a2.25 2.25 0 012.25-2.25h.096a2.25 2.25 0 011.591.659l2.122 2.121a2.25 2.25 0 001.591.659H18.75',
+    'default': 'M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z'
+}
+
+const getIndustryIcon = (name) => {
+    const key = (name || '').toLowerCase()
+    if (key.includes('aviation') || key.includes('aerospace')) return industryIcons.aviation
+    if (key.includes('manufacturing')) return industryIcons.manufacturing
+    if (key.includes('service')) return industryIcons.services
+    if (key.includes('technology') || key.includes('tech')) return industryIcons.technology
+    if (key.includes('health') || key.includes('medical')) return industryIcons.healthcare
+    if (key.includes('construction')) return industryIcons.construction
+    if (key.includes('education')) return industryIcons.education
+    if (key.includes('retail')) return industryIcons.retail
+    if (key.includes('energy')) return industryIcons.energy
+    if (key.includes('oil') || key.includes('gas')) return industryIcons.oil
+    if (key.includes('transport')) return industryIcons.transportation
+    if (key.includes('logistics')) return industryIcons.logistics
+    return industryIcons.default
+}
+
+// Curated industries for display (merge DB industries with key target industries)
+const displayIndustries = computed(() => {
+    const dbIndustries = props.industries || []
+    const targetIndustries = [
+        { name: 'Aviation', description: 'Aerospace operations and maintenance' },
+        { name: 'Oil & Gas', description: 'Upstream and downstream operations' },
+        { name: 'Transportation', description: 'Fleet and logistics management' },
+        { name: 'Energy', description: 'Power generation and distribution' },
+        { name: 'Logistics', description: 'Supply chain and warehousing' }
+    ]
+    const seen = new Set(dbIndustries.map(i => i.name?.toLowerCase()))
+    const extra = targetIndustries.filter(t => !seen.has(t.name?.toLowerCase()))
+    return [...dbIndustries, ...extra]
 })
 
 const activeFeature = ref(0)
@@ -147,9 +200,7 @@ onMounted(() => {
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center h-16 sm:h-20">
                     <div class="flex items-center space-x-2 sm:space-x-3 min-w-0">
-                        <div class="bg-gradient-to-br from-blue-600 to-indigo-600 p-1.5 sm:p-2 rounded-lg sm:rounded-xl shadow-lg flex-shrink-0">
-                            <img src="/logos/logo-width.png" class="h-8 sm:h-10 w-auto" alt="QSMCore Logo" />
-                        </div>
+                        <img src="/logos/lo.png" class="h-16 sm:h-20 w-auto flex-shrink-0" alt="QSMCore Logo" />
                         <div class="min-w-0">
                             <h1 class="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent truncate">
                                 QSMCore
@@ -225,7 +276,7 @@ onMounted(() => {
                 <div class="text-center">
                     <div class="inline-block mb-4 sm:mb-6">
                         <span class="px-3 py-1.5 sm:px-4 sm:py-2 bg-blue-100 text-blue-800 rounded-full text-xs sm:text-sm font-semibold">
-                            Enterprise Quality Management
+                            From Reporting to Insight – One Platform for Safety & Quality Across Industries
                         </span>
                     </div>
                     <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-4 sm:mb-6 leading-tight">
@@ -235,11 +286,14 @@ onMounted(() => {
                         <br>
                         <span class="text-gray-900">Management System</span>
                     </h1>
-                    <p class="text-base sm:text-xl md:text-2xl text-gray-600 mb-3 sm:mb-4 max-w-3xl mx-auto leading-relaxed px-1">
-                        Streamline your organization's quality and safety processes with our comprehensive digital platform
+                    <p class="text-base sm:text-xl md:text-2xl text-gray-600 mb-3 sm:mb-4 max-w-3xl mx-auto leading-relaxed px-1 font-medium">
+                        QSMCore is an integrated Safety and Quality Management platform that centralizes reporting, risk management, audits, and compliance monitoring.
                     </p>
-                    <p class="text-sm sm:text-lg text-gray-500 mb-8 sm:mb-12 max-w-2xl mx-auto px-1">
-                        Track incidents, manage corrective actions, and ensure compliance across multiple industries with ease
+                    <p class="text-base sm:text-lg text-gray-600 mb-3 sm:mb-4 max-w-3xl mx-auto leading-relaxed px-1">
+                        Designed for aviation and other high-risk industries (Oil and Gas, transportation), it helps organizations transform operational data into actionable safety and quality improvements.
+                    </p>
+                    <p class="text-sm sm:text-base text-gray-500 mb-8 sm:mb-12 max-w-2xl mx-auto px-1">
+                        Built with operational environments in mind—structured reporting, risk management, audit tracking, and performance dashboards that help you monitor safety events and ensure regulatory compliance.
                     </p>
                     <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center px-2">
                         <Link
@@ -266,6 +320,66 @@ onMounted(() => {
                             </span>
                         </Link>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Industries Section -->
+        <section class="py-16 sm:py-24 bg-white/80 backdrop-blur-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12 sm:mb-16">
+                    <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 px-2">
+                        Trusted Across
+                        <span class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                            Multiple Industries
+                        </span>
+                    </h2>
+                    <p class="text-base sm:text-xl text-gray-600 max-w-2xl mx-auto px-2">
+                        From aviation and energy to logistics and manufacturing—QSMCore adapts to your industry
+                    </p>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
+                    <div 
+                        v-for="(industry, index) in displayIndustries" 
+                        :key="index"
+                        class="group relative bg-white rounded-2xl p-5 sm:p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 overflow-hidden"
+                    >
+                        <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-bl-full opacity-60 group-hover:opacity-100 transition-opacity"></div>
+                        <div class="relative">
+                            <div class="bg-gradient-to-br from-blue-600 to-indigo-600 text-white rounded-xl w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform">
+                                <svg class="w-7 h-7 sm:w-8 sm:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="getIndustryIcon(industry.name)" />
+                                </svg>
+                            </div>
+                            <h3 class="text-base sm:text-lg font-bold text-gray-900 mb-1">{{ industry.name }}</h3>
+                            <p v-if="industry.description" class="text-sm text-gray-600 line-clamp-2">{{ industry.description }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About QSMCore Section -->
+        <section class="py-16 sm:py-24 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+                        What is <span class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">QSMCore</span>?
+                    </h2>
+                </div>
+                <div class="bg-white/90 backdrop-blur-sm rounded-2xl p-6 sm:p-10 shadow-xl border border-gray-100 space-y-6 text-gray-700 leading-relaxed">
+                    <p class="text-base sm:text-lg">
+                        QSMCore is a digital platform designed to simplify and strengthen Safety and Quality Management Systems (SMS & QMS) across multiple industries.
+                    </p>
+                    <p class="text-base sm:text-lg">
+                        Built with operational environments in mind, QSMCore provides structured reporting tools, risk management features, audit tracking, and performance dashboards that help organizations monitor safety events, manage quality processes, and ensure regulatory compliance.
+                    </p>
+                    <p class="text-base sm:text-lg">
+                        From aviation operations and maintenance to energy and logistics sectors, QSMCore centralizes critical reporting and transforms operational data into actionable insights. By streamlining incident reporting, investigation workflows, corrective actions, and performance monitoring, the platform helps organizations build a proactive safety culture and maintain high operational standards.
+                    </p>
+                    <p class="text-base sm:text-lg">
+                        With an intuitive interface and industry-aligned reporting templates, QSMCore empowers teams to report, analyze, and improve continuously.
+                    </p>
                 </div>
             </div>
         </section>
@@ -599,12 +713,12 @@ onMounted(() => {
                     <div class="sm:col-span-2 md:col-span-1">
                         <div class="flex items-center space-x-2 sm:space-x-3 mb-3 sm:mb-4">
                             <div class="bg-gradient-to-br from-blue-600 to-indigo-600 p-1.5 sm:p-2 rounded-lg flex-shrink-0">
-                                <img src="/logos/logo-width.png" class="h-6 sm:h-8 w-auto" alt="QSMCore Logo" />
+                                <img src="/logos/lo.png" class="h-6 sm:h-8 w-auto" alt="QSMCore Logo" />
                             </div>
                             <h3 class="text-lg sm:text-xl font-bold">QSMCore</h3>
                         </div>
                         <p class="text-gray-400 text-sm sm:text-base">
-                            Quality & Safety Management System - Empowering organizations to achieve excellence in quality and safety standards.
+                            From Reporting to Insight – One Platform for Safety & Quality across industries. Integrated SMS & QMS for aviation, energy, logistics, and more.
                         </p>
                     </div>
                     <div>

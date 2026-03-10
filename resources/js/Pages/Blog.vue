@@ -34,9 +34,7 @@ const getPaginationLabel = (label) => {
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center h-16 sm:h-20">
                     <div class="flex items-center space-x-2 sm:space-x-3 min-w-0">
-                        <div class="bg-gradient-to-br from-blue-600 to-indigo-600 p-1.5 sm:p-2 rounded-lg sm:rounded-xl shadow-lg flex-shrink-0">
-                            <img src="/logos/logo-width.png" class="h-8 sm:h-10 w-auto" alt="QSMCore Logo" />
-                        </div>
+                        <img src="/logos/lo.png" class="h-16 sm:h-20 w-auto flex-shrink-0" alt="QSMCore Logo" />
                         <div class="min-w-0">
                             <h1 class="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent truncate">
                                 QSMCore
@@ -210,12 +208,12 @@ const getPaginationLabel = (label) => {
                     <div class="sm:col-span-2 md:col-span-1">
                         <div class="flex items-center space-x-2 sm:space-x-3 mb-3 sm:mb-4">
                             <div class="bg-gradient-to-br from-blue-600 to-indigo-600 p-1.5 sm:p-2 rounded-lg flex-shrink-0">
-                                <img src="/logos/logo-width.png" class="h-6 sm:h-8 w-auto" alt="QSMCore Logo" />
+                                <img src="/logos/lo.png" class="h-6 sm:h-8 w-auto" alt="QSMCore Logo" />
                             </div>
                             <h3 class="text-lg sm:text-xl font-bold">QSMCore</h3>
                         </div>
                         <p class="text-gray-400 text-sm sm:text-base">
-                            Quality & Safety Management System - Empowering organizations to achieve excellence in quality and safety standards.
+                            From Reporting to Insight – One Platform for Safety & Quality across industries.
                         </p>
                     </div>
                     <div>

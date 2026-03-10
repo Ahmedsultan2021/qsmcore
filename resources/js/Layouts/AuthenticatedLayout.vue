@@ -29,7 +29,7 @@ const showingNavigationDropdown = ref(false);
 <template >
 
 <Head>
-  <link rel="icon" type="image/svg+xml" href="/logos/logo-width.png" />
+  <link rel="icon" type="image/png" href="/logos/lo.png" />
 </Head>
 
   <div class="h-screen dark:bg-dark">
@@ -63,8 +63,8 @@ const showingNavigationDropdown = ref(false);
             </button>
             <a href="#" class="flex ms-2 md:me-24">
               <img
-                src="/logos/logo-width.png"
-                class="h-8 me-3"
+                src="/logos/lo.png"
+                class="h-16 sm:h-20 me-3"
                 alt="QSMCore Logo"
               />
               <span

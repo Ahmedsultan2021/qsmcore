@@ -51,8 +51,8 @@ const logout = () => {
                         </button>
                         <a href="#" class="flex ms-2 md:me-24">
                             <img
-                                src="/logos/logo-width.png"
-                                class="h-8 me-3"
+                                src="/logos/lo.png"
+                                class="h-16 sm:h-20 me-3"
                                 alt="QSMCore Logo"
                             />
                             <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">

@@ -41,7 +41,7 @@ const submit = () => {
             <div class="text-center mb-8">
                 <div class="inline-flex items-center justify-center mb-6">
                     <div class="bg-gradient-to-br from-blue-600 to-indigo-600 p-3 rounded-2xl shadow-xl">
-                        <img src="/logos/logo-width.png" class="h-12 w-auto" alt="QSMCore Logo" />
+                        <img src="/logos/lo.png" class="h-12 w-auto" alt="QSMCore Logo" />
                     </div>
                 </div>
                 <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">

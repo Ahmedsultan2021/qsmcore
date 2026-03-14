@@ -163,7 +163,7 @@ const isInternal = computed(() => {
                                 </div>
                             </div>
                             <Link
-                                :href="route('companies.departments.reports.show', [report.department_id, report.id])"
+                                :href="route('companies.departments.reports.show', { department: report.department_id, report: report.id })"
                                 class="ml-4 text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium"
                             >
                                 View Report →

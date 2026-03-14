@@ -140,11 +140,7 @@ class CompanyReportController extends Controller
             abort(403);
         }
         
-        // Ensure report belongs to department
-        if ($report->department_id !== $department->id) {
-            abort(404);
-        }
-        
+        // Report is already scoped to department via route model binding
         $report->load(['department.company.sector.industry', 'creator', 'forms', 'formResponses']);
         
         // Get form submission status for current user
@@ -174,11 +170,7 @@ class CompanyReportController extends Controller
             abort(403);
         }
         
-        // Ensure report belongs to department
-        if ($report->department_id !== $department->id) {
-            abort(404);
-        }
-        
+        // Report is already scoped to department via route model binding
         $forms = Form::where('department_id', $department->id)
             ->orderBy('name')
             ->get();
@@ -203,11 +195,7 @@ class CompanyReportController extends Controller
             abort(403);
         }
         
-        // Ensure report belongs to department
-        if ($report->department_id !== $department->id) {
-            abort(404);
-        }
-        
+        // Report is already scoped to department via route model binding
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -240,11 +228,7 @@ class CompanyReportController extends Controller
             abort(403);
         }
         
-        // Ensure report belongs to department
-        if ($report->department_id !== $department->id) {
-            abort(404);
-        }
-        
+        // Report is already scoped to department via route model binding
         $report->delete();
 
         return redirect()->route('companies.departments.reports.index', $department->id)

@@ -14,7 +14,7 @@ const props = defineProps({
 
 const deleteReport = (id) => {
     if (confirm("Are you sure you want to delete this report?")) {
-        router.delete(route("companies.departments.reports.destroy", [props.department.id, id]));
+        router.delete(route("companies.departments.reports.destroy", { department: props.department.id, report: id }));
     }
 };
 
@@ -119,13 +119,13 @@ const navs = computed(() => [
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <Link
-                                :href="route('companies.departments.reports.show', [department.id, report.id])"
+                                :href="route('companies.departments.reports.show', { department: department.id, report: report.id })"
                                 class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mr-3"
                             >
                                 View
                             </Link>
                             <Link
-                                :href="route('companies.departments.reports.edit', [department.id, report.id])"
+                                :href="route('companies.departments.reports.edit', { department: department.id, report: report.id })"
                                 class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-3"
                             >
                                 Edit

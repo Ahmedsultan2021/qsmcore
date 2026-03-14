@@ -1047,7 +1047,7 @@ class FormTemplateSeeder extends Seeder
             // === OGE QUALITY REPORTS (Oil, Gas & Energy) ===
             [
                 'name' => 'Internal Audit Report (OGE)',
-                'category' => 'Aviation - OGE Quality',
+                'category' => 'OGE Quality',
                 'description' => 'Oil, Gas & Energy – Internal Audit Report for documenting audit findings and compliance.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Audit No.', 'name' => 'audit_no', 'required' => true],

@@ -226,7 +226,7 @@ const navs = computed(() => [
 
                 <div class="flex items-center justify-end space-x-3 mt-6">
                     <Link
-                        :href="route('companies.departments.reports.show', [department.id, report.id])"
+                        :href="route('companies.departments.reports.show', { department: department.id, report: report.id })"
                         class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600"
                     >
                         Cancel

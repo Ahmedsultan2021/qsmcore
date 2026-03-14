@@ -44,8 +44,8 @@ Route::middleware('auth:employee')->prefix('companies')->name('companies.')->gro
     Route::resource('risks', CompanyRiskController::class);
     Route::get('departments/{department}/risks', [CompanyRiskController::class, 'departmentRisks'])->name('departments.risks.index');
     
-    // Reports routes (nested under departments)
-    Route::resource('departments.reports', CompanyReportController::class);
+    // Reports routes (nested under departments) - scoped so report must belong to department
+    Route::resource('departments.reports', CompanyReportController::class)->scoped();
     Route::get('reports', [CompanyReportController::class, 'allReports'])->name('reports.index');
     
     // Audits routes (audit tracker)

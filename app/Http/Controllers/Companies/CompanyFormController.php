@@ -198,16 +198,30 @@ class CompanyFormController extends Controller
 
     /**
      * Display the form template bank for adding templates to company forms.
+     * Shows only form templates attached to the company's industry.
      */
     public function templateBank()
     {
         $employee = Auth::guard('employee')->user();
+        $company = $employee->company;
 
-        $templates = FormTemplate::with('formTemplateFields')
-            ->orderBy('category')
-            ->orderBy('name')
-            ->get()
-            ->groupBy('category');
+        // Get form templates attached to the company's industry
+        $industry = $company->sector?->industry;
+        if ($industry) {
+            $templates = $industry->formTemplates()
+                ->with('formTemplateFields')
+                ->orderBy('category')
+                ->orderBy('name')
+                ->get()
+                ->groupBy('category');
+        } else {
+            // Company has no sector/industry - show all templates as fallback
+            $templates = FormTemplate::with('formTemplateFields')
+                ->orderBy('category')
+                ->orderBy('name')
+                ->get()
+                ->groupBy('category');
+        }
 
         $departments = \App\Models\Department::where('company_id', $employee->company_id)
             ->select('id', 'name')
@@ -217,6 +231,7 @@ class CompanyFormController extends Controller
         return Inertia::render('Companies/Forms/TemplateBank', [
             'templates' => $templates,
             'departments' => $departments,
+            'industryName' => $industry?->name ?? null,
         ]);
     }
 
@@ -226,6 +241,7 @@ class CompanyFormController extends Controller
     public function addFromTemplate(Request $request)
     {
         $employee = Auth::guard('employee')->user();
+        $company = $employee->company;
 
         $validated = $request->validate([
             'form_template_id' => 'required|exists:form_templates,id',
@@ -233,6 +249,15 @@ class CompanyFormController extends Controller
         ]);
 
         $template = FormTemplate::with('formTemplateFields')->findOrFail($validated['form_template_id']);
+
+        // Ensure template is attached to company's industry (if company has industry)
+        $industry = $company->sector?->industry;
+        if ($industry) {
+            $isAllowed = $industry->formTemplates()->where('form_templates.id', $template->id)->exists();
+            if (!$isAllowed) {
+                return back()->withErrors(['form_template_id' => 'This form template is not available for your industry.']);
+            }
+        }
 
         // If department is specified, ensure it belongs to the employee's company
         if (!empty($validated['department_id'])) {

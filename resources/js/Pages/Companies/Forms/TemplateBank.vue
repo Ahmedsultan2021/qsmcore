@@ -12,6 +12,10 @@ const props = defineProps({
         type: Array,
         default: () => [],
     },
+    industryName: {
+        type: String,
+        default: null,
+    },
 });
 
 const selectedTemplate = ref(null);
@@ -54,6 +58,7 @@ const sortedPreviewFields = (template) => {
 };
 
 const categories = computed(() => Object.keys(props.templates || {}));
+const hasTemplates = computed(() => categories.value.length > 0);
 
 const navs = computed(() => [
     { name: "Dashboard", linkName: "companies.dashboard" },
@@ -74,10 +79,20 @@ const navs = computed(() => [
         />
 
         <p class="text-gray-600 dark:text-gray-400 mb-6">
-            Select a template and choose a department to add it to your company's form list. You can later edit the form and its fields as needed.
+            <template v-if="industryName">
+                Showing form templates for your industry (<strong>{{ industryName }}</strong>). Select a template and choose a department to add it to your company's form list.
+            </template>
+            <template v-else>
+                Select a template and choose a department to add it to your company's form list. You can later edit the form and its fields as needed.
+            </template>
         </p>
 
-        <div class="space-y-8">
+        <div v-if="!hasTemplates" class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-6 text-amber-800 dark:text-amber-200">
+            <p class="font-medium">No form templates available for your industry.</p>
+            <p class="mt-1 text-sm">Contact your administrator to attach form templates to your industry.</p>
+        </div>
+
+        <div v-else class="space-y-8">
             <div
                 v-for="category in categories"
                 :key="category"

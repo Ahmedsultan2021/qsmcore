@@ -19,4 +19,9 @@ class FormTemplate extends Model
     {
         return $this->hasMany(FormTemplateField::class)->orderBy('order');
     }
+
+    public function industries()
+    {
+        return $this->belongsToMany(Industry::class, 'industry_form_template');
+    }
 }

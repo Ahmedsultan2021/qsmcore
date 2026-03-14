@@ -45,7 +45,7 @@ const clearFilters = () => {
 <template>
     <Head title="Sectors" />
 
-    <div class="p-6 pt-20">
+    <div class="p-6">
         <BaseDashboardHeader
             :navs="navs"
             title="Sectors"

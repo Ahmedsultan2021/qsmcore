@@ -19,22 +19,22 @@ class ReportSeeder extends Seeder
     protected function departmentCategories(): array
     {
         return [
-            'Production' => ['Quality', 'Maintenance'],
-            'Sales' => ['Quality'],
-            'Human Resources' => ['Safety', 'Training'],
-            'Development' => ['Safety'],
-            'Technical Support' => ['Safety'],
-            'Investment' => ['Quality'],
-            'Accounting' => ['Quality'],
-            'Emergency' => ['Safety', 'Quality'],
-            'Surgery' => ['Safety', 'Quality'],
-            'Projects' => ['Maintenance', 'Safety', 'Quality'],
-            'Procurement' => ['Maintenance', 'Safety', 'Quality'],
-            'Academic Affairs' => ['Training', 'Quality'],
-            'Student Affairs' => ['Training', 'Quality'],
-            'Warehouse' => ['Safety', 'Maintenance'],
-            'Operations' => ['Maintenance', 'Safety'],
-            'Maintenance' => ['Maintenance', 'Safety'],
+            'Production' => ['Aviation - Quality', 'Aviation - Maintenance'],
+            'Sales' => ['Aviation - Quality'],
+            'Human Resources' => ['Aviation - Safety', 'Aviation - Training'],
+            'Development' => ['Aviation - Safety'],
+            'Technical Support' => ['Aviation - Safety'],
+            'Investment' => ['Aviation - Quality'],
+            'Accounting' => ['Aviation - Quality'],
+            'Emergency' => ['Aviation - Safety', 'Aviation - Quality'],
+            'Surgery' => ['Aviation - Safety', 'Aviation - Quality'],
+            'Projects' => ['Aviation - Maintenance', 'Aviation - Safety', 'Aviation - Quality'],
+            'Procurement' => ['Aviation - Maintenance', 'Aviation - Safety', 'Aviation - Quality'],
+            'Academic Affairs' => ['Aviation - Training', 'Aviation - Quality'],
+            'Student Affairs' => ['Aviation - Training', 'Aviation - Quality'],
+            'Warehouse' => ['Aviation - Safety', 'Aviation - Maintenance'],
+            'Operations' => ['Aviation - Maintenance', 'Aviation - Safety'],
+            'Maintenance' => ['Aviation - Maintenance', 'Aviation - Safety'],
         ];
     }
 
@@ -85,7 +85,7 @@ class ReportSeeder extends Seeder
         $reportStatuses = ['draft', 'submitted', 'submitted', 'approved', 'approved']; // bias to submitted/approved
 
         Department::with('company')->get()->each(function (Department $department) use ($categoriesMap, $now, $reportStatuses) {
-            $categories = $categoriesMap[$department->name] ?? ['Quality', 'Safety'];
+            $categories = $categoriesMap[$department->name] ?? ['Aviation - Quality', 'Aviation - Safety'];
             $templates = FormTemplate::whereIn('category', $categories)
                 ->with('formTemplateFields')
                 ->orderBy('category')

@@ -17,7 +17,7 @@ class FormTemplateSeeder extends Seeder
             // 1. Quality - Non-Conformance Report (NCR)
             [
                 'name' => 'Non-Conformance Report (NCR)',
-                'category' => 'Quality',
+                'category' => 'Aviation - Quality',
                 'description' => 'Report and track non-conformances in processes, documents, equipment, or human error.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'NCR ID', 'name' => 'ncr_id', 'required' => true],
@@ -39,7 +39,7 @@ class FormTemplateSeeder extends Seeder
             // 2. Quality - Internal Audit Report
             [
                 'name' => 'Internal Audit Report – Quality Department',
-                'category' => 'Quality',
+                'category' => 'Aviation - Quality',
                 'description' => 'Document internal audit findings and compliance status.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Audit ID', 'name' => 'audit_id', 'required' => true],
@@ -62,7 +62,7 @@ class FormTemplateSeeder extends Seeder
             // 3. Quality - Quality Compliance Checklist
             [
                 'name' => 'Quality Compliance Checklist – Quality Department',
-                'category' => 'Quality',
+                'category' => 'Aviation - Quality',
                 'description' => 'Checklist for reviewing procedure and process compliance.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Checklist ID', 'name' => 'checklist_id', 'required' => true],
@@ -91,7 +91,7 @@ class FormTemplateSeeder extends Seeder
             // 4. Quality - CAR/PAR Report
             [
                 'name' => 'CAR/PAR Report (Corrective / Preventive Action)',
-                'category' => 'Quality',
+                'category' => 'Aviation - Quality',
                 'description' => 'Document corrective and preventive actions linked to NCRs.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'CAR/PAR ID', 'name' => 'car_par_id', 'required' => true],
@@ -115,7 +115,7 @@ class FormTemplateSeeder extends Seeder
             // 5. MRO - Technical Defect Report
             [
                 'name' => 'Technical Defect Report',
-                'category' => 'MRO',
+                'category' => 'Aviation - MRO',
                 'description' => 'Report technical defects for aircraft or components.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'TDR Number', 'name' => 'tdr_number', 'required' => true],
@@ -140,7 +140,7 @@ class FormTemplateSeeder extends Seeder
             // 6. MRO - MEL Usage & Control Form
             [
                 'name' => 'MEL Usage & Control Form',
-                'category' => 'MRO',
+                'category' => 'Aviation - MRO',
                 'description' => 'Track MEL deferrals and extensions.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'MEL Item Ref.', 'name' => 'mel_item_ref', 'required' => true],
@@ -156,7 +156,7 @@ class FormTemplateSeeder extends Seeder
             // 7. MRO - Scheduled Maintenance Audit
             [
                 'name' => 'Scheduled Maintenance Audit',
-                'category' => 'MRO',
+                'category' => 'Aviation - MRO',
                 'description' => 'Audit scheduled maintenance work packages.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Audit ID', 'name' => 'audit_id', 'required' => true],
@@ -172,7 +172,7 @@ class FormTemplateSeeder extends Seeder
             // 8. MRO - Manpower Utilization Report
             [
                 'name' => 'Manpower Utilization Report',
-                'category' => 'MRO',
+                'category' => 'Aviation - MRO',
                 'description' => 'Track technician utilization and work completion.',
                 'fields' => [
                     ['field_type' => 'date', 'label' => 'Date', 'name' => 'report_date', 'required' => true],
@@ -188,7 +188,7 @@ class FormTemplateSeeder extends Seeder
             // === MRO SAFETY FORMS ===
             [
                 'name' => 'Hazard Identification Report',
-                'category' => 'MRO Safety',
+                'category' => 'Aviation - MRO Safety',
                 'description' => 'Identify and document workplace hazards.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Hazard ID', 'name' => 'hazard_id', 'required' => true],
@@ -207,7 +207,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Safety Investigation Template',
-                'category' => 'MRO Safety',
+                'category' => 'Aviation - MRO Safety',
                 'description' => 'Template for conducting safety investigations.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Investigation ID', 'name' => 'investigation_id', 'required' => true],
@@ -226,7 +226,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Maintenance Safety Report (MRO)',
-                'category' => 'MRO Safety',
+                'category' => 'Aviation - MRO Safety',
                 'description' => 'Report maintenance-related safety incidents.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report Number', 'name' => 'report_number', 'required' => true],
@@ -248,7 +248,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Incident / Accident Report',
-                'category' => 'MRO Safety',
+                'category' => 'Aviation - MRO Safety',
                 'description' => 'Report incidents and accidents.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report Number', 'name' => 'report_number', 'required' => true],
@@ -269,7 +269,7 @@ class FormTemplateSeeder extends Seeder
             // === MAINTENANCE FORMS ===
             [
                 'name' => 'MEL Usage Report',
-                'category' => 'Maintenance',
+                'category' => 'Aviation - Maintenance',
                 'description' => 'Report MEL usage and deferrals.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report ID', 'name' => 'report_id', 'required' => true],
@@ -293,7 +293,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Maintenance Safety Report',
-                'category' => 'Maintenance',
+                'category' => 'Aviation - Maintenance',
                 'description' => 'Report maintenance safety issues and incidents.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report ID', 'name' => 'report_id', 'required' => true],
@@ -317,7 +317,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Scheduled Maintenance Audit Report',
-                'category' => 'Maintenance',
+                'category' => 'Aviation - Maintenance',
                 'description' => 'Audit report for scheduled maintenance tasks.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Audit ID', 'name' => 'audit_id', 'required' => true],
@@ -343,7 +343,7 @@ class FormTemplateSeeder extends Seeder
             // === SAFETY REPORTS ===
             [
                 'name' => 'Corrective & Preventive Action (CAPA) Form',
-                'category' => 'Safety',
+                'category' => 'Aviation - Safety',
                 'description' => 'Document corrective and preventive actions.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'CAPA ID', 'name' => 'capa_id', 'required' => true],
@@ -361,7 +361,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Injury Report',
-                'category' => 'Safety',
+                'category' => 'Aviation - Safety',
                 'description' => 'Report workplace injuries.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report ID', 'name' => 'report_id', 'required' => true],
@@ -380,7 +380,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Occurrence Report',
-                'category' => 'Safety',
+                'category' => 'Aviation - Safety',
                 'description' => 'Report aviation occurrences and events.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Occurrence ID', 'name' => 'occurrence_id', 'required' => true],
@@ -398,7 +398,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Bird Strike Report',
-                'category' => 'Safety',
+                'category' => 'Aviation - Safety',
                 'description' => 'Report bird strike incidents.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report ID', 'name' => 'report_id', 'required' => true],
@@ -417,7 +417,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Safety Concern Report',
-                'category' => 'Safety',
+                'category' => 'Aviation - Safety',
                 'description' => 'Report safety concerns and near misses.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report ID', 'name' => 'report_id', 'required' => true],
@@ -435,7 +435,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Security Incident Report',
-                'category' => 'Safety',
+                'category' => 'Aviation - Safety',
                 'description' => 'Report security incidents.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report ID', 'name' => 'report_id', 'required' => true],
@@ -452,7 +452,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Safety Investigation Form',
-                'category' => 'Safety',
+                'category' => 'Aviation - Safety',
                 'description' => 'Conduct safety investigations.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Investigation ID', 'name' => 'investigation_id', 'required' => true],
@@ -468,7 +468,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Risk Assessment Form',
-                'category' => 'Safety',
+                'category' => 'Aviation - Safety',
                 'description' => 'Assess and document risks.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Assessment ID', 'name' => 'assessment_id', 'required' => true],
@@ -485,7 +485,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Hazard Report',
-                'category' => 'Safety',
+                'category' => 'Aviation - Safety',
                 'description' => 'Report workplace hazards.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report ID', 'name' => 'report_id', 'required' => true],
@@ -507,7 +507,7 @@ class FormTemplateSeeder extends Seeder
             // === FLIGHT OPS ===
             [
                 'name' => 'Line Check Report',
-                'category' => 'Flight Ops',
+                'category' => 'Aviation - Flight Ops',
                 'description' => 'Document line check evaluations.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Line Check Number', 'name' => 'line_check_number', 'required' => true],
@@ -527,7 +527,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Fatigue Report',
-                'category' => 'Flight Ops',
+                'category' => 'Aviation - Flight Ops',
                 'description' => 'Report crew fatigue incidents.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report Number', 'name' => 'report_number', 'required' => true],
@@ -547,7 +547,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'ASR – Aviation Safety Report',
-                'category' => 'Flight Ops',
+                'category' => 'Aviation - Flight Ops',
                 'description' => 'Aviation safety reporting.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report Number', 'name' => 'report_number', 'required' => true],
@@ -570,7 +570,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Route Check Report',
-                'category' => 'Flight Ops',
+                'category' => 'Aviation - Flight Ops',
                 'description' => 'Document route check evaluations.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Route Check Number', 'name' => 'route_check_number', 'required' => true],
@@ -591,7 +591,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Cabin Safety Report',
-                'category' => 'Flight Ops',
+                'category' => 'Aviation - Flight Ops',
                 'description' => 'Report cabin safety events.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report Number', 'name' => 'report_number', 'required' => true],
@@ -613,7 +613,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'FDM Deviation Report',
-                'category' => 'Flight Ops',
+                'category' => 'Aviation - Flight Ops',
                 'description' => 'Report FDM events and deviations.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'FDM Event ID', 'name' => 'fdm_event_id', 'required' => true],
@@ -635,7 +635,7 @@ class FormTemplateSeeder extends Seeder
             // === OCC FORMS ===
             [
                 'name' => 'Crew Scheduling Concern Report',
-                'category' => 'OCC',
+                'category' => 'Aviation - OCC',
                 'description' => 'Report crew scheduling concerns and fatigue risks.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report ID', 'name' => 'report_id', 'required' => true],
@@ -656,7 +656,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Disruption Safety Report',
-                'category' => 'OCC',
+                'category' => 'Aviation - OCC',
                 'description' => 'Report operational disruptions and safety impact.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report ID', 'name' => 'report_id', 'required' => true],
@@ -679,7 +679,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Delay Root Cause Analysis',
-                'category' => 'OCC',
+                'category' => 'Aviation - OCC',
                 'description' => 'Analyze flight delay root causes.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report ID', 'name' => 'report_id', 'required' => true],
@@ -704,7 +704,7 @@ class FormTemplateSeeder extends Seeder
             // === TRAINING FORMS ===
             [
                 'name' => 'Simulator Session Report',
-                'category' => 'Training',
+                'category' => 'Aviation - Training',
                 'description' => 'Document simulator training sessions and evaluations.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report ID', 'name' => 'report_id', 'required' => true],
@@ -727,7 +727,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Trainee Feedback Form',
-                'category' => 'Training',
+                'category' => 'Aviation - Training',
                 'description' => 'Collect trainee feedback on training sessions.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Feedback ID', 'name' => 'feedback_id', 'required' => true],
@@ -750,7 +750,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Training Observation Report',
-                'category' => 'Training',
+                'category' => 'Aviation - Training',
                 'description' => 'Document training session observations.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report ID', 'name' => 'report_id', 'required' => true],
@@ -776,7 +776,7 @@ class FormTemplateSeeder extends Seeder
             // === AIRPORT SAFETY FORMS ===
             [
                 'name' => 'Risk Assessment Form (Airport-Specific)',
-                'category' => 'Airport Safety',
+                'category' => 'Aviation - Airport Safety',
                 'description' => 'Airport-specific hazard identification and risk assessment.',
                 'fields' => [
                     ['field_type' => 'textarea', 'label' => 'Description of Hazard', 'name' => 'hazard_description', 'required' => true],
@@ -795,7 +795,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Safety Observation Report',
-                'category' => 'Airport Safety',
+                'category' => 'Aviation - Airport Safety',
                 'description' => 'Report safety observations and behaviors.',
                 'fields' => [
                     ['field_type' => 'date', 'label' => 'Date', 'name' => 'observation_date', 'required' => true],
@@ -810,7 +810,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Ground Vehicle Incident Report',
-                'category' => 'Airport Safety',
+                'category' => 'Aviation - Airport Safety',
                 'description' => 'Report ground vehicle incidents on the airside.',
                 'fields' => [
                     ['field_type' => 'date', 'label' => 'Date', 'name' => 'incident_date', 'required' => true],
@@ -839,7 +839,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Wildlife Strike Report',
-                'category' => 'Airport Safety',
+                'category' => 'Aviation - Airport Safety',
                 'description' => 'Report wildlife strikes with expanded content.',
                 'fields' => [
                     ['field_type' => 'date', 'label' => 'Date', 'name' => 'strike_date', 'required' => true],
@@ -864,7 +864,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Runway/Taxiway Hazard Report',
-                'category' => 'Airport Safety',
+                'category' => 'Aviation - Airport Safety',
                 'description' => 'Report hazards on runways and taxiways.',
                 'fields' => [
                     ['field_type' => 'date', 'label' => 'Date Detected', 'name' => 'date_detected', 'required' => true],
@@ -884,7 +884,7 @@ class FormTemplateSeeder extends Seeder
             // === MRO QUALITY FORMS ===
             [
                 'name' => 'Supplier Evaluation Report',
-                'category' => 'MRO Quality',
+                'category' => 'Aviation - MRO Quality',
                 'description' => 'Evaluate suppliers for parts, services, and tools.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Supplier Name', 'name' => 'supplier_name', 'required' => true],
@@ -900,7 +900,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Tool & Equipment Calibration Report',
-                'category' => 'MRO Quality',
+                'category' => 'Aviation - MRO Quality',
                 'description' => 'Track tool and equipment calibration.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Equipment ID', 'name' => 'equipment_id', 'required' => true],
@@ -915,7 +915,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Non-Conformance Report (NCR) – MRO Quality',
-                'category' => 'MRO Quality',
+                'category' => 'Aviation - MRO Quality',
                 'description' => 'Report non-conformances in MRO quality processes.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'NCR Number', 'name' => 'ncr_number', 'required' => true],
@@ -931,7 +931,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Work Order Quality Checklist',
-                'category' => 'MRO Quality',
+                'category' => 'Aviation - MRO Quality',
                 'description' => 'Quality checklist for work orders.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Work Order Number', 'name' => 'work_order_number', 'required' => true],
@@ -946,7 +946,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Internal Audit Report – MRO Quality',
-                'category' => 'MRO Quality',
+                'category' => 'Aviation - MRO Quality',
                 'description' => 'Internal audit report for MRO quality department.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Audit Number', 'name' => 'audit_number', 'required' => true],
@@ -966,7 +966,7 @@ class FormTemplateSeeder extends Seeder
             // === GROUND SAFETY FORMS ===
             [
                 'name' => 'Ground Safety Report (GSR)',
-                'category' => 'Ground Safety',
+                'category' => 'Aviation - Ground Safety',
                 'description' => 'Report ground safety concerns and events.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report ID', 'name' => 'report_id', 'required' => true],
@@ -986,7 +986,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Baggage Handling Issue Report',
-                'category' => 'Ground Safety',
+                'category' => 'Aviation - Ground Safety',
                 'description' => 'Report baggage handling issues and mishandling.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report ID', 'name' => 'report_id', 'required' => true],
@@ -1005,7 +1005,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Turnaround Incident Report',
-                'category' => 'Ground Safety',
+                'category' => 'Aviation - Ground Safety',
                 'description' => 'Report turnaround and ground handling incidents.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report ID', 'name' => 'report_id', 'required' => true],
@@ -1026,7 +1026,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Ramp Equipment Defect Report',
-                'category' => 'Ground Safety',
+                'category' => 'Aviation - Ground Safety',
                 'description' => 'Report defects in ramp equipment.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report ID', 'name' => 'report_id', 'required' => true],
@@ -1042,6 +1042,156 @@ class FormTemplateSeeder extends Seeder
                     ['field_type' => 'text', 'label' => 'Notified To (Maintenance/Ground Ops)', 'name' => 'notified_to'],
                     ['field_type' => 'textarea', 'label' => 'Temporary Fix (if any)', 'name' => 'temporary_fix'],
                     ['field_type' => 'radio', 'label' => 'Further Follow-up Required', 'name' => 'followup_required', 'options' => ['Yes', 'No']],
+                ],
+            ],
+            // === OGE QUALITY REPORTS (Oil, Gas & Energy) ===
+            [
+                'name' => 'Internal Audit Report (OGE)',
+                'category' => 'Aviation - OGE Quality',
+                'description' => 'Oil, Gas & Energy – Internal Audit Report for documenting audit findings and compliance.',
+                'fields' => [
+                    ['field_type' => 'text', 'label' => 'Audit No.', 'name' => 'audit_no', 'required' => true],
+                    ['field_type' => 'date', 'label' => 'Date of Audit (From)', 'name' => 'audit_date_from', 'required' => true],
+                    ['field_type' => 'date', 'label' => 'Date of Audit (To)', 'name' => 'audit_date_to', 'required' => true],
+                    ['field_type' => 'text', 'label' => 'Department / Area Audited', 'name' => 'department_audited'],
+                    ['field_type' => 'text', 'label' => 'Auditor(s)', 'name' => 'auditors'],
+                    ['field_type' => 'textarea', 'label' => 'Audit Scope', 'name' => 'audit_scope'],
+                    ['field_type' => 'checkbox', 'label' => 'Applicable Standard(s)', 'name' => 'applicable_standards', 'options' => ['ISO 9001', 'ISO 45001', 'API Spec Q1/Q2', 'Internal Procedures']],
+                    ['field_type' => 'text', 'label' => 'Other Standard', 'name' => 'applicable_standard_other', 'placeholder' => 'Other:'],
+                    ['field_type' => 'textarea', 'label' => 'Audit Objectives', 'name' => 'audit_objectives'],
+                    ['field_type' => 'text', 'label' => 'Finding 001 - No.', 'name' => 'finding_001_no', 'placeholder' => '001'],
+                    ['field_type' => 'text', 'label' => 'Finding 001 - Category', 'name' => 'finding_001_category', 'placeholder' => 'e.g. Documentation'],
+                    ['field_type' => 'textarea', 'label' => 'Finding 001 - Description', 'name' => 'finding_001_description'],
+                    ['field_type' => 'radio', 'label' => 'Finding 001 - Conformity', 'name' => 'finding_001_conformity', 'options' => ['Yes', 'No']],
+                    ['field_type' => 'radio', 'label' => 'Finding 001 - Observation', 'name' => 'finding_001_observation', 'options' => ['Yes', 'No']],
+                    ['field_type' => 'text', 'label' => 'Finding 001 - NCR Ref', 'name' => 'finding_001_ncr_ref'],
+                    ['field_type' => 'text', 'label' => 'Finding 002 - No.', 'name' => 'finding_002_no'],
+                    ['field_type' => 'text', 'label' => 'Finding 002 - Category', 'name' => 'finding_002_category'],
+                    ['field_type' => 'textarea', 'label' => 'Finding 002 - Description', 'name' => 'finding_002_description'],
+                    ['field_type' => 'radio', 'label' => 'Finding 002 - Conformity', 'name' => 'finding_002_conformity', 'options' => ['Yes', 'No']],
+                    ['field_type' => 'radio', 'label' => 'Finding 002 - Observation', 'name' => 'finding_002_observation', 'options' => ['Yes', 'No']],
+                    ['field_type' => 'text', 'label' => 'Finding 002 - NCR Ref', 'name' => 'finding_002_ncr_ref'],
+                    ['field_type' => 'textarea', 'label' => 'Opportunities for Improvement', 'name' => 'opportunities_for_improvement'],
+                    ['field_type' => 'textarea', 'label' => 'Conclusions & Recommendations', 'name' => 'conclusions_recommendations'],
+                    ['field_type' => 'text', 'label' => 'Auditor Name', 'name' => 'auditor_name'],
+                    ['field_type' => 'signature', 'label' => 'Auditor Signature', 'name' => 'auditor_signature'],
+                    ['field_type' => 'date', 'label' => 'Auditor Date', 'name' => 'auditor_date'],
+                    ['field_type' => 'text', 'label' => 'Department Head Name', 'name' => 'dept_head_name'],
+                    ['field_type' => 'signature', 'label' => 'Department Head Signature', 'name' => 'dept_head_signature'],
+                    ['field_type' => 'date', 'label' => 'Department Head Date', 'name' => 'dept_head_date'],
+                ],
+            ],
+            [
+                'name' => 'Non-Conformance Report (NCR) (OGE)',
+                'category' => 'Aviation - OGE Quality',
+                'description' => 'Oil, Gas & Energy – Non-Conformance Report for documenting and tracking NCRs.',
+                'fields' => [
+                    ['field_type' => 'text', 'label' => 'NCR No.', 'name' => 'ncr_no', 'required' => true],
+                    ['field_type' => 'date', 'label' => 'Date of Report', 'name' => 'date_of_report', 'required' => true],
+                    ['field_type' => 'text', 'label' => 'Reported By', 'name' => 'reported_by'],
+                    ['field_type' => 'text', 'label' => 'Department', 'name' => 'department'],
+                    ['field_type' => 'checkbox', 'label' => 'Type of Non-Conformance', 'name' => 'ncr_type', 'options' => ['Product', 'Process', 'Service', 'Supplier']],
+                    ['field_type' => 'text', 'label' => 'Other Type', 'name' => 'ncr_type_other', 'placeholder' => 'Other:'],
+                    ['field_type' => 'textarea', 'label' => 'Description of Non-Conformance', 'name' => 'description', 'required' => true],
+                    ['field_type' => 'textarea', 'label' => 'Immediate Actions Taken', 'name' => 'immediate_actions_taken'],
+                    ['field_type' => 'radio', 'label' => 'Root Cause Method', 'name' => 'root_cause_method', 'options' => ['5 Whys', 'Fishbone', 'Direct Cause Identified']],
+                    ['field_type' => 'textarea', 'label' => 'Root Cause Explanation', 'name' => 'root_cause_explanation'],
+                    ['field_type' => 'radio', 'label' => 'Disposition / Containment', 'name' => 'disposition', 'options' => ['Rework', 'Reject', 'Use As Is', 'Return to Supplier']],
+                    ['field_type' => 'text', 'label' => 'Other Disposition', 'name' => 'disposition_other', 'placeholder' => 'Other:'],
+                    ['field_type' => 'textarea', 'label' => 'Recommended Corrective Action', 'name' => 'recommended_corrective_action'],
+                    ['field_type' => 'text', 'label' => 'Approval Name', 'name' => 'approval_name'],
+                    ['field_type' => 'text', 'label' => 'Approval Position', 'name' => 'approval_position'],
+                    ['field_type' => 'signature', 'label' => 'Approval Signature', 'name' => 'approval_signature'],
+                    ['field_type' => 'date', 'label' => 'Approval Date', 'name' => 'approval_date'],
+                ],
+            ],
+            [
+                'name' => 'Corrective Action Request (CAR) (OGE)',
+                'category' => 'Aviation - OGE Quality',
+                'description' => 'Oil, Gas & Energy – Corrective Action Request for tracking corrective actions.',
+                'fields' => [
+                    ['field_type' => 'text', 'label' => 'CAR No.', 'name' => 'car_no', 'required' => true],
+                    ['field_type' => 'text', 'label' => 'Related NCR / Audit Ref', 'name' => 'related_ncr_audit_ref'],
+                    ['field_type' => 'date', 'label' => 'Date Issued', 'name' => 'date_issued', 'required' => true],
+                    ['field_type' => 'text', 'label' => 'Raised By', 'name' => 'raised_by'],
+                    ['field_type' => 'text', 'label' => 'Department', 'name' => 'department'],
+                    ['field_type' => 'textarea', 'label' => 'Description of Issue', 'name' => 'description_of_issue'],
+                    ['field_type' => 'textarea', 'label' => 'Root Cause Summary', 'name' => 'root_cause_summary'],
+                    ['field_type' => 'textarea', 'label' => 'Corrective Action Plan', 'name' => 'corrective_action_plan'],
+                    ['field_type' => 'text', 'label' => 'Responsible Person(s)', 'name' => 'responsible_persons'],
+                    ['field_type' => 'date', 'label' => 'Target Completion Date', 'name' => 'target_completion_date'],
+                    ['field_type' => 'text', 'label' => 'Verified By', 'name' => 'verified_by'],
+                    ['field_type' => 'date', 'label' => 'Date Verified', 'name' => 'date_verified'],
+                    ['field_type' => 'radio', 'label' => 'Effectiveness Result', 'name' => 'effectiveness_result', 'options' => ['Effective', 'Partially Effective', 'Not Effective']],
+                    ['field_type' => 'text', 'label' => 'Closure Name', 'name' => 'closure_name'],
+                    ['field_type' => 'signature', 'label' => 'Closure Signature', 'name' => 'closure_signature'],
+                    ['field_type' => 'date', 'label' => 'Date Closed', 'name' => 'date_closed'],
+                ],
+            ],
+            [
+                'name' => 'Preventive Action Request (PAR) (OGE)',
+                'category' => 'Aviation - OGE Quality',
+                'description' => 'Oil, Gas & Energy – Preventive Action Request for potential issues and risks.',
+                'fields' => [
+                    ['field_type' => 'text', 'label' => 'PAR No.', 'name' => 'par_no', 'required' => true],
+                    ['field_type' => 'date', 'label' => 'Date Raised', 'name' => 'date_raised', 'required' => true],
+                    ['field_type' => 'text', 'label' => 'Initiator', 'name' => 'initiator'],
+                    ['field_type' => 'text', 'label' => 'Department', 'name' => 'department'],
+                    ['field_type' => 'textarea', 'label' => 'Description of Potential Issue / Risk', 'name' => 'potential_issue_description'],
+                    ['field_type' => 'textarea', 'label' => 'Proposed Preventive Action', 'name' => 'proposed_preventive_action'],
+                    ['field_type' => 'radio', 'label' => 'Risk Assessment', 'name' => 'risk_assessment', 'options' => ['Low', 'Medium', 'High']],
+                    ['field_type' => 'text', 'label' => 'Responsible Person(s)', 'name' => 'responsible_persons'],
+                    ['field_type' => 'date', 'label' => 'Due Date', 'name' => 'due_date'],
+                    ['field_type' => 'date', 'label' => 'Action Completed On', 'name' => 'action_completed_on'],
+                    ['field_type' => 'text', 'label' => 'Verified By', 'name' => 'verified_by'],
+                    ['field_type' => 'radio', 'label' => 'Effectiveness', 'name' => 'effectiveness', 'options' => ['Confirmed', 'Needs Review']],
+                ],
+            ],
+            [
+                'name' => 'Inspection / Verification Report (OGE)',
+                'category' => 'Aviation - OGE Quality',
+                'description' => 'Oil, Gas & Energy – Inspection Report for equipment and area verification.',
+                'fields' => [
+                    ['field_type' => 'text', 'label' => 'Report No.', 'name' => 'report_no', 'required' => true],
+                    ['field_type' => 'date', 'label' => 'Date', 'name' => 'inspection_date', 'required' => true],
+                    ['field_type' => 'text', 'label' => 'Inspector Name', 'name' => 'inspector_name'],
+                    ['field_type' => 'text', 'label' => 'Equipment / Area Inspected', 'name' => 'equipment_area_inspected'],
+                    ['field_type' => 'text', 'label' => 'Location', 'name' => 'location'],
+                    ['field_type' => 'radio', 'label' => 'Labels / Tags Present', 'name' => 'labels_tags', 'options' => ['OK', 'NOK']],
+                    ['field_type' => 'text', 'label' => 'Labels / Tags Comments', 'name' => 'labels_tags_comments'],
+                    ['field_type' => 'radio', 'label' => 'Pressure Reading', 'name' => 'pressure_reading', 'options' => ['OK', 'NOK']],
+                    ['field_type' => 'text', 'label' => 'Pressure Reading Comments', 'name' => 'pressure_reading_comments'],
+                    ['field_type' => 'radio', 'label' => 'Calibration Valid', 'name' => 'calibration_valid', 'options' => ['OK', 'NOK']],
+                    ['field_type' => 'text', 'label' => 'Calibration Comments', 'name' => 'calibration_comments'],
+                    ['field_type' => 'radio', 'label' => 'Cleanliness', 'name' => 'cleanliness', 'options' => ['OK', 'NOK']],
+                    ['field_type' => 'text', 'label' => 'Cleanliness Comments', 'name' => 'cleanliness_comments'],
+                    ['field_type' => 'textarea', 'label' => 'Findings', 'name' => 'findings'],
+                    ['field_type' => 'textarea', 'label' => 'Recommendations', 'name' => 'recommendations'],
+                    ['field_type' => 'text', 'label' => 'Inspector Name (Signature)', 'name' => 'inspector_signature_name'],
+                    ['field_type' => 'signature', 'label' => 'Inspector Signature', 'name' => 'inspector_signature'],
+                    ['field_type' => 'date', 'label' => 'Inspector Date', 'name' => 'inspector_date'],
+                ],
+            ],
+            [
+                'name' => 'Material / Equipment Defect Report (OGE)',
+                'category' => 'Aviation - OGE Quality',
+                'description' => 'Oil, Gas & Energy – Defect Report for materials and equipment.',
+                'fields' => [
+                    ['field_type' => 'text', 'label' => 'Report No.', 'name' => 'report_no', 'required' => true],
+                    ['field_type' => 'date', 'label' => 'Date', 'name' => 'report_date', 'required' => true],
+                    ['field_type' => 'text', 'label' => 'Item / Material', 'name' => 'item_material'],
+                    ['field_type' => 'text', 'label' => 'Serial No. (if any)', 'name' => 'serial_no'],
+                    ['field_type' => 'text', 'label' => 'Location', 'name' => 'location'],
+                    ['field_type' => 'text', 'label' => 'Reported By', 'name' => 'reported_by'],
+                    ['field_type' => 'textarea', 'label' => 'Description of Defect', 'name' => 'defect_description'],
+                    ['field_type' => 'checkbox', 'label' => 'Type of Defect', 'name' => 'defect_type', 'options' => ['Mechanical', 'Electrical', 'Corrosion', 'Leakage']],
+                    ['field_type' => 'text', 'label' => 'Other Defect Type', 'name' => 'defect_type_other', 'placeholder' => 'Other:'],
+                    ['field_type' => 'textarea', 'label' => 'Inspection Findings', 'name' => 'inspection_findings'],
+                    ['field_type' => 'radio', 'label' => 'Recommended Action', 'name' => 'recommended_action', 'options' => ['Repair', 'Replace', 'Return to Supplier', 'Quarantine']],
+                    ['field_type' => 'text', 'label' => 'Other Action', 'name' => 'recommended_action_other', 'placeholder' => 'Other:'],
+                    ['field_type' => 'text', 'label' => 'Responsible Person / Dept Name', 'name' => 'responsible_person_name'],
+                    ['field_type' => 'signature', 'label' => 'Responsible Person Signature', 'name' => 'responsible_signature'],
+                    ['field_type' => 'date', 'label' => 'Responsible Person Date', 'name' => 'responsible_date'],
                 ],
             ],
         ];

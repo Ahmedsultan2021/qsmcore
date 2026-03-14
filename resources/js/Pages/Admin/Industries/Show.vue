@@ -1,12 +1,20 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import BaseDashboardHeader from "@/Components/BaseDashboardHeader.vue";
 import { Head, Link, router } from "@inertiajs/vue3";
+import { computed } from "vue";
 
 defineOptions({ layout: AuthenticatedLayout });
 
 const props = defineProps({
     industry: Object,
 });
+
+const navs = computed(() => [
+    { name: "Dashboard", linkName: "dashboard" },
+    { name: "Industries", linkName: "industries.index" },
+    { name: props.industry.name, linkName: "industries.show", param: props.industry.id },
+]);
 
 const deleteIndustry = () => {
     if (confirm("Are you sure you want to delete this industry?")) {
@@ -19,16 +27,14 @@ const deleteIndustry = () => {
     <Head title="Industry Details" />
 
     <div class="p-6">
-        <div class="mb-6">
-            <Link
-                :href="route('industries.index')"
-                class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
-            >
-                ← Back to Industries
-            </Link>
-        </div>
+        <BaseDashboardHeader
+            :navs="navs"
+            :title="industry.name"
+            :showButton="false"
+            :addSearchInput="false"
+        />
 
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 mt-6">
             <div class="flex justify-between items-start mb-6">
                 <div>
                     <h1 class="text-3xl font-bold text-gray-900 dark:text-white">{{ industry.name }}</h1>
@@ -47,6 +53,20 @@ const deleteIndustry = () => {
                     >
                         Delete
                     </button>
+                </div>
+            </div>
+
+            <!-- Attached Report Forms -->
+            <div v-if="industry.form_templates && industry.form_templates.length > 0" class="border-t border-gray-200 dark:border-gray-700 pt-6 mb-6">
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Attached Report Forms</h2>
+                <div class="flex flex-wrap gap-2">
+                    <span
+                        v-for="template in industry.form_templates"
+                        :key="template.id"
+                        class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                    >
+                        {{ template.name }}
+                    </span>
                 </div>
             </div>
 

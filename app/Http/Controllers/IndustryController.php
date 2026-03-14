@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\FormTemplate;
 use App\Models\Industry;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -25,7 +26,15 @@ class IndustryController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Admin/Industries/Create');
+        $formTemplates = FormTemplate::with('formTemplateFields')
+            ->orderBy('category')
+            ->orderBy('name')
+            ->get()
+            ->groupBy('category');
+
+        return Inertia::render('Admin/Industries/Create', [
+            'formTemplates' => $formTemplates,
+        ]);
     }
 
     /**
@@ -36,9 +45,18 @@ class IndustryController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'form_template_ids' => 'nullable|array',
+            'form_template_ids.*' => 'exists:form_templates,id',
         ]);
 
-        Industry::create($validated);
+        $industry = Industry::create([
+            'name' => $validated['name'],
+            'description' => $validated['description'] ?? null,
+        ]);
+
+        if (!empty($validated['form_template_ids'])) {
+            $industry->formTemplates()->attach($validated['form_template_ids']);
+        }
 
         return redirect()->route('industries.index')
             ->with('success', 'Industry created successfully');
@@ -49,7 +67,7 @@ class IndustryController extends Controller
      */
     public function show(Industry $industry)
     {
-        $industry->load(['sectors.companies']);
+        $industry->load(['sectors.companies', 'formTemplates']);
         
         return Inertia::render('Admin/Industries/Show', [
             'industry' => $industry,
@@ -61,8 +79,17 @@ class IndustryController extends Controller
      */
     public function edit(Industry $industry)
     {
+        $industry->load('formTemplates');
+
+        $formTemplates = FormTemplate::with('formTemplateFields')
+            ->orderBy('category')
+            ->orderBy('name')
+            ->get()
+            ->groupBy('category');
+
         return Inertia::render('Admin/Industries/Edit', [
             'industry' => $industry,
+            'formTemplates' => $formTemplates,
         ]);
     }
 
@@ -74,9 +101,18 @@ class IndustryController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'form_template_ids' => 'nullable|array',
+            'form_template_ids.*' => 'exists:form_templates,id',
         ]);
 
-        $industry->update($validated);
+        $industry->update([
+            'name' => $validated['name'],
+            'description' => $validated['description'] ?? null,
+        ]);
+
+        if (array_key_exists('form_template_ids', $validated)) {
+            $industry->formTemplates()->sync($validated['form_template_ids'] ?? []);
+        }
 
         return redirect()->route('industries.index')
             ->with('success', 'Industry updated successfully');

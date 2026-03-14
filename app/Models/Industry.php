@@ -23,4 +23,9 @@ class Industry extends Model
     {
         return $this->hasManyThrough(Company::class, Sector::class);
     }
+
+    public function formTemplates()
+    {
+        return $this->belongsToMany(FormTemplate::class, 'industry_form_template');
+    }
 }

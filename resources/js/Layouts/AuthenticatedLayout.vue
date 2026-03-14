@@ -310,7 +310,7 @@ const showingNavigationDropdown = ref(false);
       </div>
     </aside>
 
-    <div class="sm:ml-64 dark:bg-gray-900 bg-slate-50 min-h-screen overflow-x-hidden">
+    <div class="sm:ml-64 dark:bg-gray-900 bg-slate-50 min-h-screen overflow-x-hidden pt-24">
       <slot />
     </div>
   </div>

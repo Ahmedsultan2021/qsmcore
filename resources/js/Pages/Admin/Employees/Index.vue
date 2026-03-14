@@ -66,7 +66,7 @@ const filteredCompanies = computed(() => {
 <template>
     <Head title="Employees" />
 
-    <div class="p-6 pt-20">
+    <div class="p-6">
         <BaseDashboardHeader
             :navs="navs"
             title="Employees"

@@ -53,7 +53,7 @@ const filteredSectors = computed(() => {
 <template>
     <Head title="Companies" />
 
-    <div class="p-6 pt-20">
+    <div class="p-6">
         <BaseDashboardHeader
             :navs="navs"
             title="Companies"

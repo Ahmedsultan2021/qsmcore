@@ -125,7 +125,7 @@ class CompanyFormSubmissionController extends Controller
                 'responses' => $validated['responses'],
             ]);
             
-            return redirect()->route('companies.departments.reports.show', [$report->department->id, $report->id])
+            return redirect()->route('companies.departments.reports.show', ['department' => $report->department->id, 'report' => $report->id])
                 ->with('success', 'Form response updated successfully');
         } else {
             // Create new response
@@ -136,7 +136,7 @@ class CompanyFormSubmissionController extends Controller
                 'responses' => $validated['responses'],
             ]);
             
-            return redirect()->route('companies.departments.reports.show', [$report->department->id, $report->id])
+            return redirect()->route('companies.departments.reports.show', ['department' => $report->department->id, 'report' => $report->id])
                 ->with('success', 'Form submitted successfully');
         }
     }
@@ -173,7 +173,7 @@ class CompanyFormSubmissionController extends Controller
             ->first();
         
         if (!$response) {
-            return redirect()->route('companies.departments.reports.forms.create', [$department->id, $report->id, $form->id]);
+            return redirect()->route('companies.departments.reports.forms.create', ['department' => $department->id, 'report' => $report->id, 'form' => $form->id]);
         }
         
         return Inertia::render('Companies/FormSubmissions/Show', [

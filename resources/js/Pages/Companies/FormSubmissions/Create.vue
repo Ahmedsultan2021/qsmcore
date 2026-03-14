@@ -19,7 +19,7 @@ const submissionForm = useForm({
 });
 
 const submit = () => {
-    submissionForm.post(route("companies.departments.reports.forms.store", [props.department.id, props.report.id, props.form.id]));
+    submissionForm.post(route("companies.departments.reports.forms.store", { department: props.department.id, report: props.report.id, form: props.form.id }));
 };
 
 const getFieldValue = (fieldName) => {
@@ -51,11 +51,10 @@ const navs = computed(() => [
             :addSearchInput="false"
         />
 
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 mt-6">
-            <div class="mb-4">
-                <p class="text-sm text-gray-600 dark:text-gray-400">
-                    Report: <span class="font-medium text-gray-900 dark:text-white">{{ report.title }}</span>
-                </p>
+        <div class="bg-white dark:bg-gray-800 shadow rounded-lg border border-gray-200 dark:border-gray-700 p-6 mt-6">
+            <div class="mb-6 pb-4 border-b border-gray-200 dark:border-gray-700">
+                <p class="text-sm text-gray-500 dark:text-gray-400">Report</p>
+                <p class="font-medium text-gray-900 dark:text-white">{{ report.title }}</p>
             </div>
 
             <form @submit.prevent="submit">
@@ -224,17 +223,17 @@ const navs = computed(() => [
                     <p>No fields available in this form. Please add fields first.</p>
                 </div>
 
-                <div class="flex items-center justify-end space-x-3 mt-6">
+                <div class="flex items-center justify-end gap-3 mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
                     <Link
                         :href="route('companies.departments.reports.show', { department: department.id, report: report.id })"
-                        class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600"
+                        class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600"
                     >
                         Cancel
                     </Link>
                     <button
                         type="submit"
                         :disabled="submissionForm.processing"
-                        class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+                        class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
                     >
                         {{ submissionForm.processing ? "Submitting..." : (existingResponse ? "Update Response" : "Submit Form") }}
                     </button>

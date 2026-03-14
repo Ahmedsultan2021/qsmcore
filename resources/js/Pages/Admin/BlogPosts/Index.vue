@@ -35,6 +35,7 @@ const navs = [
         />
 
         <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden mt-6">
+            <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead class="bg-gray-50 dark:bg-gray-700">
                     <tr>
@@ -101,6 +102,7 @@ const navs = [
                     </tr>
                 </tbody>
             </table>
+            </div>
 
             <div v-if="blogPosts.links && blogPosts.links.length > 3" class="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
                 <div class="flex items-center justify-between">

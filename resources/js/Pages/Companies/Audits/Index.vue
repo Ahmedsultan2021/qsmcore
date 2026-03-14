@@ -111,6 +111,7 @@ const navs = computed(() => [
             <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white">All Audits</h2>
             </div>
+            <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead class="bg-gray-50 dark:bg-gray-700">
                     <tr>
@@ -201,6 +202,7 @@ const navs = computed(() => [
                     </tr>
                 </tbody>
             </table>
+            </div>
         </div>
     </div>
 </template>

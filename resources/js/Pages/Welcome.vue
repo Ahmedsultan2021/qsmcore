@@ -47,20 +47,8 @@ const getIndustryIcon = (name) => {
     return industryIcons.default
 }
 
-// Curated industries for display (merge DB industries with key target industries)
-const displayIndustries = computed(() => {
-    const dbIndustries = props.industries || []
-    const targetIndustries = [
-        { name: 'Aviation', description: 'Aerospace operations and maintenance' },
-        { name: 'Oil & Gas', description: 'Upstream and downstream operations' },
-        { name: 'Transportation', description: 'Fleet and logistics management' },
-        { name: 'Energy', description: 'Power generation and distribution' },
-        { name: 'Logistics', description: 'Supply chain and warehousing' }
-    ]
-    const seen = new Set(dbIndustries.map(i => i.name?.toLowerCase()))
-    const extra = targetIndustries.filter(t => !seen.has(t.name?.toLowerCase()))
-    return [...dbIndustries, ...extra]
-})
+// Industries from DB only
+const displayIndustries = computed(() => props.industries || [])
 
 const activeFeature = ref(0)
 const activeTestimonial = ref(0)

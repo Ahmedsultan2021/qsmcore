@@ -418,11 +418,11 @@ onMounted(() => {
                         From aviation and energy to logistics and manufacturing—QSMCore adapts to your industry
                     </p>
                 </div>
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
+                <div class="flex flex-wrap justify-center gap-4 sm:gap-6">
                     <div 
                         v-for="(industry, index) in displayIndustries" 
                         :key="index"
-                        class="group relative bg-white rounded-2xl p-5 sm:p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 overflow-hidden"
+                        class="group relative bg-white rounded-2xl p-5 sm:p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 overflow-hidden w-48 sm:w-56"
                     >
                         <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-slate-100 to-slate-50 rounded-bl-full opacity-60 group-hover:opacity-100 transition-opacity"></div>
                         <div class="relative">

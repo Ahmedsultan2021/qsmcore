@@ -98,7 +98,7 @@ const removeFile = () => {
                     </label>
                     <div v-if="audit.image" class="mb-2">
                         <img
-                            :src="'/storage/' + audit.image"
+                            :src="audit.image_url || ('/storage/' + audit.image)"
                             alt="Current image"
                             class="max-w-xs h-auto rounded-md"
                         />
@@ -131,7 +131,7 @@ const removeFile = () => {
                     </label>
                     <div v-if="audit.attached_file" class="mb-2">
                         <a
-                            :href="'/storage/' + audit.attached_file"
+                            :href="audit.attached_file_url || ('/storage/' + audit.attached_file)"
                             target="_blank"
                             class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm"
                         >

@@ -103,6 +103,9 @@ const clearFilters = () => {
                             Title
                         </th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                            Kind
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                             Status
                         </th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
@@ -131,6 +134,9 @@ const clearFilters = () => {
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
                             {{ report.title }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
+                            {{ (report.kind || '-').charAt(0).toUpperCase() + (report.kind || '-').slice(1) }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span :class="['px-2 py-1 text-xs font-semibold rounded-full', getStatusColor(report.status)]">

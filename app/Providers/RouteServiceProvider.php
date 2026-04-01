@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Form;
+use App\Models\Report;
+use App\Models\ReportFile;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
@@ -26,6 +29,23 @@ class RouteServiceProvider extends ServiceProvider
     {
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+        });
+
+        // Scope form binding when in report context (departments.reports.forms routes)
+        Route::bind('form', function ($value, $route) {
+            $report = $route->parameter('report');
+            if ($report instanceof Report) {
+                return $report->forms()->findOrFail($value);
+            }
+            return Form::findOrFail($value);
+        });
+
+        Route::bind('reportFile', function ($value, $route) {
+            $report = $route->parameter('report');
+            if ($report instanceof Report) {
+                return $report->reportFiles()->findOrFail($value);
+            }
+            return ReportFile::findOrFail($value);
         });
 
         $this->routes(function () {

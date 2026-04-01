@@ -45,6 +45,18 @@ class IndustrySeeder extends Seeder
                 'name' => 'Energy',
                 'description' => 'Oil, gas and renewable energy',
             ],
+            [
+                'name' => 'Aviation',
+                'description' => 'Airlines, MRO, and airport operations',
+            ],
+            [
+                'name' => 'OGE',
+                'description' => 'Oil, Gas & Energy upstream/downstream operations',
+            ],
+            [
+                'name' => 'Logistics & Transportation',
+                'description' => 'Maritime, rail, and road transport logistics',
+            ],
         ];
 
         foreach ($industries as $industry) {

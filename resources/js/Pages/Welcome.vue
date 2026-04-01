@@ -194,7 +194,7 @@ onMounted(() => {
 <template>
     <Head title="QSMCore - Quality & Safety Management" />
 
-    <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div class="min-h-screen bg-gradient-to-br from-slate-50 via-slate-50 to-brand-bg">
         <!-- Navigation -->
         <nav :class="['bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-200/50 sticky top-0 z-50 transition-all duration-300', isScrolled ? 'bg-white/95 shadow-md' : '']">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -202,7 +202,7 @@ onMounted(() => {
                     <div class="flex items-center space-x-2 sm:space-x-3 min-w-0">
                         <img src="/logos/lo.png" class="h-16 sm:h-20 w-auto flex-shrink-0" alt="QSMCore Logo" />
                         <div class="min-w-0">
-                            <h1 class="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent truncate">
+                            <h1 class="text-xl sm:text-2xl font-bold bg-gradient-to-r from-brand-navy to-brand-blue bg-clip-text text-transparent truncate">
                                 QSMCore
                             </h1>
                             <p class="text-xs text-gray-500 hidden sm:block">Quality & Safety Management</p>
@@ -210,24 +210,24 @@ onMounted(() => {
                     </div>
                     <!-- Desktop nav -->
                     <div class="hidden lg:flex items-center space-x-4 xl:space-x-6">
-                        <Link href="/" class="text-gray-700 hover:text-blue-600 font-medium transition-colors whitespace-nowrap">
+                        <Link href="/" class="text-gray-700 hover:text-brand-blue font-medium transition-colors whitespace-nowrap">
                             Home
                         </Link>
                         <Link 
                             :href="route('blog.index')" 
-                            class="text-gray-700 hover:text-blue-600 font-medium transition-colors whitespace-nowrap"
+                            class="text-gray-700 hover:text-brand-blue font-medium transition-colors whitespace-nowrap"
                         >
                             Blog
                         </Link>
                         <Link 
                             :href="route('login')" 
-                            class="text-gray-700 hover:text-blue-600 font-medium transition-colors whitespace-nowrap"
+                            class="text-gray-700 hover:text-brand-blue font-medium transition-colors whitespace-nowrap"
                         >
                             Admin Portal
                         </Link>
                         <Link 
                             :href="route('companies.login')" 
-                            class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 xl:px-6 py-2 xl:py-2.5 rounded-lg hover:from-blue-700 hover:to-indigo-700 font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 whitespace-nowrap text-sm xl:text-base"
+                            class="bg-gradient-to-r from-brand-navy to-brand-blue text-white px-4 xl:px-6 py-2 xl:py-2.5 rounded-lg hover:from-brand-blue hover:to-brand-sky font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 whitespace-nowrap text-sm xl:text-base"
                         >
                             Company Portal
                         </Link>
@@ -235,7 +235,7 @@ onMounted(() => {
                     <!-- Mobile menu button -->
                     <button
                         type="button"
-                        class="lg:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        class="lg:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-sky"
                         aria-label="Toggle menu"
                         @click="mobileMenuOpen = !mobileMenuOpen"
                     >
@@ -257,10 +257,10 @@ onMounted(() => {
                     leave-to-class="opacity-0 -translate-y-2"
                 >
                     <div v-show="mobileMenuOpen" class="lg:hidden border-t border-gray-200 py-4 space-y-1">
-                        <Link href="/" class="block py-2 px-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium" @click="mobileMenuOpen = false">Home</Link>
-                        <Link :href="route('blog.index')" class="block py-2 px-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium" @click="mobileMenuOpen = false">Blog</Link>
-                        <Link :href="route('login')" class="block py-2 px-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium" @click="mobileMenuOpen = false">Admin Portal</Link>
-                        <Link :href="route('companies.login')" class="block py-3 px-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg font-semibold text-center hover:from-blue-700 hover:to-indigo-700" @click="mobileMenuOpen = false">Company Portal</Link>
+                        <Link href="/" class="block py-2 px-3 text-gray-700 hover:text-brand-blue hover:bg-slate-50 rounded-lg font-medium" @click="mobileMenuOpen = false">Home</Link>
+                        <Link :href="route('blog.index')" class="block py-2 px-3 text-gray-700 hover:text-brand-blue hover:bg-slate-50 rounded-lg font-medium" @click="mobileMenuOpen = false">Blog</Link>
+                        <Link :href="route('login')" class="block py-2 px-3 text-gray-700 hover:text-brand-blue hover:bg-slate-50 rounded-lg font-medium" @click="mobileMenuOpen = false">Admin Portal</Link>
+                        <Link :href="route('companies.login')" class="block py-3 px-3 bg-gradient-to-r from-brand-navy to-brand-blue text-white rounded-lg font-semibold text-center hover:from-brand-blue hover:to-brand-sky" @click="mobileMenuOpen = false">Company Portal</Link>
                     </div>
                 </Transition>
             </div>
@@ -269,56 +269,148 @@ onMounted(() => {
         <!-- Hero Section -->
         <section class="relative overflow-hidden">
             <div class="absolute inset-0 bg-grid-pattern opacity-5"></div>
-            <div class="absolute top-0 right-0 w-96 h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
-            <div class="absolute bottom-0 left-0 w-96 h-96 bg-indigo-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse delay-1000"></div>
-            
-            <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-32">
-                <div class="text-center">
-                    <div class="inline-block mb-4 sm:mb-6">
-                        <span class="px-3 py-1.5 sm:px-4 sm:py-2 bg-blue-100 text-blue-800 rounded-full text-xs sm:text-sm font-semibold">
-                            From Reporting to Insight – One Platform for Safety & Quality Across Industries
-                        </span>
-                    </div>
-                    <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-4 sm:mb-6 leading-tight">
-                        <span class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                            Quality & Safety
-                        </span>
-                        <br>
-                        <span class="text-gray-900">Management System</span>
-                    </h1>
-                    <p class="text-base sm:text-xl md:text-2xl text-gray-600 mb-3 sm:mb-4 max-w-3xl mx-auto leading-relaxed px-1 font-medium">
-                        QSMCore is an integrated Safety and Quality Management platform that centralizes reporting, risk management, audits, and compliance monitoring.
-                    </p>
-                    <p class="text-base sm:text-lg text-gray-600 mb-3 sm:mb-4 max-w-3xl mx-auto leading-relaxed px-1">
-                        Designed for aviation and other high-risk industries (Oil and Gas, transportation), it helps organizations transform operational data into actionable safety and quality improvements.
-                    </p>
-                    <p class="text-sm sm:text-base text-gray-500 mb-8 sm:mb-12 max-w-2xl mx-auto px-1">
-                        Built with operational environments in mind—structured reporting, risk management, audit tracking, and performance dashboards that help you monitor safety events and ensure regulatory compliance.
-                    </p>
-                    <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center px-2">
-                        <Link
-                            :href="route('login')"
-                            class="w-full sm:w-auto group relative px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold text-base sm:text-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-2xl hover:shadow-blue-500/50 transform hover:-translate-y-1 overflow-hidden text-center"
-                        >
-                            <span class="relative z-10 flex items-center justify-center">
-                                Admin Portal
-                                <svg class="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                                </svg>
+            <div class="absolute top-[-6rem] right-[-6rem] w-[28rem] h-[28rem] bg-brand-sky rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-pulse"></div>
+            <div class="absolute bottom-[-8rem] left-[-8rem] w-[32rem] h-[32rem] bg-brand-blue rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-pulse delay-1000"></div>
+
+            <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20 lg:py-24">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+                    <!-- Copy -->
+                    <div class="lg:col-span-6">
+                        <div class="inline-flex items-center gap-2 rounded-full bg-white/70 backdrop-blur px-3 py-1.5 border border-brand-border shadow-sm">
+                            <span class="inline-flex h-2 w-2 rounded-full bg-brand-sky"></span>
+                            <span class="text-xs sm:text-sm font-semibold text-brand-navy">
+                                From Reporting to Insight — Safety & Quality in one platform
                             </span>
-                            <div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>
-                        </Link>
-                        <Link
-                            :href="route('companies.login')"
-                            class="w-full sm:w-auto group px-6 sm:px-8 py-3 sm:py-4 bg-white text-blue-600 border-2 border-blue-600 rounded-xl font-bold text-base sm:text-lg hover:bg-blue-50 transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 text-center"
-                        >
-                            <span class="flex items-center justify-center">
+                        </div>
+
+                        <h1 class="mt-5 text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-brand-text">
+                            Streamline your
+                            <span class="block bg-gradient-to-r from-brand-navy via-brand-blue to-brand-sky bg-clip-text text-transparent">
+                                Quality & Safety Management
+                            </span>
+                        </h1>
+
+                        <p class="mt-5 text-base sm:text-lg text-gray-600 leading-relaxed max-w-xl">
+                            QSMCore centralizes reporting, risk management, audits, and compliance monitoring—built for operational teams in aviation and other high‑risk industries.
+                        </p>
+
+                        <div class="mt-7 flex flex-col sm:flex-row gap-3 sm:gap-4">
+                            <Link
+                                :href="route('companies.login')"
+                                class="group inline-flex items-center justify-center px-6 py-3.5 bg-gradient-to-r from-brand-navy to-brand-blue text-white rounded-xl font-bold hover:from-brand-blue hover:to-brand-sky transition-all duration-300 shadow-xl hover:shadow-brand-sky/30 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-brand-sky focus:ring-offset-2"
+                            >
                                 Company Portal
-                                <svg class="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="ml-2 w-5 h-5 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                                 </svg>
-                            </span>
-                        </Link>
+                            </Link>
+                            <Link
+                                :href="route('login')"
+                                class="inline-flex items-center justify-center px-6 py-3.5 bg-white/80 backdrop-blur text-brand-navy border border-brand-border rounded-xl font-bold hover:bg-white transition-all duration-300 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-brand-sky focus:ring-offset-2"
+                            >
+                                Admin Portal
+                            </Link>
+                        </div>
+
+                        <div class="mt-8 grid grid-cols-3 gap-4 max-w-xl">
+                            <div class="rounded-xl bg-white/70 backdrop-blur border border-brand-border px-4 py-3">
+                                <div class="text-xl font-extrabold text-brand-navy">100+</div>
+                                <div class="text-xs text-gray-600">Companies</div>
+                            </div>
+                            <div class="rounded-xl bg-white/70 backdrop-blur border border-brand-border px-4 py-3">
+                                <div class="text-xl font-extrabold text-brand-navy">50+</div>
+                                <div class="text-xs text-gray-600">Industries</div>
+                            </div>
+                            <div class="rounded-xl bg-white/70 backdrop-blur border border-brand-border px-4 py-3">
+                                <div class="text-xl font-extrabold text-brand-navy">99.9%</div>
+                                <div class="text-xs text-gray-600">Uptime</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visual -->
+                    <div class="lg:col-span-6">
+                        <div class="relative mx-auto max-w-xl">
+                            <div class="absolute inset-0 -z-10 bg-gradient-to-tr from-brand-sky/20 via-brand-blue/10 to-brand-navy/10 blur-2xl rounded-[2.5rem]"></div>
+
+                            <div class="rounded-[2rem] bg-white/80 backdrop-blur border border-brand-border shadow-2xl overflow-hidden">
+                                <div class="flex items-center justify-between px-5 py-4 border-b border-brand-border">
+                                    <div class="flex items-center gap-2">
+                                        <span class="h-2.5 w-2.5 rounded-full bg-red-400/80"></span>
+                                        <span class="h-2.5 w-2.5 rounded-full bg-yellow-400/80"></span>
+                                        <span class="h-2.5 w-2.5 rounded-full bg-green-400/80"></span>
+                                    </div>
+                                    <div class="text-xs font-semibold text-gray-600">Reports Overview</div>
+                                    <div class="h-6 w-6 rounded-lg bg-brand-bg border border-brand-border"></div>
+                                </div>
+
+                                <div class="grid grid-cols-12 gap-0">
+                                    <div class="col-span-4 bg-brand-navy text-white p-5">
+                                        <div class="text-xs text-white/70 font-semibold">Dashboard</div>
+                                        <div class="mt-4 space-y-2.5">
+                                            <div class="h-8 rounded-lg bg-white/10 border border-white/10"></div>
+                                            <div class="h-8 rounded-lg bg-white/10 border border-white/10"></div>
+                                            <div class="h-8 rounded-lg bg-white/15 border border-white/15"></div>
+                                            <div class="h-8 rounded-lg bg-white/10 border border-white/10"></div>
+                                        </div>
+                                        <div class="mt-6 rounded-xl bg-white/10 border border-white/10 p-3">
+                                            <div class="text-[10px] text-white/70">Compliance</div>
+                                            <div class="mt-2 h-2 rounded-full bg-white/20">
+                                                <div class="h-2 rounded-full bg-brand-sky" style="width: 78%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-span-8 p-5">
+                                        <div class="grid grid-cols-2 gap-4">
+                                            <div class="rounded-xl border border-brand-border bg-white p-4">
+                                                <div class="text-xs font-semibold text-gray-600">Last 12 months</div>
+                                                <div class="mt-3 h-20 rounded-lg bg-gradient-to-tr from-brand-bg to-white border border-brand-border"></div>
+                                                <div class="mt-3 flex items-end gap-1.5 h-10">
+                                                    <div class="w-2.5 rounded bg-brand-sky/60" style="height: 45%"></div>
+                                                    <div class="w-2.5 rounded bg-brand-sky/70" style="height: 65%"></div>
+                                                    <div class="w-2.5 rounded bg-brand-sky/80" style="height: 55%"></div>
+                                                    <div class="w-2.5 rounded bg-brand-sky/90" style="height: 78%"></div>
+                                                    <div class="w-2.5 rounded bg-brand-blue/80" style="height: 70%"></div>
+                                                    <div class="w-2.5 rounded bg-brand-navy/80" style="height: 82%"></div>
+                                                </div>
+                                            </div>
+                                            <div class="rounded-xl border border-brand-border bg-white p-4">
+                                                <div class="text-xs font-semibold text-gray-600">Performance</div>
+                                                <div class="mt-3 grid grid-cols-3 gap-2 items-end h-28">
+                                                    <div class="rounded-lg bg-brand-blue/80" style="height: 55%"></div>
+                                                    <div class="rounded-lg bg-brand-sky/80" style="height: 72%"></div>
+                                                    <div class="rounded-lg bg-brand-navy/80" style="height: 62%"></div>
+                                                    <div class="rounded-lg bg-brand-sky/70" style="height: 45%"></div>
+                                                    <div class="rounded-lg bg-brand-blue/70" style="height: 68%"></div>
+                                                    <div class="rounded-lg bg-brand-navy/70" style="height: 52%"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="mt-4 grid grid-cols-3 gap-4">
+                                            <div class="rounded-xl border border-brand-border bg-white p-4">
+                                                <div class="text-[11px] text-gray-600 font-semibold">Incidents</div>
+                                                <div class="mt-2 text-2xl font-extrabold text-brand-navy">94%</div>
+                                                <div class="mt-2 h-2 rounded-full bg-brand-bg">
+                                                    <div class="h-2 rounded-full bg-brand-sky" style="width: 94%"></div>
+                                                </div>
+                                            </div>
+                                            <div class="rounded-xl border border-brand-border bg-white p-4">
+                                                <div class="text-[11px] text-gray-600 font-semibold">Avg response</div>
+                                                <div class="mt-2 text-2xl font-extrabold text-brand-navy">2.3h</div>
+                                                <div class="mt-2 text-xs text-gray-500">Real‑time alerts</div>
+                                            </div>
+                                            <div class="rounded-xl border border-brand-border bg-white p-4">
+                                                <div class="text-[11px] text-gray-600 font-semibold">Compliance</div>
+                                                <div class="mt-2 text-2xl font-extrabold text-brand-navy">99.8%</div>
+                                                <div class="mt-2 text-xs text-gray-500">Audit trail ready</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -330,7 +422,7 @@ onMounted(() => {
                 <div class="text-center mb-12 sm:mb-16">
                     <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 px-2">
                         Trusted Across
-                        <span class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                        <span class="bg-gradient-to-r from-brand-navy to-brand-blue bg-clip-text text-transparent">
                             Multiple Industries
                         </span>
                     </h2>
@@ -344,9 +436,9 @@ onMounted(() => {
                         :key="index"
                         class="group relative bg-white rounded-2xl p-5 sm:p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 overflow-hidden"
                     >
-                        <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-bl-full opacity-60 group-hover:opacity-100 transition-opacity"></div>
+                        <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-slate-100 to-slate-50 rounded-bl-full opacity-60 group-hover:opacity-100 transition-opacity"></div>
                         <div class="relative">
-                            <div class="bg-gradient-to-br from-blue-600 to-indigo-600 text-white rounded-xl w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform">
+                            <div class="bg-gradient-to-br from-brand-navy to-brand-blue text-white rounded-xl w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform">
                                 <svg class="w-7 h-7 sm:w-8 sm:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="getIndustryIcon(industry.name)" />
                                 </svg>
@@ -360,11 +452,11 @@ onMounted(() => {
         </section>
 
         <!-- About QSMCore Section -->
-        <section class="py-16 sm:py-24 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+        <section class="py-16 sm:py-24 bg-gradient-to-br from-slate-50 via-slate-50 to-brand-bg">
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-10">
                     <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-                        What is <span class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">QSMCore</span>?
+                        What is <span class="bg-gradient-to-r from-brand-navy to-brand-blue bg-clip-text text-transparent">QSMCore</span>?
                     </h2>
                 </div>
                 <div class="bg-white/90 backdrop-blur-sm rounded-2xl p-6 sm:p-10 shadow-xl border border-gray-100 space-y-6 text-gray-700 leading-relaxed">
@@ -390,7 +482,7 @@ onMounted(() => {
                 <div class="text-center mb-12 sm:mb-20">
                     <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 px-2">
                         Powerful Features for
-                        <span class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                        <span class="bg-gradient-to-r from-brand-navy to-brand-blue bg-clip-text text-transparent">
                             Modern Organizations
                         </span>
                     </h2>
@@ -423,12 +515,12 @@ onMounted(() => {
         </section>
 
         <!-- How It Works Section -->
-        <section class="py-16 sm:py-24 bg-gradient-to-br from-gray-50 to-blue-50">
+        <section class="py-16 sm:py-24 bg-gradient-to-br from-gray-50 to-brand-bg">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-12 sm:mb-20">
                     <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 px-2">
                         How It
-                        <span class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                        <span class="bg-gradient-to-r from-brand-navy to-brand-blue bg-clip-text text-transparent">
                             Works
                         </span>
                     </h2>
@@ -444,12 +536,12 @@ onMounted(() => {
                         class="relative"
                     >
                         <div class="relative bg-white rounded-2xl p-6 sm:p-8 shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
-                            <div class="absolute -top-6 -left-6 w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                            <div class="absolute -top-6 -left-6 w-16 h-16 bg-gradient-to-br from-brand-navy to-brand-blue rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg">
                                 {{ step.step }}
                             </div>
                             <div class="mt-4 mb-6">
-                                <div class="bg-gradient-to-br from-blue-100 to-indigo-100 rounded-xl w-16 h-16 flex items-center justify-center mb-6">
-                                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div class="bg-gradient-to-br from-slate-100 to-slate-50 rounded-xl w-16 h-16 flex items-center justify-center mb-6">
+                                    <svg class="w-8 h-8 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="step.icon" />
                                     </svg>
                                 </div>
@@ -459,8 +551,8 @@ onMounted(() => {
                                 </p>
                             </div>
                         </div>
-                        <div v-if="index < howItWorks.length - 1" class="hidden md:block absolute top-1/2 -right-4 w-8 h-0.5 bg-gradient-to-r from-blue-400 to-indigo-400 transform -translate-y-1/2 z-0">
-                            <div class="absolute right-0 top-1/2 transform -translate-y-1/2 w-3 h-3 bg-indigo-400 rounded-full"></div>
+                        <div v-if="index < howItWorks.length - 1" class="hidden md:block absolute top-1/2 -right-4 w-8 h-0.5 bg-gradient-to-r from-brand-sky to-brand-blue transform -translate-y-1/2 z-0">
+                            <div class="absolute right-0 top-1/2 transform -translate-y-1/2 w-3 h-3 bg-brand-blue rounded-full"></div>
                         </div>
                     </div>
                 </div>
@@ -474,7 +566,7 @@ onMounted(() => {
                     <div>
                         <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 sm:mb-6 px-1">
                             Why Choose
-                            <span class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                            <span class="bg-gradient-to-r from-brand-navy to-brand-blue bg-clip-text text-transparent">
                                 QSMCore?
                             </span>
                         </h2>
@@ -518,7 +610,7 @@ onMounted(() => {
                         </div>
                     </div>
                     <div class="relative order-first lg:order-none">
-                        <div class="bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-2xl">
+                        <div class="bg-gradient-to-br from-brand-navy to-brand-blue rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-2xl">
                             <div class="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6">
                                 <div class="flex items-center justify-between mb-4">
                                     <span class="text-white/80 text-sm">Incidents Resolved</span>
@@ -563,12 +655,12 @@ onMounted(() => {
         </section>
 
         <!-- Testimonials Section -->
-        <section class="py-16 sm:py-24 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+        <section class="py-16 sm:py-24 bg-gradient-to-br from-slate-50 via-brand-bg to-slate-50">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-12 sm:mb-20">
                     <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 px-2">
                         Trusted by
-                        <span class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                        <span class="bg-gradient-to-r from-brand-navy to-brand-blue bg-clip-text text-transparent">
                             Industry Leaders
                         </span>
                     </h2>
@@ -594,13 +686,13 @@ onMounted(() => {
                                         "{{ testimonial.content }}"
                                     </p>
                                     <div class="flex items-center space-x-4">
-                                        <div class="w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                                        <div class="w-16 h-16 bg-gradient-to-br from-brand-navy to-brand-blue rounded-full flex items-center justify-center text-white text-2xl font-bold">
                                             {{ testimonial.name.charAt(0) }}
                                         </div>
                                         <div>
                                             <div class="font-bold text-gray-900 text-lg">{{ testimonial.name }}</div>
                                             <div class="text-gray-600">{{ testimonial.role }}</div>
-                                            <div class="text-blue-600 font-semibold">{{ testimonial.company }}</div>
+                                            <div class="text-brand-blue font-semibold">{{ testimonial.company }}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -612,7 +704,7 @@ onMounted(() => {
                             v-for="(testimonial, index) in testimonials"
                             :key="index"
                             @click="activeTestimonial = index"
-                            :class="['w-3 h-3 rounded-full transition-all duration-300', activeTestimonial === index ? 'bg-blue-600 w-8' : 'bg-gray-300']"
+                            :class="['w-3 h-3 rounded-full transition-all duration-300', activeTestimonial === index ? 'bg-brand-blue w-8' : 'bg-gray-300']"
                         ></button>
                     </div>
                 </div>
@@ -647,8 +739,8 @@ onMounted(() => {
                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                             />
                         </div>
-                        <div v-else class="h-48 bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center">
-                            <svg class="w-16 h-16 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div v-else class="h-48 bg-gradient-to-br from-slate-100 to-slate-50 flex items-center justify-center">
+                            <svg class="w-16 h-16 text-brand-sky" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
                         </div>
@@ -658,7 +750,7 @@ onMounted(() => {
                                 <span class="mx-2">•</span>
                                 <span>{{ post.user?.name || 'Admin' }}</span>
                             </div>
-                            <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors line-clamp-2">
+                            <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-brand-blue transition-colors line-clamp-2">
                                 {{ post.title }}
                             </h3>
                             <p v-if="post.excerpt" class="text-gray-600 mb-4 line-clamp-3">
@@ -669,7 +761,7 @@ onMounted(() => {
                             </p>
                             <Link
                                 href="#"
-                                class="inline-flex items-center text-blue-600 font-semibold hover:text-blue-700 group-hover:translate-x-1 transition-transform"
+                                class="inline-flex items-center text-brand-blue font-semibold hover:text-brand-navy group-hover:translate-x-1 transition-transform"
                             >
                                 Read More
                                 <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -683,24 +775,24 @@ onMounted(() => {
         </section>
 
         <!-- Stats Section -->
-        <section class="py-12 sm:py-20 bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+        <section class="py-12 sm:py-20 bg-gradient-to-r from-brand-navy to-brand-blue text-white">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8 text-center">
                     <div class="py-4">
                         <div class="text-2xl sm:text-4xl md:text-5xl font-bold mb-1 sm:mb-2">100+</div>
-                        <div class="text-blue-100 text-sm sm:text-base">Companies</div>
+                        <div class="text-white/80 text-sm sm:text-base">Companies</div>
                     </div>
                     <div class="py-4">
                         <div class="text-2xl sm:text-4xl md:text-5xl font-bold mb-1 sm:mb-2">50+</div>
-                        <div class="text-blue-100 text-sm sm:text-base">Industries</div>
+                        <div class="text-white/80 text-sm sm:text-base">Industries</div>
                     </div>
                     <div class="py-4">
                         <div class="text-2xl sm:text-4xl md:text-5xl font-bold mb-1 sm:mb-2">1000+</div>
-                        <div class="text-blue-100 text-sm sm:text-base">Active Users</div>
+                        <div class="text-white/80 text-sm sm:text-base">Active Users</div>
                     </div>
                     <div class="py-4">
                         <div class="text-2xl sm:text-4xl md:text-5xl font-bold mb-1 sm:mb-2">99.9%</div>
-                        <div class="text-blue-100 text-sm sm:text-base">Uptime</div>
+                        <div class="text-white/80 text-sm sm:text-base">Uptime</div>
                     </div>
                 </div>
             </div>

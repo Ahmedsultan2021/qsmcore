@@ -105,6 +105,8 @@ class CompanyReportController extends Controller
         
         $validated = $request->validate([
             'title' => 'required|string|max:255',
+            'kind' => 'required|string|max:255',
+            'kind_other' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'status' => 'required|in:draft,submitted,reviewed,approved,rejected',
             'report_date' => 'required|date',
@@ -112,11 +114,20 @@ class CompanyReportController extends Controller
             'forms.*' => 'exists:forms,id',
         ]);
 
+        if (($validated['kind'] ?? null) === 'other') {
+            $validated['kind'] = $validated['kind_other'] ?? '';
+        }
+        $validated['kind'] = trim((string) ($validated['kind'] ?? ''));
+        if ($validated['kind'] === '') {
+            return back()->withErrors(['kind' => 'Kind is required.'])->onlyInput();
+        }
+
         $validated['department_id'] = $department->id;
         $validated['created_by'] = $authEmployee->id;
 
         $forms = $validated['forms'] ?? [];
         unset($validated['forms']);
+        unset($validated['kind_other']);
 
         $report = Report::create($validated);
         
@@ -141,7 +152,13 @@ class CompanyReportController extends Controller
         }
         
         // Report is already scoped to department via route model binding
-        $report->load(['department.company.sector.industry', 'creator', 'forms', 'formResponses']);
+        $report->load([
+            'department.company.sector.industry',
+            'creator',
+            'forms',
+            'formResponses',
+            'reportFiles.uploader',
+        ]);
         
         // Get form submission status for current user
         $authEmployee = Auth::guard('employee')->user();
@@ -198,6 +215,8 @@ class CompanyReportController extends Controller
         // Report is already scoped to department via route model binding
         $validated = $request->validate([
             'title' => 'required|string|max:255',
+            'kind' => 'required|string|max:255',
+            'kind_other' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'status' => 'required|in:draft,submitted,reviewed,approved,rejected',
             'report_date' => 'required|date',
@@ -205,8 +224,17 @@ class CompanyReportController extends Controller
             'forms.*' => 'exists:forms,id',
         ]);
 
+        if (($validated['kind'] ?? null) === 'other') {
+            $validated['kind'] = $validated['kind_other'] ?? '';
+        }
+        $validated['kind'] = trim((string) ($validated['kind'] ?? ''));
+        if ($validated['kind'] === '') {
+            return back()->withErrors(['kind' => 'Kind is required.'])->onlyInput();
+        }
+
         $forms = $validated['forms'] ?? [];
         unset($validated['forms']);
+        unset($validated['kind_other']);
 
         $report->update($validated);
         

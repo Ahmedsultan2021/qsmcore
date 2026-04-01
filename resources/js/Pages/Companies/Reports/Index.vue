@@ -80,6 +80,9 @@ const navs = computed(() => [
                             Title
                         </th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                            Kind
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                             Status
                         </th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
@@ -100,6 +103,9 @@ const navs = computed(() => [
                     <tr v-for="report in reports.data" :key="report.id" class="hover:bg-gray-50 dark:hover:bg-gray-700">
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
                             {{ report.title }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
+                            {{ (report.kind || '-').charAt(0).toUpperCase() + (report.kind || '-').slice(1) }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span :class="['px-2 py-1 text-xs font-semibold rounded-full', getStatusColor(report.status)]">
@@ -174,19 +180,29 @@ const navs = computed(() => [
                         </div>
                         <div>
                             <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                                <Link
-                                    v-for="link in reports.links"
-                                    :key="link.label"
-                                    :href="link.url || '#'"
-                                    v-html="link.label"
-                                    :class="[
-                                        'relative inline-flex items-center px-4 py-2 border text-sm font-medium',
-                                        link.active
-                                            ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
-                                            : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50',
-                                        link.url ? '' : 'cursor-not-allowed opacity-50'
-                                    ]"
-                                ></Link>
+                                <template v-for="link in reports.links" :key="link.label">
+                                    <Link
+                                        v-if="link.url"
+                                        :href="link.url"
+                                        :class="[
+                                            'relative inline-flex items-center px-4 py-2 border text-sm font-medium',
+                                            link.active
+                                                ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
+                                                : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+                                        ]"
+                                    >
+                                        <span v-html="link.label"></span>
+                                    </Link>
+                                    <span
+                                        v-else
+                                        :class="[
+                                            'relative inline-flex items-center px-4 py-2 border text-sm font-medium cursor-not-allowed opacity-50',
+                                            'bg-white border-gray-300 text-gray-500'
+                                        ]"
+                                    >
+                                        <span v-html="link.label"></span>
+                                    </span>
+                                </template>
                             </nav>
                         </div>
                     </div>

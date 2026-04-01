@@ -17,6 +17,22 @@ const props = defineProps({
     impactLevels: Object,
 });
 
+const probabilityLevels = {
+    5: "Frequent",
+    4: "Occasional",
+    3: "Remote",
+    2: "Improbable",
+    1: "Extremely improbable",
+};
+
+const severityLevels = {
+    5: "Catastrophic (A)",
+    4: "Hazardous (B)",
+    3: "Major (C)",
+    2: "Minor (D)",
+    1: "Negligible (E)",
+};
+
 const form = useForm({
     department_id: props.risk.department_id || "",
     risk_owner_id: props.risk.risk_owner_id || null,
@@ -214,7 +230,7 @@ const residualRiskLevel = computed(() => {
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label for="likelihood" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Likelihood <span class="text-red-500">*</span>
+                                Risk probability <span class="text-red-500">*</span>
                             </label>
                             <select
                                 id="likelihood"
@@ -222,8 +238,8 @@ const residualRiskLevel = computed(() => {
                                 required
                                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
                             >
-                                <option v-for="(label, value) in likelihoodLevels" :key="value" :value="parseInt(value)">
-                                    {{ value }} - {{ label }}
+                                <option v-for="value in [5,4,3,2,1]" :key="value" :value="value">
+                                    {{ value }} - {{ probabilityLevels[value] }}
                                 </option>
                             </select>
                             <div v-if="form.errors.likelihood" class="mt-1 text-sm text-red-600">{{ form.errors.likelihood }}</div>
@@ -231,7 +247,7 @@ const residualRiskLevel = computed(() => {
 
                         <div>
                             <label for="impact" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Impact <span class="text-red-500">*</span>
+                                Risk severity <span class="text-red-500">*</span>
                             </label>
                             <select
                                 id="impact"
@@ -239,8 +255,8 @@ const residualRiskLevel = computed(() => {
                                 required
                                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
                             >
-                                <option v-for="(label, value) in impactLevels" :key="value" :value="parseInt(value)">
-                                    {{ value }} - {{ label }}
+                                <option v-for="value in [5,4,3,2,1]" :key="value" :value="value">
+                                    {{ value }} - {{ severityLevels[value] }}
                                 </option>
                             </select>
                             <div v-if="form.errors.impact" class="mt-1 text-sm text-red-600">{{ form.errors.impact }}</div>
@@ -356,7 +372,7 @@ const residualRiskLevel = computed(() => {
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label for="residual_likelihood" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Residual Likelihood
+                                Residual risk probability
                             </label>
                             <select
                                 id="residual_likelihood"
@@ -364,8 +380,8 @@ const residualRiskLevel = computed(() => {
                                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
                             >
                                 <option :value="null">Not assessed yet</option>
-                                <option v-for="(label, value) in likelihoodLevels" :key="value" :value="parseInt(value)">
-                                    {{ value }} - {{ label }}
+                                <option v-for="value in [5,4,3,2,1]" :key="value" :value="value">
+                                    {{ value }} - {{ probabilityLevels[value] }}
                                 </option>
                             </select>
                             <div v-if="form.errors.residual_likelihood" class="mt-1 text-sm text-red-600">{{ form.errors.residual_likelihood }}</div>
@@ -373,7 +389,7 @@ const residualRiskLevel = computed(() => {
 
                         <div>
                             <label for="residual_impact" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Residual Impact
+                                Residual risk severity
                             </label>
                             <select
                                 id="residual_impact"
@@ -381,8 +397,8 @@ const residualRiskLevel = computed(() => {
                                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
                             >
                                 <option :value="null">Not assessed yet</option>
-                                <option v-for="(label, value) in impactLevels" :key="value" :value="parseInt(value)">
-                                    {{ value }} - {{ label }}
+                                <option v-for="value in [5,4,3,2,1]" :key="value" :value="value">
+                                    {{ value }} - {{ severityLevels[value] }}
                                 </option>
                             </select>
                             <div v-if="form.errors.residual_impact" class="mt-1 text-sm text-red-600">{{ form.errors.residual_impact }}</div>

@@ -14,6 +14,22 @@ const props = defineProps({
     impactLevels: Object,
 });
 
+const probabilityLevels = {
+    5: "Frequent",
+    4: "Occasional",
+    3: "Remote",
+    2: "Improbable",
+    1: "Extremely improbable",
+};
+
+const severityLevels = {
+    5: "Catastrophic (A)",
+    4: "Hazardous (B)",
+    3: "Major (C)",
+    2: "Minor (D)",
+    1: "Negligible (E)",
+};
+
 const getRiskLevelColor = (score) => {
     if (score >= 15) return { bg: 'bg-red-100 dark:bg-red-900/30', text: 'text-red-800 dark:text-red-300', level: 'Critical' };
     if (score >= 10) return { bg: 'bg-orange-100 dark:bg-orange-900/30', text: 'text-orange-800 dark:text-orange-300', level: 'High' };
@@ -155,7 +171,7 @@ const isOverdue = computed(() => {
                             
                             <div class="space-y-3">
                                 <div>
-                                    <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Likelihood</label>
+                                    <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Risk probability</label>
                                     <div class="flex items-center">
                                         <div class="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-2">
                                             <div :style="`width: ${risk.likelihood * 20}%`" class="bg-blue-600 h-2 rounded-full"></div>
@@ -165,12 +181,12 @@ const isOverdue = computed(() => {
                                         </span>
                                     </div>
                                     <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                        {{ likelihoodLevels[risk.likelihood] }}
+                                        {{ probabilityLevels[risk.likelihood] || likelihoodLevels?.[risk.likelihood] }}
                                     </p>
                                 </div>
 
                                 <div>
-                                    <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Impact</label>
+                                    <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Risk severity</label>
                                     <div class="flex items-center">
                                         <div class="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-2">
                                             <div :style="`width: ${risk.impact * 20}%`" class="bg-purple-600 h-2 rounded-full"></div>
@@ -180,7 +196,7 @@ const isOverdue = computed(() => {
                                         </span>
                                     </div>
                                     <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                        {{ impactLevels[risk.impact] }}
+                                        {{ severityLevels[risk.impact] || impactLevels?.[risk.impact] }}
                                     </p>
                                 </div>
 
@@ -204,7 +220,7 @@ const isOverdue = computed(() => {
                             
                             <div class="space-y-3">
                                 <div>
-                                    <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Likelihood</label>
+                                    <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Risk probability</label>
                                     <div class="flex items-center">
                                         <div class="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-2">
                                             <div :style="`width: ${risk.residual_likelihood * 20}%`" class="bg-blue-600 h-2 rounded-full"></div>
@@ -214,12 +230,12 @@ const isOverdue = computed(() => {
                                         </span>
                                     </div>
                                     <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                        {{ likelihoodLevels[risk.residual_likelihood] }}
+                                        {{ probabilityLevels[risk.residual_likelihood] || likelihoodLevels?.[risk.residual_likelihood] }}
                                     </p>
                                 </div>
 
                                 <div>
-                                    <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Impact</label>
+                                    <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Risk severity</label>
                                     <div class="flex items-center">
                                         <div class="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-2">
                                             <div :style="`width: ${risk.residual_impact * 20}%`" class="bg-purple-600 h-2 rounded-full"></div>
@@ -229,7 +245,7 @@ const isOverdue = computed(() => {
                                         </span>
                                     </div>
                                     <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                        {{ impactLevels[risk.residual_impact] }}
+                                        {{ severityLevels[risk.residual_impact] || impactLevels?.[risk.residual_impact] }}
                                     </p>
                                 </div>
 

@@ -10,8 +10,17 @@ const props = defineProps({
     forms: Array,
 });
 
+const normalizeKindFromReport = () => {
+    const k = (props.report?.kind || "").toLowerCase();
+    if (k === "safety" || k === "quality") return { kind: k, kind_other: "" };
+    return { kind: "other", kind_other: props.report?.kind || "" };
+};
+const initialKind = normalizeKindFromReport();
+
 const form = useForm({
     title: props.report.title || "",
+    kind: initialKind.kind,
+    kind_other: initialKind.kind_other,
     description: props.report.description || "",
     status: props.report.status || "draft",
     report_date: props.report.report_date ? new Date(props.report.report_date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
@@ -19,6 +28,9 @@ const form = useForm({
 });
 
 const submit = () => {
+    if (form.kind === "other") {
+        form.kind = (form.kind_other || "").trim();
+    }
     form.put(route("companies.departments.reports.update", [props.department.id, props.report.id]));
 };
 </script>
@@ -66,6 +78,37 @@ const submit = () => {
                         class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                     ></textarea>
                     <div v-if="form.errors.description" class="mt-1 text-sm text-red-600">{{ form.errors.description }}</div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="kind" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Kind <span class="text-red-500">*</span>
+                    </label>
+                    <select
+                        id="kind"
+                        v-model="form.kind"
+                        required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                        <option value="safety">Safety</option>
+                        <option value="quality">Quality</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <div v-if="form.errors.kind" class="mt-1 text-sm text-red-600">{{ form.errors.kind }}</div>
+                </div>
+
+                <div v-if="form.kind === 'other'" class="mb-4">
+                    <label for="kind_other" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Other Kind <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        id="kind_other"
+                        v-model="form.kind_other"
+                        type="text"
+                        placeholder="e.g. Near Miss, Observation, Security"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    />
+                    <div v-if="form.errors.kind_other" class="mt-1 text-sm text-red-600">{{ form.errors.kind_other }}</div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">

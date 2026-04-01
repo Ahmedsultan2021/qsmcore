@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Report extends Model
 {
@@ -12,6 +13,7 @@ class Report extends Model
     protected $fillable = [
         'department_id',
         'title',
+        'kind',
         'description',
         'status',
         'report_date',
@@ -21,6 +23,16 @@ class Report extends Model
     protected $casts = [
         'report_date' => 'date',
     ];
+
+    protected static function booted(): void
+    {
+        static::deleting(function (Report $report) {
+            $report->loadMissing('reportFiles');
+            foreach ($report->reportFiles as $file) {
+                Storage::disk('public')->delete($file->path);
+            }
+        });
+    }
 
     public function department()
     {
@@ -40,6 +52,11 @@ class Report extends Model
     public function formResponses()
     {
         return $this->hasMany(FormResponse::class);
+    }
+
+    public function reportFiles()
+    {
+        return $this->hasMany(ReportFile::class)->orderByDesc('created_at');
     }
 
     /**

@@ -104,7 +104,7 @@ const isInternal = computed(() => {
             <div v-if="audit.image" class="mb-6">
                 <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Image:</p>
                 <img
-                    :src="'/storage/' + audit.image"
+                    :src="audit.image_url || ('/storage/' + audit.image)"
                     :alt="audit.name"
                     class="max-w-md h-auto rounded-lg shadow-md"
                 />
@@ -114,7 +114,7 @@ const isInternal = computed(() => {
             <div v-if="audit.attached_file" class="mb-6">
                 <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Attached File:</p>
                 <a
-                    :href="'/storage/' + audit.attached_file"
+                    :href="audit.attached_file_url || ('/storage/' + audit.attached_file)"
                     target="_blank"
                     class="inline-flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600"
                 >

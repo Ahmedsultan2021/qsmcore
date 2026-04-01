@@ -4,10 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Audit extends Model
 {
     use HasFactory;
+
+    protected $appends = [
+        'image_url',
+        'attached_file_url',
+    ];
 
     protected $fillable = [
         'company_id',
@@ -60,5 +66,21 @@ class Audit extends Model
     public function getIsInternalAttribute()
     {
         return $this->reports()->exists();
+    }
+
+    public function getImageUrlAttribute(): ?string
+    {
+        if (!$this->image) {
+            return null;
+        }
+        return Storage::url($this->image);
+    }
+
+    public function getAttachedFileUrlAttribute(): ?string
+    {
+        if (!$this->attached_file) {
+            return null;
+        }
+        return Storage::url($this->attached_file);
     }
 }

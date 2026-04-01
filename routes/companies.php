@@ -6,9 +6,13 @@ use App\Http\Controllers\Companies\CompanyReportController;
 use App\Http\Controllers\Companies\CompanyFormController;
 use App\Http\Controllers\Companies\CompanyFormFieldController;
 use App\Http\Controllers\Companies\CompanyFormSubmissionController;
+use App\Http\Controllers\Companies\CompanyReportFileController;
 use App\Http\Controllers\Companies\CompanyRiskController;
 use App\Http\Controllers\Companies\CompanyAuditController;
+use App\Http\Controllers\Companies\CompanyCapaController;
 use App\Http\Controllers\Auth\EmployeeAuthController;
+use App\Models\Department;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -31,8 +35,24 @@ Route::middleware('auth:employee')->prefix('companies')->name('companies.')->gro
     Route::post('/logout', [EmployeeAuthController::class, 'destroy'])->name('logout');
     
     Route::get('/dashboard', function () {
-        return Inertia::render('Companies/Dashboard');
+        $authEmployee = Auth::guard('employee')->user();
+
+        $departments = Department::query()
+            ->where('company_id', $authEmployee->company_id)
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        return Inertia::render('Companies/Dashboard', [
+            'departments' => $departments,
+        ]);
     })->name('dashboard');
+
+    // CAPA Management
+    Route::resource('capa', CompanyCapaController::class);
+
+    Route::get('/settings', function () {
+        return Inertia::render('Companies/Settings');
+    })->name('settings');
     
     // Employees routes (for companies portal - with roles & permissions)
     Route::resource('employees', CompanyEmployeeController::class);
@@ -64,10 +84,15 @@ Route::middleware('auth:employee')->prefix('companies')->name('companies.')->gro
     Route::delete('forms/{form}/fields/{formField}', [CompanyFormFieldController::class, 'destroy'])->name('forms.fields.destroy');
     Route::post('forms/{form}/fields/update-order', [CompanyFormFieldController::class, 'updateOrder'])->name('forms.fields.update-order');
     
+    // Report file uploads (treat report as a folder for attachments)
+    Route::post('departments/{department}/reports/{report}/files', [CompanyReportFileController::class, 'store'])->name('departments.reports.files.store')->scopeBindings();
+    Route::get('departments/{department}/reports/{report}/files/{reportFile}/download', [CompanyReportFileController::class, 'download'])->name('departments.reports.files.download')->scopeBindings();
+    Route::delete('departments/{department}/reports/{report}/files/{reportFile}', [CompanyReportFileController::class, 'destroy'])->name('departments.reports.files.destroy')->scopeBindings();
+
     // Form Submissions routes (nested under departments.reports.forms)
-    Route::get('departments/{department}/reports/{report}/forms/{form}/create', [CompanyFormSubmissionController::class, 'create'])->name('departments.reports.forms.create');
-    Route::post('departments/{department}/reports/{report}/forms/{form}', [CompanyFormSubmissionController::class, 'store'])->name('departments.reports.forms.store');
-    Route::get('departments/{department}/reports/{report}/forms/{form}', [CompanyFormSubmissionController::class, 'show'])->name('departments.reports.forms.show');
+    Route::get('departments/{department}/reports/{report}/forms/{form}/create', [CompanyFormSubmissionController::class, 'create'])->name('departments.reports.forms.create')->scopeBindings();
+    Route::post('departments/{department}/reports/{report}/forms/{form}', [CompanyFormSubmissionController::class, 'store'])->name('departments.reports.forms.store')->scopeBindings();
+    Route::get('departments/{department}/reports/{report}/forms/{form}', [CompanyFormSubmissionController::class, 'show'])->name('departments.reports.forms.show')->scopeBindings();
 });
 
 // Legacy Employee Routes (for backward compatibility - redirects to companies portal)

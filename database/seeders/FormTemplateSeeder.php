@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\FormTemplate;
 use App\Models\FormTemplateField;
+use App\Models\Industry;
 use Illuminate\Database\Seeder;
 
 class FormTemplateSeeder extends Seeder
@@ -1083,7 +1084,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Non-Conformance Report (NCR) (OGE)',
-                'category' => 'Aviation - OGE Quality',
+                'category' => 'OGE Quality',
                 'description' => 'Oil, Gas & Energy – Non-Conformance Report for documenting and tracking NCRs.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'NCR No.', 'name' => 'ncr_no', 'required' => true],
@@ -1107,7 +1108,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Corrective Action Request (CAR) (OGE)',
-                'category' => 'Aviation - OGE Quality',
+                'category' => 'OGE Quality',
                 'description' => 'Oil, Gas & Energy – Corrective Action Request for tracking corrective actions.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'CAR No.', 'name' => 'car_no', 'required' => true],
@@ -1130,7 +1131,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Preventive Action Request (PAR) (OGE)',
-                'category' => 'Aviation - OGE Quality',
+                'category' => 'OGE Quality',
                 'description' => 'Oil, Gas & Energy – Preventive Action Request for potential issues and risks.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'PAR No.', 'name' => 'par_no', 'required' => true],
@@ -1147,9 +1148,394 @@ class FormTemplateSeeder extends Seeder
                     ['field_type' => 'radio', 'label' => 'Effectiveness', 'name' => 'effectiveness', 'options' => ['Confirmed', 'Needs Review']],
                 ],
             ],
+            // === OGE SAFETY REPORTS ===
+            [
+                'name' => 'Incident / Accident Report (OGE)',
+                'category' => 'OGE Safety',
+                'description' => 'Oil, Gas & Energy – Incident / Accident Report.',
+                'fields' => [
+                    ['field_type' => 'text', 'label' => 'Report No.', 'name' => 'report_no', 'required' => true],
+                    ['field_type' => 'date', 'label' => 'Date of Incident', 'name' => 'date_of_incident', 'required' => true],
+                    ['field_type' => 'text', 'label' => 'Time of Incident', 'name' => 'time_of_incident'],
+                    ['field_type' => 'text', 'label' => 'Location of Incident', 'name' => 'location_of_incident'],
+                    ['field_type' => 'text', 'label' => 'Department / Site', 'name' => 'department_site'],
+
+                    ['field_type' => 'textarea', 'label' => 'Person(s) Involved - Name(s)', 'name' => 'persons_involved_names'],
+                    ['field_type' => 'textarea', 'label' => 'Person(s) Involved - Job Title(s)', 'name' => 'persons_involved_job_titles'],
+                    ['field_type' => 'text', 'label' => 'Company / Contractor', 'name' => 'company_contractor'],
+                    ['field_type' => 'text', 'label' => 'Contact Info', 'name' => 'contact_info'],
+
+                    ['field_type' => 'checkbox', 'label' => 'Type of Incident', 'name' => 'type_of_incident', 'options' => [
+                        'Injury',
+                        'Property Damage',
+                        'Environmental',
+                        'Fire/Explosion',
+                        'Near Miss',
+                        'Equipment Failure',
+                        'Other',
+                    ]],
+                    ['field_type' => 'text', 'label' => 'Type of Incident - Other', 'name' => 'type_of_incident_other'],
+
+                    ['field_type' => 'textarea', 'label' => 'Description of Incident', 'name' => 'description_of_incident', 'required' => true],
+
+                    ['field_type' => 'checkbox', 'label' => 'Immediate Actions Taken', 'name' => 'immediate_actions_taken', 'options' => [
+                        'First Aid Provided',
+                        'Medical Assistance',
+                        'Area Secured',
+                        'Equipment Shut Down',
+                        'Authorities Notified',
+                        'Other',
+                    ]],
+                    ['field_type' => 'text', 'label' => 'Immediate Actions Taken - Other', 'name' => 'immediate_actions_taken_other'],
+                    ['field_type' => 'textarea', 'label' => 'Immediate Actions Description', 'name' => 'immediate_actions_description'],
+
+                    ['field_type' => 'checkbox', 'label' => 'Root Cause Analysis (if known)', 'name' => 'root_cause_analysis', 'options' => [
+                        'Human Error',
+                        'Unsafe Condition',
+                        'Lack of Training',
+                        'Procedure Not Followed',
+                        'Mechanical Failure',
+                        'Inadequate Supervision',
+                        'Other',
+                    ]],
+                    ['field_type' => 'text', 'label' => 'Root Cause - Other', 'name' => 'root_cause_analysis_other'],
+
+                    ['field_type' => 'textarea', 'label' => 'Corrective Actions Recommended', 'name' => 'corrective_actions_recommended'],
+
+                    ['field_type' => 'text', 'label' => 'Reporting Person - Name', 'name' => 'reporting_person_name'],
+                    ['field_type' => 'text', 'label' => 'Reporting Person - Position', 'name' => 'reporting_person_position'],
+                    ['field_type' => 'signature', 'label' => 'Reporting Person - Signature', 'name' => 'reporting_person_signature'],
+                    ['field_type' => 'date', 'label' => 'Reporting Person - Date', 'name' => 'reporting_person_date'],
+
+                    ['field_type' => 'text', 'label' => 'HSE Manager Review - Reviewed by', 'name' => 'hse_reviewed_by'],
+                    ['field_type' => 'textarea', 'label' => 'HSE Manager Review - Comments', 'name' => 'hse_comments'],
+                    ['field_type' => 'signature', 'label' => 'HSE Manager Review - Signature', 'name' => 'hse_signature'],
+                    ['field_type' => 'date', 'label' => 'HSE Manager Review - Date', 'name' => 'hse_date'],
+                ],
+            ],
+            [
+                'name' => 'Near Miss Report (OGE)',
+                'category' => 'OGE Safety',
+                'description' => 'Oil, Gas & Energy – Near Miss Report.',
+                'fields' => [
+                    ['field_type' => 'text', 'label' => 'Report No.', 'name' => 'report_no', 'required' => true],
+                    ['field_type' => 'date', 'label' => 'Date of Near Miss', 'name' => 'date_of_near_miss', 'required' => true],
+                    ['field_type' => 'text', 'label' => 'Time', 'name' => 'time'],
+                    ['field_type' => 'text', 'label' => 'Location (Plant/Zone/Area)', 'name' => 'location'],
+                    ['field_type' => 'text', 'label' => 'Department / Site', 'name' => 'department_site'],
+                    ['field_type' => 'text', 'label' => 'Reported By', 'name' => 'reported_by'],
+                    ['field_type' => 'text', 'label' => 'Position / Role', 'name' => 'position_role'],
+                    ['field_type' => 'text', 'label' => 'Contact Info', 'name' => 'contact_info'],
+
+                    ['field_type' => 'textarea', 'label' => 'Description of the Near Miss', 'name' => 'description_of_near_miss', 'required' => true],
+
+                    ['field_type' => 'checkbox', 'label' => 'Classification of Near Miss', 'name' => 'classification_of_near_miss', 'options' => [
+                        'Unsafe Act',
+                        'Unsafe Condition',
+                        'Equipment Malfunction',
+                        'Procedure Deviation',
+                        'Environmental Hazard',
+                        'Other',
+                    ]],
+                    ['field_type' => 'text', 'label' => 'Classification - Other', 'name' => 'classification_other'],
+
+                    ['field_type' => 'checkbox', 'label' => 'Potential Outcome if Not Avoided', 'name' => 'potential_outcome', 'options' => [
+                        'Minor Injury',
+                        'Major Injury',
+                        'Fatality',
+                        'Environmental Damage',
+                        'Property/Asset Loss',
+                        'Operational Disruption',
+                        'Other',
+                    ]],
+                    ['field_type' => 'text', 'label' => 'Potential Outcome - Other', 'name' => 'potential_outcome_other'],
+
+                    ['field_type' => 'checkbox', 'label' => 'Immediate Actions Taken', 'name' => 'immediate_actions_taken', 'options' => [
+                        'Area Secured',
+                        'Equipment Stopped',
+                        'Supervisor Notified',
+                        'Temporary Fix Applied',
+                        'Safety Team Informed',
+                        'Other',
+                    ]],
+                    ['field_type' => 'text', 'label' => 'Immediate Actions - Other', 'name' => 'immediate_actions_other'],
+                    ['field_type' => 'textarea', 'label' => 'Immediate Actions Details', 'name' => 'immediate_actions_details'],
+
+                    ['field_type' => 'checkbox', 'label' => 'Root Cause (Preliminary)', 'name' => 'root_cause_preliminary', 'options' => [
+                        'Lack of Awareness',
+                        'Inadequate Training',
+                        'Poor Housekeeping',
+                        'Mechanical Failure',
+                        'Communication Breakdown',
+                        'Unsafe Behavior',
+                        'Other',
+                    ]],
+                    ['field_type' => 'text', 'label' => 'Root Cause - Other', 'name' => 'root_cause_other'],
+
+                    ['field_type' => 'textarea', 'label' => 'Corrective / Preventive Measures', 'name' => 'corrective_preventive_measures'],
+
+                    ['field_type' => 'textarea', 'label' => 'Witness Details (if any)', 'name' => 'witness_details'],
+
+                    ['field_type' => 'text', 'label' => 'Submitted By - Name', 'name' => 'submitted_by_name'],
+                    ['field_type' => 'signature', 'label' => 'Submitted By - Signature', 'name' => 'submitted_by_signature'],
+                    ['field_type' => 'date', 'label' => 'Submitted By - Date', 'name' => 'submitted_by_date'],
+
+                    ['field_type' => 'text', 'label' => 'HSE Department Review - Reviewed by', 'name' => 'hse_reviewed_by'],
+                    ['field_type' => 'textarea', 'label' => 'HSE Department Review - Comments / Notes', 'name' => 'hse_comments_notes'],
+                    ['field_type' => 'signature', 'label' => 'HSE Department Review - Signature', 'name' => 'hse_signature'],
+                    ['field_type' => 'date', 'label' => 'HSE Department Review - Date', 'name' => 'hse_date'],
+                ],
+            ],
+            [
+                'name' => 'Hazard Identification Report (OGE)',
+                'category' => 'OGE Safety',
+                'description' => 'Oil, Gas & Energy – Hazard Identification Report.',
+                'fields' => [
+                    ['field_type' => 'text', 'label' => 'Report No.', 'name' => 'report_no', 'required' => true],
+                    ['field_type' => 'date', 'label' => 'Date', 'name' => 'date', 'required' => true],
+                    ['field_type' => 'text', 'label' => 'Time', 'name' => 'time'],
+                    ['field_type' => 'text', 'label' => 'Location', 'name' => 'location'],
+                    ['field_type' => 'text', 'label' => 'Department / Area', 'name' => 'department_area'],
+                    ['field_type' => 'text', 'label' => 'Reported by', 'name' => 'reported_by'],
+                    ['field_type' => 'text', 'label' => 'Job Title', 'name' => 'job_title'],
+                    ['field_type' => 'text', 'label' => 'Contact', 'name' => 'contact'],
+
+                    ['field_type' => 'textarea', 'label' => 'Description of Hazard', 'name' => 'description_of_hazard', 'required' => true],
+
+                    ['field_type' => 'checkbox', 'label' => 'Nature of Hazard', 'name' => 'nature_of_hazard', 'options' => [
+                        'Physical',
+                        'Chemical',
+                        'Biological',
+                        'Ergonomic',
+                        'Electrical',
+                        'Environmental',
+                        'Other',
+                    ]],
+                    ['field_type' => 'text', 'label' => 'Nature of Hazard - Other', 'name' => 'nature_of_hazard_other'],
+
+                    ['field_type' => 'checkbox', 'label' => 'Observed Condition', 'name' => 'observed_condition', 'options' => [
+                        'Repetitive',
+                        'One-Time',
+                        'Increasing',
+                        'Other',
+                    ]],
+                    ['field_type' => 'text', 'label' => 'Observed Condition - Other', 'name' => 'observed_condition_other'],
+
+                    ['field_type' => 'checkbox', 'label' => 'People at Risk', 'name' => 'people_at_risk', 'options' => [
+                        'Employees',
+                        'Contractors',
+                        'Visitors',
+                        'Environment',
+                        'Equipment',
+                    ]],
+
+                    ['field_type' => 'textarea', 'label' => 'Suggested Immediate Control Measures', 'name' => 'suggested_immediate_control_measures'],
+
+                    ['field_type' => 'checkbox', 'label' => 'Action Taken (if any)', 'name' => 'action_taken', 'options' => [
+                        'Area Isolated',
+                        'Supervisor Notified',
+                        'Temporary Measure Applied',
+                        'Other',
+                    ]],
+                    ['field_type' => 'text', 'label' => 'Action Taken - Other', 'name' => 'action_taken_other'],
+
+                    ['field_type' => 'signature', 'label' => 'Reporter Signature', 'name' => 'reporter_signature'],
+                    ['field_type' => 'date', 'label' => 'Reporter Date', 'name' => 'reporter_date'],
+
+                    ['field_type' => 'text', 'label' => 'HSE Review - Reviewed by', 'name' => 'hse_reviewed_by'],
+                    ['field_type' => 'textarea', 'label' => 'HSE Review - Comments / Recommendations', 'name' => 'hse_comments_recommendations'],
+                    ['field_type' => 'signature', 'label' => 'HSE Review - Signature', 'name' => 'hse_signature'],
+                    ['field_type' => 'date', 'label' => 'HSE Review - Date', 'name' => 'hse_date'],
+                ],
+            ],
+            [
+                'name' => 'HSE Observation / BBS Report (OGE)',
+                'category' => 'OGE Safety',
+                'description' => 'Oil, Gas & Energy – HSE Observation / Behavior-Based Safety Report.',
+                'fields' => [
+                    ['field_type' => 'date', 'label' => 'Date', 'name' => 'date', 'required' => true],
+                    ['field_type' => 'text', 'label' => 'Time', 'name' => 'time'],
+                    ['field_type' => 'text', 'label' => 'Location', 'name' => 'location'],
+                    ['field_type' => 'text', 'label' => 'Activity Observed', 'name' => 'activity_observed'],
+                    ['field_type' => 'text', 'label' => 'Observer Name', 'name' => 'observer_name'],
+                    ['field_type' => 'text', 'label' => 'Department / Company', 'name' => 'department_company'],
+
+                    ['field_type' => 'checkbox', 'label' => 'Observation Type', 'name' => 'observation_type', 'options' => [
+                        'Safe Behavior',
+                        'At-Risk Behavior',
+                        'Unsafe Condition',
+                        'Environmental Concern',
+                        'Other',
+                    ]],
+                    ['field_type' => 'text', 'label' => 'Observation Type - Other', 'name' => 'observation_type_other'],
+
+                    ['field_type' => 'textarea', 'label' => 'Observation Details', 'name' => 'observation_details', 'required' => true],
+                    ['field_type' => 'textarea', 'label' => 'Who was involved (if any)', 'name' => 'who_was_involved'],
+
+                    ['field_type' => 'checkbox', 'label' => 'Immediate Action Taken', 'name' => 'immediate_action_taken', 'options' => [
+                        'Verbal Feedback',
+                        'Area Secured',
+                        'Action Reported to Supervisor',
+                        'Equipment Stopped',
+                        'None',
+                    ]],
+                    ['field_type' => 'textarea', 'label' => 'Immediate Action Details', 'name' => 'immediate_action_details'],
+
+                    ['field_type' => 'textarea', 'label' => 'Recommendations / Preventive Measures', 'name' => 'recommendations_preventive_measures'],
+
+                    ['field_type' => 'signature', 'label' => 'Observer Signature', 'name' => 'observer_signature'],
+                    ['field_type' => 'date', 'label' => 'Observer Date', 'name' => 'observer_date'],
+
+                    ['field_type' => 'text', 'label' => 'HSE Department Review - Reviewed by', 'name' => 'hse_reviewed_by'],
+                    ['field_type' => 'textarea', 'label' => 'HSE Department Review - Comments / Follow-up Needed', 'name' => 'hse_comments_followup'],
+                    ['field_type' => 'signature', 'label' => 'HSE Department Review - Signature', 'name' => 'hse_signature'],
+                    ['field_type' => 'date', 'label' => 'HSE Department Review - Date', 'name' => 'hse_date'],
+                ],
+            ],
+            // === LOGISTICS & TRANSPORTATION SAFETY REPORTS ===
+            [
+                'name' => 'Incident / Accident Report – Logistics & Transportation',
+                'category' => 'Logistics & Transportation - Safety',
+                'description' => 'Incident / Accident reporting for Logistics & Transportation.',
+                'fields' => [
+                    ['field_type' => 'date', 'label' => 'Date of Incident', 'name' => 'date_of_incident', 'required' => true],
+                    ['field_type' => 'text', 'label' => 'Time of Incident', 'name' => 'time_of_incident'],
+                    ['field_type' => 'text', 'label' => 'Location (Site / Terminal / Route)', 'name' => 'location'],
+                    ['field_type' => 'text', 'label' => 'Reporter Name & Position', 'name' => 'reporter_name_position'],
+                    ['field_type' => 'textarea', 'label' => 'Involved Parties (Name / Role / Company)', 'name' => 'involved_parties'],
+
+                    ['field_type' => 'checkbox', 'label' => 'Type of Incident', 'name' => 'type_of_incident', 'options' => [
+                        'Vehicle collision',
+                        'Personal injury',
+                        'Derailment',
+                        'Fire or spill',
+                        'Equipment failure',
+                        'Other',
+                    ]],
+                    ['field_type' => 'text', 'label' => 'Type of Incident - Other', 'name' => 'type_of_incident_other'],
+
+                    ['field_type' => 'textarea', 'label' => 'Description of Event', 'name' => 'description_of_event', 'required' => true],
+                    ['field_type' => 'textarea', 'label' => 'Immediate Actions Taken', 'name' => 'immediate_actions_taken'],
+
+                    ['field_type' => 'textarea', 'label' => 'Injuries / Damage - Persons Injured', 'name' => 'persons_injured'],
+                    ['field_type' => 'textarea', 'label' => 'Injuries / Damage - Equipment / Cargo Damage', 'name' => 'equipment_cargo_damage'],
+                    ['field_type' => 'textarea', 'label' => 'Injuries / Damage - Environmental Impact', 'name' => 'environmental_impact'],
+
+                    ['field_type' => 'radio', 'label' => 'Was Emergency Response Involved?', 'name' => 'emergency_response_involved', 'options' => ['Yes', 'No']],
+                    ['field_type' => 'textarea', 'label' => 'Emergency Response Details (if yes)', 'name' => 'emergency_response_details'],
+
+                    ['field_type' => 'textarea', 'label' => 'Root Cause (If Known)', 'name' => 'root_cause'],
+                    ['field_type' => 'textarea', 'label' => 'Recommendations / Actions Required', 'name' => 'recommendations_actions_required'],
+                ],
+            ],
+            [
+                'name' => 'Near Miss Report – Logistics & Transportation',
+                'category' => 'Logistics & Transportation - Safety',
+                'description' => 'Near miss reporting for Logistics & Transportation.',
+                'fields' => [
+                    ['field_type' => 'date', 'label' => 'Date', 'name' => 'date', 'required' => true],
+                    ['field_type' => 'text', 'label' => 'Time', 'name' => 'time'],
+                    ['field_type' => 'text', 'label' => 'Location', 'name' => 'location'],
+                    ['field_type' => 'text', 'label' => 'Reporter Name & Position', 'name' => 'reporter_name_position'],
+
+                    ['field_type' => 'textarea', 'label' => 'Describe the Near Miss', 'name' => 'describe_the_near_miss', 'required' => true],
+                    ['field_type' => 'textarea', 'label' => 'What Could Have Happened?', 'name' => 'what_could_have_happened'],
+
+                    ['field_type' => 'checkbox', 'label' => 'Contributing Factors', 'name' => 'contributing_factors', 'options' => [
+                        'Human Error',
+                        'Equipment / System Failure',
+                        'Environmental Condition',
+                        'Communication Breakdown',
+                        'Other',
+                    ]],
+                    ['field_type' => 'text', 'label' => 'Contributing Factors - Other', 'name' => 'contributing_factors_other'],
+
+                    ['field_type' => 'textarea', 'label' => 'Preventive Recommendations', 'name' => 'preventive_recommendations'],
+                ],
+            ],
+            [
+                'name' => 'Hazard Report – Logistics & Transportation',
+                'category' => 'Logistics & Transportation - Safety',
+                'description' => 'Hazard reporting for Logistics & Transportation.',
+                'fields' => [
+                    ['field_type' => 'date', 'label' => 'Date of Observation', 'name' => 'date_of_observation', 'required' => true],
+                    ['field_type' => 'text', 'label' => 'Location / Department', 'name' => 'location_department'],
+                    ['field_type' => 'text', 'label' => 'Reported By', 'name' => 'reported_by'],
+
+                    ['field_type' => 'checkbox', 'label' => 'Type of Hazard', 'name' => 'type_of_hazard', 'options' => [
+                        'Slip / Trip / Fall Risk',
+                        'Fire Hazard',
+                        'Vehicle Movement Hazard',
+                        'Cargo Handling',
+                        'Ergonomic / Manual Handling',
+                        'Other',
+                    ]],
+                    ['field_type' => 'text', 'label' => 'Type of Hazard - Other', 'name' => 'type_of_hazard_other'],
+
+                    ['field_type' => 'textarea', 'label' => 'Hazard Description', 'name' => 'hazard_description', 'required' => true],
+                    ['field_type' => 'textarea', 'label' => 'Suggested Controls / Actions', 'name' => 'suggested_controls_actions'],
+
+                    ['field_type' => 'radio', 'label' => 'Has Supervisor Been Notified?', 'name' => 'supervisor_notified', 'options' => ['Yes', 'No']],
+                    ['field_type' => 'date', 'label' => 'Supervisor Notified Date', 'name' => 'supervisor_notified_date'],
+                ],
+            ],
+            [
+                'name' => 'Fatigue / Fitness for Duty Report – Logistics & Transportation',
+                'category' => 'Logistics & Transportation - Safety',
+                'description' => 'Fatigue / fitness for duty reporting for Logistics & Transportation.',
+                'fields' => [
+                    ['field_type' => 'text', 'label' => 'Employee Name', 'name' => 'employee_name', 'required' => true],
+                    ['field_type' => 'date', 'label' => 'Date', 'name' => 'date', 'required' => true],
+                    ['field_type' => 'text', 'label' => 'Department / Shift', 'name' => 'department_shift'],
+
+                    ['field_type' => 'checkbox', 'label' => 'Type of Concern', 'name' => 'type_of_concern', 'options' => [
+                        'Fatigue',
+                        'Illness',
+                        'Stress / Mental Load',
+                        'Medication Side Effect',
+                        'Other',
+                    ]],
+                    ['field_type' => 'text', 'label' => 'Type of Concern - Other', 'name' => 'type_of_concern_other'],
+
+                    ['field_type' => 'textarea', 'label' => 'Details of Concern', 'name' => 'details_of_concern', 'required' => true],
+
+                    ['field_type' => 'radio', 'label' => 'Has This Affected Work Performance?', 'name' => 'affected_work_performance', 'options' => ['Yes', 'No']],
+                    ['field_type' => 'textarea', 'label' => 'Performance Impact Description', 'name' => 'performance_impact_description'],
+
+                    ['field_type' => 'textarea', 'label' => 'Recommendations / Comments', 'name' => 'recommendations_comments'],
+                ],
+            ],
+            [
+                'name' => 'Security Incident Report – Logistics & Transportation',
+                'category' => 'Logistics & Transportation - Safety',
+                'description' => 'Security incident reporting for Logistics & Transportation.',
+                'fields' => [
+                    ['field_type' => 'date', 'label' => 'Date of Incident', 'name' => 'date_of_incident', 'required' => true],
+                    ['field_type' => 'text', 'label' => 'Time of Incident', 'name' => 'time_of_incident'],
+                    ['field_type' => 'text', 'label' => 'Location (Gate / Port / Warehouse)', 'name' => 'location'],
+                    ['field_type' => 'text', 'label' => 'Security Officer / Reporter', 'name' => 'security_officer_reporter'],
+
+                    ['field_type' => 'checkbox', 'label' => 'Type of Security Breach', 'name' => 'type_of_security_breach', 'options' => [
+                        'Unauthorized Access',
+                        'Theft / Loss',
+                        'Tampering',
+                        'Smuggling Attempt',
+                        'Other',
+                    ]],
+                    ['field_type' => 'text', 'label' => 'Type of Security Breach - Other', 'name' => 'type_of_security_breach_other'],
+
+                    ['field_type' => 'textarea', 'label' => 'Incident Description', 'name' => 'incident_description', 'required' => true],
+
+                    ['field_type' => 'radio', 'label' => 'CCTV / Witnesses / Evidence?', 'name' => 'evidence_available', 'options' => ['Yes', 'No']],
+                    ['field_type' => 'textarea', 'label' => 'Evidence Details', 'name' => 'evidence_details'],
+
+                    ['field_type' => 'radio', 'label' => 'Reported To Authorities?', 'name' => 'reported_to_authorities', 'options' => ['Yes', 'No']],
+                    ['field_type' => 'text', 'label' => 'Agency Name', 'name' => 'agency_name'],
+                ],
+            ],
             [
                 'name' => 'Inspection / Verification Report (OGE)',
-                'category' => 'Aviation - OGE Quality',
+                'category' => 'OGE Quality',
                 'description' => 'Oil, Gas & Energy – Inspection Report for equipment and area verification.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report No.', 'name' => 'report_no', 'required' => true],
@@ -1174,7 +1560,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Material / Equipment Defect Report (OGE)',
-                'category' => 'Aviation - OGE Quality',
+                'category' => 'OGE Quality',
                 'description' => 'Oil, Gas & Energy – Defect Report for materials and equipment.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report No.', 'name' => 'report_no', 'required' => true],
@@ -1196,6 +1582,11 @@ class FormTemplateSeeder extends Seeder
             ],
         ];
 
+        // Resolve the three platform industries once
+        $aviationIndustry      = Industry::where('name', 'Aviation')->first();
+        $ogeIndustry           = Industry::where('name', 'OGE')->first();
+        $logisticsIndustry     = Industry::where('name', 'Logistics & Transportation')->first();
+
         foreach ($templates as $templateData) {
             $fields = $templateData['fields'];
             unset($templateData['fields']);
@@ -1204,6 +1595,16 @@ class FormTemplateSeeder extends Seeder
                 ['name' => $templateData['name'], 'category' => $templateData['category']],
                 $templateData
             );
+
+            // Attach to the correct industry based on category prefix
+            $category = $templateData['category'];
+            if (str_starts_with($category, 'Aviation') && $aviationIndustry) {
+                $template->industries()->syncWithoutDetaching([$aviationIndustry->id]);
+            } elseif (str_starts_with($category, 'OGE') && $ogeIndustry) {
+                $template->industries()->syncWithoutDetaching([$ogeIndustry->id]);
+            } elseif (str_starts_with($category, 'Logistics & Transportation') && $logisticsIndustry) {
+                $template->industries()->syncWithoutDetaching([$logisticsIndustry->id]);
+            }
 
             // Skip if template already has fields (avoid duplicates on re-seed)
             if ($template->formTemplateFields()->exists()) {

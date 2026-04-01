@@ -24,4 +24,9 @@ class Sector extends Model
     {
         return $this->hasMany(Company::class);
     }
+
+    public function formTemplates()
+    {
+        return $this->belongsToMany(FormTemplate::class, 'sector_form_template');
+    }
 }

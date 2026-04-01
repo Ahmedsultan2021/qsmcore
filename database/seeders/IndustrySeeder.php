@@ -7,54 +7,19 @@ use Illuminate\Database\Seeder;
 
 class IndustrySeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         $industries = [
             [
-                'name' => 'Manufacturing',
-                'description' => 'Production of goods and raw materials',
+                'name'        => 'Aviation',
+                'description' => 'Airlines, MRO facilities, and airport operations',
             ],
             [
-                'name' => 'Services',
-                'description' => 'Financial, commercial and consulting services',
+                'name'        => 'OGE',
+                'description' => 'Oil, Gas & Energy upstream and downstream operations',
             ],
             [
-                'name' => 'Technology',
-                'description' => 'Information technology, software and communications',
-            ],
-            [
-                'name' => 'Healthcare',
-                'description' => 'Hospitals, clinics and pharmaceuticals',
-            ],
-            [
-                'name' => 'Construction',
-                'description' => 'Contracting, real estate and infrastructure',
-            ],
-            [
-                'name' => 'Education',
-                'description' => 'Educational institutions and training',
-            ],
-            [
-                'name' => 'Retail',
-                'description' => 'Retail and wholesale trade',
-            ],
-            [
-                'name' => 'Energy',
-                'description' => 'Oil, gas and renewable energy',
-            ],
-            [
-                'name' => 'Aviation',
-                'description' => 'Airlines, MRO, and airport operations',
-            ],
-            [
-                'name' => 'OGE',
-                'description' => 'Oil, Gas & Energy upstream/downstream operations',
-            ],
-            [
-                'name' => 'Logistics & Transportation',
+                'name'        => 'Logistics & Transportation',
                 'description' => 'Maritime, rail, and road transport logistics',
             ],
         ];

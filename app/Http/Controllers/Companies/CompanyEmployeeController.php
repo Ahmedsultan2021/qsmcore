@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Companies;
 
 use App\Http\Controllers\Controller;
+use App\Models\Department;
 use App\Models\Employee;
 use App\Models\Company;
 use Illuminate\Http\Request;
@@ -20,12 +21,12 @@ class CompanyEmployeeController extends Controller
     {
         $employee = Auth::guard('employee')->user();
         $employees = Employee::where('company_id', $employee->company_id)
-            ->with(['company', 'roles'])
+            ->with(['roles', 'department'])
             ->latest()
             ->paginate(10);
-        
+
         $roles = Role::where('guard_name', 'employee')->get();
-        
+
         return Inertia::render('Companies/Employees/Index', [
             'employees' => $employees,
             'roles' => $roles,
@@ -39,10 +40,12 @@ class CompanyEmployeeController extends Controller
     {
         $employee = Auth::guard('employee')->user();
         $roles = Role::where('guard_name', 'employee')->get();
-        
+        $departments = Department::where('company_id', $employee->company_id)->get();
+
         return Inertia::render('Companies/Employees/Create', [
             'company_id' => $employee->company_id,
             'roles' => $roles,
+            'departments' => $departments,
         ]);
     }
 
@@ -60,6 +63,7 @@ class CompanyEmployeeController extends Controller
             'password' => 'required|string|min:8|confirmed',
             'phone' => 'nullable|string|max:255',
             'position' => 'nullable|string|max:255',
+            'department_id' => 'nullable|exists:departments,id',
             'roles' => 'nullable|array',
             'roles.*' => 'exists:roles,id',
         ]);
@@ -110,11 +114,13 @@ class CompanyEmployeeController extends Controller
         }
         
         $roles = Role::where('guard_name', 'employee')->get();
-        $employee->load('roles');
-        
+        $departments = Department::where('company_id', $employee->company_id)->get();
+        $employee->load(['roles', 'department']);
+
         return Inertia::render('Companies/Employees/Edit', [
             'employee' => $employee,
             'roles' => $roles,
+            'departments' => $departments,
         ]);
     }
 
@@ -137,6 +143,7 @@ class CompanyEmployeeController extends Controller
             'password' => 'nullable|string|min:8|confirmed',
             'phone' => 'nullable|string|max:255',
             'position' => 'nullable|string|max:255',
+            'department_id' => 'nullable|exists:departments,id',
             'roles' => 'nullable|array',
             'roles.*' => 'exists:roles,id',
         ]);

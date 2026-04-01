@@ -12,12 +12,18 @@ class Form extends Model
     protected $fillable = [
         'company_id',
         'department_id',
+        'form_template_id',
         'name',
     ];
 
     public function company()
     {
         return $this->belongsTo(Company::class);
+    }
+
+    public function formTemplate()
+    {
+        return $this->belongsTo(FormTemplate::class);
     }
 
     public function department()

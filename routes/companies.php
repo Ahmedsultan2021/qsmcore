@@ -11,7 +11,9 @@ use App\Http\Controllers\Companies\CompanyRiskController;
 use App\Http\Controllers\Companies\CompanyAuditController;
 use App\Http\Controllers\Companies\CompanyCapaController;
 use App\Http\Controllers\Auth\EmployeeAuthController;
+use App\Models\Capa;
 use App\Models\Department;
+use App\Models\Report;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -36,14 +38,83 @@ Route::middleware('auth:employee')->prefix('companies')->name('companies.')->gro
     
     Route::get('/dashboard', function () {
         $authEmployee = Auth::guard('employee')->user();
+        $companyId    = $authEmployee->company_id;
 
         $departments = Department::query()
-            ->where('company_id', $authEmployee->company_id)
+            ->where('company_id', $companyId)
             ->orderBy('name')
             ->get(['id', 'name']);
 
+        $deptIds = $departments->pluck('id');
+
+        // KPI counts — derived from department form_category instead of report kind
+        $openSafety = Report::whereHas('department', fn ($q) => $q->where('form_category', 'like', '%Safety%'))
+            ->whereIn('department_id', $deptIds)
+            ->whereNotIn('status', ['approved', 'rejected'])
+            ->count();
+
+        $openQuality = Report::whereHas('department', fn ($q) => $q->where('form_category', 'like', '%Quality%'))
+            ->whereIn('department_id', $deptIds)
+            ->whereNotIn('status', ['approved', 'rejected'])
+            ->count();
+
+        $closedReports = Report::whereIn('department_id', $deptIds)
+            ->whereIn('status', ['approved', 'rejected'])
+            ->count();
+
+        $overdueCAPAs = Capa::where('company_id', $companyId)
+            ->where('status', '!=', 'closed')
+            ->whereNotNull('due_date')
+            ->whereDate('due_date', '<', now())
+            ->count();
+
+        // Report status breakdown (draft / submitted / reviewed / approved / rejected)
+        $statusCounts = Report::whereIn('department_id', $deptIds)
+            ->selectRaw('status, COUNT(*) as cnt')
+            ->groupBy('status')
+            ->pluck('cnt', 'status');
+
+        // Recent 5 reports
+        $recentReports = Report::whereIn('department_id', $deptIds)
+            ->with('department')
+            ->latest()
+            ->limit(5)
+            ->get()
+            ->map(fn ($r) => [
+                'id'     => $r->id,
+                'title'  => $r->title,
+                'dept'   => $r->department?->name,
+                'status' => $r->status,
+                'date'   => $r->report_date?->format('d-M-Y'),
+                'url'    => route('companies.departments.reports.show', [$r->department_id, $r->id]),
+            ]);
+
+        // Top 5 departments by report volume (with percentage)
+        $rawVolume = Report::whereIn('department_id', $deptIds)
+            ->selectRaw('department_id, COUNT(*) as cnt')
+            ->groupBy('department_id')
+            ->orderByDesc('cnt')
+            ->limit(5)
+            ->get();
+
+        $totalVol = $rawVolume->sum('cnt') ?: 1;
+        $volumeByDept = $rawVolume->map(fn ($r) => [
+            'name'    => $departments->firstWhere('id', $r->department_id)?->name ?? 'Unknown',
+            'count'   => $r->cnt,
+            'percent' => (int) round($r->cnt / $totalVol * 100),
+        ]);
+
         return Inertia::render('Companies/Dashboard', [
-            'departments' => $departments,
+            'departments'   => $departments,
+            'stats'         => [
+                'openSafety'    => $openSafety,
+                'openQuality'   => $openQuality,
+                'closedReports' => $closedReports,
+                'overdueCAPAs'  => $overdueCAPAs,
+            ],
+            'statusCounts'  => $statusCounts,
+            'recentReports' => $recentReports,
+            'volumeByDept'  => $volumeByDept,
         ]);
     })->name('dashboard');
 

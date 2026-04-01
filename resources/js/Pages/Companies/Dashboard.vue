@@ -7,21 +7,24 @@ import { usePage } from "@inertiajs/vue3";
 defineOptions({ layout: CompanyLayout });
 
 const props = defineProps({
-    departments: {
-        type: Array,
-        default: () => [],
-    },
+    departments:   { type: Array,  default: () => [] },
+    stats:         { type: Object, default: () => ({ openSafety: 0, openQuality: 0, closedReports: 0, overdueCAPAs: 0 }) },
+    statusCounts:  { type: Object, default: () => ({}) },
+    recentReports: { type: Array,  default: () => [] },
+    volumeByDept:  { type: Array,  default: () => [] },
 });
 
 const page = usePage();
 const employee = computed(() => page.props.authEmployee?.employee);
 
-// Static placeholders to match the reference dashboard design
-const companyIndustry = computed(() => employee.value?.company?.sector?.industry?.name || employee.value?.company?.industry?.name || "-");
+const companyIndustry = computed(() =>
+    employee.value?.company?.sector?.industry?.name ||
+    employee.value?.company?.industry?.name || "-"
+);
 const companyEntity = computed(() => employee.value?.company?.name || "-");
 
 const filters = ref({
-    department: "Flight Ops",
+    department: props.departments[0]?.id ?? "",
     reportType: "Safety Reports",
 });
 
@@ -39,26 +42,52 @@ const goToCreateReport = () => {
     router.visit(route("companies.departments.reports.create", { department: selectedDepartmentId.value }));
 };
 
-const statCards = [
-    { label: "Open Safety Reports", value: 52, tone: "bg-rose-100", text: "text-rose-900" },
-    { label: "Open Quality Findings", value: 12, tone: "bg-amber-100", text: "text-amber-900" },
-    { label: "Closed Reports", value: 134, tone: "bg-emerald-100", text: "text-emerald-900" },
-    { label: "Overdue CAPAs", value: 7, tone: "bg-sky-100", text: "text-sky-900" },
-];
+// KPI cards driven by real stats
+const statCards = computed(() => [
+    { label: "Open Safety Reports",  value: props.stats.openSafety,    tone: "bg-rose-100",    text: "text-rose-900" },
+    { label: "Open Quality Reports",  value: props.stats.openQuality,   tone: "bg-amber-100",   text: "text-amber-900" },
+    { label: "Closed Reports",        value: props.stats.closedReports, tone: "bg-emerald-100", text: "text-emerald-900" },
+    { label: "Overdue CAPAs",         value: props.stats.overdueCAPAs,  tone: "bg-sky-100",     text: "text-sky-900" },
+]);
 
-const reportStatus = [
-    { label: "Draft", color: "bg-blue-600", value: 18 },
-    { label: "Submitted", color: "bg-emerald-600", value: 12 },
-    { label: "Under Review", color: "bg-amber-500", value: 9 },
-    { label: "Closed", color: "bg-rose-500", value: 61 },
-];
+// Report status legend driven by real counts
+const STATUS_CONFIG = {
+    draft:     { label: "Draft",     color: "bg-blue-600" },
+    submitted: { label: "Submitted", color: "bg-emerald-600" },
+    reviewed:  { label: "Reviewed",  color: "bg-amber-500" },
+    approved:  { label: "Approved",  color: "bg-green-600" },
+    rejected:  { label: "Rejected",  color: "bg-rose-500" },
+};
 
-const recentReports = [
-    { id: "ASR-1123", title: "Runway Incursion", dept: "Flight Ops", type: "Safety", status: "Under Review", date: "25-Jun-2025" },
-    { id: "ASR-123", title: "Tumpkace", dept: "Flight Ops", type: "Safety", status: "Submitted", date: "24-Jun-2025" },
-    { id: "QFR-203", title: "Inspection deviation", dept: "Maintenance", type: "Quality", status: "Draft", date: "23-Jun-2025" },
-    { id: "ASR-980", title: "Ground handling delay", dept: "Ground Ops", type: "Safety", status: "Closed", date: "22-Jun-2025" },
-];
+const reportStatus = computed(() =>
+    Object.entries(STATUS_CONFIG).map(([key, cfg]) => ({
+        ...cfg,
+        value: props.statusCounts[key] ?? 0,
+    }))
+);
+
+// Status badge classes for the table
+const STATUS_BADGE = {
+    draft:     "bg-slate-100 text-slate-700",
+    submitted: "bg-blue-100 text-blue-700",
+    reviewed:  "bg-amber-100 text-amber-800",
+    approved:  "bg-emerald-100 text-emerald-700",
+    rejected:  "bg-rose-100 text-rose-700",
+};
+const badgeClass = (status) => STATUS_BADGE[status] ?? "bg-slate-100 text-slate-700";
+
+// Safety alerts: open reports from safety departments
+const safetyAlerts = computed(() =>
+    props.recentReports
+        .filter(r => !["approved", "rejected"].includes(r.status))
+        .slice(0, 3)
+);
+
+const alertDotClass = (status) => {
+    if (status === "submitted") return "bg-rose-500";
+    if (status === "reviewed")  return "bg-amber-500";
+    return "bg-blue-400";
+};
 </script>
 
 <template>
@@ -75,7 +104,7 @@ const recentReports = [
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <!-- Left filters (matches reference UI) -->
+            <!-- Left sidebar filters -->
             <aside class="lg:col-span-3">
                 <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-4 space-y-4 shadow-sm">
                     <div>
@@ -93,13 +122,10 @@ const recentReports = [
                     <div>
                         <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-2">Department</label>
                         <select v-model="filters.department" class="w-full rounded-xl border-gray-200 dark:border-gray-700 dark:bg-gray-900 dark:text-white focus:ring-2 focus:ring-brand-sky">
-                            <option>Flight Ops</option>
-                            <option>Ground Ops</option>
-                            <option>Maintenance</option>
-                            <option>OCC</option>
-                            <option>Safety</option>
-                            <option>Quality</option>
-                            <option>Training</option>
+                            <option value="">All Departments</option>
+                            <option v-for="d in departments" :key="d.id" :value="d.id">
+                                {{ d.name }}
+                            </option>
                         </select>
                     </div>
                     <div>
@@ -144,55 +170,41 @@ const recentReports = [
 
                 <!-- Mid row -->
                 <div class="grid grid-cols-1 xl:grid-cols-12 gap-4">
-                    <!-- Report status donut (static) -->
+                    <!-- Report status legend -->
                     <div class="xl:col-span-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm p-4">
-                        <div class="flex items-center justify-between">
-                            <h3 class="text-sm font-extrabold text-gray-900 dark:text-white">Report Status</h3>
-                        </div>
+                        <h3 class="text-sm font-extrabold text-gray-900 dark:text-white">Report Status</h3>
                         <div class="mt-4 flex items-center gap-5">
-                            <div class="relative w-24 h-24 rounded-full border-8 border-gray-100 dark:border-gray-700">
+                            <div class="relative w-24 h-24 shrink-0 rounded-full border-8 border-gray-100 dark:border-gray-700">
                                 <div class="absolute inset-0 rounded-full border-8 border-blue-600 border-r-amber-500 border-b-rose-500 border-l-emerald-600"></div>
                                 <div class="absolute inset-0 m-auto w-12 h-12 rounded-full bg-white dark:bg-gray-800"></div>
                             </div>
-                            <div class="space-y-2">
-                                <div v-for="s in reportStatus" :key="s.label" class="flex items-center gap-2 text-sm">
-                                    <span class="w-2.5 h-2.5 rounded-full" :class="s.color"></span>
-                                    <span class="text-gray-700 dark:text-gray-200">{{ s.label }}</span>
+                            <div class="space-y-1.5">
+                                <div v-for="s in reportStatus" :key="s.label" class="flex items-center justify-between gap-3 text-sm">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-2.5 h-2.5 rounded-full shrink-0" :class="s.color"></span>
+                                        <span class="text-gray-700 dark:text-gray-200">{{ s.label }}</span>
+                                    </div>
+                                    <span class="font-bold text-gray-900 dark:text-white">{{ s.value }}</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Report volume -->
+                    <!-- Report volume by department -->
                     <div class="xl:col-span-5 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm p-4">
-                        <h3 class="text-sm font-extrabold text-gray-900 dark:text-white">Report Volume by Depart</h3>
-                        <div class="mt-4 space-y-3">
-                            <div>
+                        <h3 class="text-sm font-extrabold text-gray-900 dark:text-white">Report Volume by Department</h3>
+                        <div v-if="volumeByDept.length" class="mt-4 space-y-3">
+                            <div v-for="v in volumeByDept" :key="v.name">
                                 <div class="flex justify-between text-xs text-gray-600 dark:text-gray-300 mb-1">
-                                    <span>Safety</span><span>54%</span>
+                                    <span class="truncate max-w-[70%]">{{ v.name }}</span>
+                                    <span>{{ v.percent }}%</span>
                                 </div>
                                 <div class="h-2.5 rounded-full bg-gray-100 dark:bg-gray-700 overflow-hidden">
-                                    <div class="h-2.5 bg-blue-600 rounded-full" style="width: 54%"></div>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="flex justify-between text-xs text-gray-600 dark:text-gray-300 mb-1">
-                                    <span>Quality</span><span>29%</span>
-                                </div>
-                                <div class="h-2.5 rounded-full bg-gray-100 dark:bg-gray-700 overflow-hidden">
-                                    <div class="h-2.5 bg-emerald-600 rounded-full" style="width: 29%"></div>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="flex justify-between text-xs text-gray-600 dark:text-gray-300 mb-1">
-                                    <span>Audit</span><span>17%</span>
-                                </div>
-                                <div class="h-2.5 rounded-full bg-gray-100 dark:bg-gray-700 overflow-hidden">
-                                    <div class="h-2.5 bg-amber-500 rounded-full" style="width: 17%"></div>
+                                    <div class="h-2.5 bg-blue-600 rounded-full transition-all" :style="{ width: v.percent + '%' }"></div>
                                 </div>
                             </div>
                         </div>
-                        <div class="mt-3 text-xs text-gray-400">Static placeholders for now</div>
+                        <div v-else class="mt-6 text-sm text-gray-400 text-center">No reports yet</div>
                     </div>
 
                     <!-- Actions -->
@@ -213,16 +225,13 @@ const recentReports = [
                             <span class="text-gray-500">›</span>
                         </Link>
 
+                        <!-- Total reports summary -->
                         <div class="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm p-4">
-                            <div class="text-sm font-extrabold text-gray-900 dark:text-white">Ongoing Investigations</div>
-                            <div class="mt-3 space-y-2">
-                                <div class="h-2.5 rounded-full bg-gray-100 dark:bg-gray-700 overflow-hidden">
-                                    <div class="h-2.5 bg-blue-600 rounded-full" style="width: 72%"></div>
-                                </div>
-                                <div class="h-2.5 rounded-full bg-gray-100 dark:bg-gray-700 overflow-hidden">
-                                    <div class="h-2.5 bg-emerald-600 rounded-full" style="width: 49%"></div>
-                                </div>
+                            <div class="text-sm font-extrabold text-gray-900 dark:text-white">Total Reports</div>
+                            <div class="mt-3 text-3xl font-extrabold text-gray-900 dark:text-white">
+                                {{ Object.values(statusCounts).reduce((a, b) => a + b, 0) }}
                             </div>
+                            <div class="mt-1 text-xs text-gray-500 dark:text-gray-400">across all departments</div>
                         </div>
                     </div>
                 </div>
@@ -232,7 +241,7 @@ const recentReports = [
                     <div class="xl:col-span-9 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm overflow-hidden">
                         <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
                             <div class="text-sm font-extrabold text-gray-900 dark:text-white">Recent Reports</div>
-                            <Link :href="route('companies.reports.index')" class="text-sm font-semibold text-brand-blue hover:text-brand-navy">
+                            <Link :href="route('companies.reports.index')" class="text-sm font-semibold text-blue-600 hover:text-blue-800 dark:text-blue-400">
                                 View all
                             </Link>
                         </div>
@@ -240,22 +249,28 @@ const recentReports = [
                             <table class="w-full text-sm">
                                 <thead class="bg-gray-50 dark:bg-gray-900/40 text-gray-600 dark:text-gray-300">
                                     <tr>
-                                        <th class="text-left font-semibold px-4 py-3">Report ID</th>
+                                        <th class="text-left font-semibold px-4 py-3">#</th>
                                         <th class="text-left font-semibold px-4 py-3">Title</th>
                                         <th class="text-left font-semibold px-4 py-3">Dept.</th>
-                                        <th class="text-left font-semibold px-4 py-3">Type</th>
                                         <th class="text-left font-semibold px-4 py-3">Status</th>
                                         <th class="text-left font-semibold px-4 py-3">Date</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                                    <tr v-for="r in recentReports" :key="r.id" class="hover:bg-gray-50 dark:hover:bg-gray-900/30">
-                                        <td class="px-4 py-3 font-semibold text-brand-blue">{{ r.id }}</td>
+                                    <tr v-if="!recentReports.length">
+                                        <td colspan="5" class="px-4 py-6 text-center text-sm text-gray-400">No reports yet</td>
+                                    </tr>
+                                    <tr
+                                        v-for="r in recentReports"
+                                        :key="r.id"
+                                        class="hover:bg-gray-50 dark:hover:bg-gray-900/30 cursor-pointer"
+                                        @click="router.visit(r.url)"
+                                    >
+                                        <td class="px-4 py-3 font-semibold text-blue-600 dark:text-blue-400">#{{ r.id }}</td>
                                         <td class="px-4 py-3 text-gray-900 dark:text-white">{{ r.title }}</td>
                                         <td class="px-4 py-3 text-gray-700 dark:text-gray-200">{{ r.dept }}</td>
-                                        <td class="px-4 py-3 text-gray-700 dark:text-gray-200">{{ r.type }}</td>
                                         <td class="px-4 py-3">
-                                            <span class="inline-flex items-center px-2 py-1 rounded-lg text-xs font-bold bg-slate-100 text-slate-700">
+                                            <span class="inline-flex items-center px-2 py-1 rounded-lg text-xs font-bold" :class="badgeClass(r.status)">
                                                 {{ r.status }}
                                             </span>
                                         </td>
@@ -267,31 +282,28 @@ const recentReports = [
                     </div>
 
                     <div class="xl:col-span-3 space-y-4">
+                        <!-- Safety Alerts from open safety reports -->
                         <div class="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm p-4">
-                            <div class="text-sm font-extrabold text-gray-900 dark:text-white">Recent Safety Alerts</div>
-                            <ul class="mt-3 space-y-2 text-sm text-gray-600 dark:text-gray-300">
-                                <li class="flex gap-2">
-                                    <span class="mt-2 h-1.5 w-1.5 rounded-full bg-rose-500"></span>
-                                    <span>Alert text here</span>
-                                </li>
-                                <li class="flex gap-2">
-                                    <span class="mt-2 h-1.5 w-1.5 rounded-full bg-amber-500"></span>
-                                    <span>Alert text here</span>
+                            <div class="text-sm font-extrabold text-gray-900 dark:text-white">Open Safety Reports</div>
+                            <ul v-if="safetyAlerts.length" class="mt-3 space-y-2 text-sm text-gray-600 dark:text-gray-300">
+                                <li v-for="a in safetyAlerts" :key="a.id" class="flex gap-2 cursor-pointer hover:text-gray-900 dark:hover:text-white" @click="router.visit(a.url)">
+                                    <span class="mt-1.5 h-1.5 w-1.5 rounded-full shrink-0" :class="alertDotClass(a.status)"></span>
+                                    <span class="truncate">{{ a.title }}</span>
                                 </li>
                             </ul>
+                            <div v-else class="mt-3 text-sm text-gray-400">No open safety reports</div>
                         </div>
 
                         <div class="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm p-4">
                             <div class="text-sm font-extrabold text-gray-900 dark:text-white">Export Reports</div>
                             <div class="mt-3 grid grid-cols-2 gap-2">
-                                <button type="button" class="px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-semibold hover:bg-gray-50 dark:hover:bg-gray-800 transition" disabled>
+                                <button type="button" class="px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-semibold hover:bg-gray-50 dark:hover:bg-gray-800 transition disabled:opacity-40 disabled:cursor-not-allowed" disabled>
                                     Excel
                                 </button>
-                                <button type="button" class="px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-semibold hover:bg-gray-50 dark:hover:bg-gray-800 transition" disabled>
+                                <button type="button" class="px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-semibold hover:bg-gray-50 dark:hover:bg-gray-800 transition disabled:opacity-40 disabled:cursor-not-allowed" disabled>
                                     PDF
                                 </button>
                             </div>
-                            <div class="mt-2 text-xs text-gray-400">Static placeholders for now</div>
                         </div>
                     </div>
                 </div>
@@ -356,4 +368,3 @@ const recentReports = [
         </div>
     </div>
 </template>
-

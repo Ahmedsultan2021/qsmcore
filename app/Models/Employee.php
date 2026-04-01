@@ -14,6 +14,7 @@ class Employee extends Authenticatable
 
     protected $fillable = [
         'company_id',
+        'department_id',
         'fname',
         'lname',
         'email',
@@ -37,5 +38,10 @@ class Employee extends Authenticatable
     public function company()
     {
         return $this->belongsTo(Company::class);
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
     }
 }

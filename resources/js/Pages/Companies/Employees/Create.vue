@@ -7,6 +7,7 @@ defineOptions({ layout: CompanyLayout });
 const props = defineProps({
     company_id: Number,
     roles: Array,
+    departments: Array,
 });
 
 const form = useForm({
@@ -17,6 +18,7 @@ const form = useForm({
     password_confirmation: "",
     phone: "",
     position: "",
+    department_id: "",
     roles: [],
 });
 
@@ -144,6 +146,23 @@ const submit = () => {
                 </div>
 
                 <div class="mb-4">
+                    <label for="department_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Department
+                    </label>
+                    <select
+                        id="department_id"
+                        v-model="form.department_id"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                        <option value="">— None —</option>
+                        <option v-for="dept in (departments ?? [])" :key="dept.id" :value="dept.id">
+                            {{ dept.name }}
+                        </option>
+                    </select>
+                    <div v-if="form.errors.department_id" class="mt-1 text-sm text-red-600">{{ form.errors.department_id }}</div>
+                </div>
+
+                <div class="mb-4">
                     <label for="roles" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Roles
                     </label>
@@ -153,8 +172,8 @@ const submit = () => {
                         multiple
                         class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                     >
-                        <option v-for="role in roles" :key="role.id" :value="role.id">
-                            {{ role.name }}
+                        <option v-for="role in (roles ?? [])" :key="role?.id" :value="role?.id">
+                            {{ role?.name }}
                         </option>
                     </select>
                     <div v-if="form.errors.roles" class="mt-1 text-sm text-red-600">{{ form.errors.roles }}</div>

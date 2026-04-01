@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Report;
 use App\Models\Department;
 use App\Models\Form;
+use App\Models\FormField;
 use App\Models\FormResponse;
+use App\Models\FormTemplate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -75,19 +77,16 @@ class CompanyReportController extends Controller
     public function create(Department $department)
     {
         $authEmployee = Auth::guard('employee')->user();
-        
-        // Ensure department belongs to same company
+
         if ($department->company_id !== $authEmployee->company_id) {
             abort(403);
         }
-        
-        $forms = Form::where('department_id', $department->id)
-            ->orderBy('name')
-            ->get();
-        
+
+        $formTemplates = $this->templatesForDepartment($authEmployee, $department);
+
         return Inertia::render('Companies/Reports/Create', [
-            'department' => $department,
-            'forms' => $forms,
+            'department'    => $department,
+            'formTemplates' => $formTemplates,
         ]);
     }
 
@@ -104,35 +103,25 @@ class CompanyReportController extends Controller
         }
         
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'kind' => 'required|string|max:255',
-            'kind_other' => 'nullable|string|max:255',
-            'description' => 'nullable|string',
-            'status' => 'required|in:draft,submitted,reviewed,approved,rejected',
-            'report_date' => 'required|date',
-            'forms' => 'nullable|array',
-            'forms.*' => 'exists:forms,id',
+            'title'              => 'required|string|max:255',
+            'description'        => 'nullable|string',
+            'status'             => 'required|in:draft,submitted,reviewed,approved,rejected',
+            'report_date'        => 'required|date',
+            'form_template_ids'  => 'nullable|array',
+            'form_template_ids.*'=> 'exists:form_templates,id',
         ]);
 
-        if (($validated['kind'] ?? null) === 'other') {
-            $validated['kind'] = $validated['kind_other'] ?? '';
-        }
-        $validated['kind'] = trim((string) ($validated['kind'] ?? ''));
-        if ($validated['kind'] === '') {
-            return back()->withErrors(['kind' => 'Kind is required.'])->onlyInput();
-        }
-
         $validated['department_id'] = $department->id;
-        $validated['created_by'] = $authEmployee->id;
+        $validated['created_by']    = $authEmployee->id;
 
-        $forms = $validated['forms'] ?? [];
-        unset($validated['forms']);
-        unset($validated['kind_other']);
+        $templateIds = $validated['form_template_ids'] ?? [];
+        unset($validated['form_template_ids']);
 
         $report = Report::create($validated);
-        
-        if (!empty($forms)) {
-            $report->forms()->attach($forms);
+
+        if (!empty($templateIds)) {
+            $formIds = $this->resolveFormIds($authEmployee->company_id, $department->id, $templateIds);
+            $report->forms()->attach($formIds);
         }
 
         return redirect()->route('companies.departments.reports.index', $department->id)
@@ -187,16 +176,13 @@ class CompanyReportController extends Controller
             abort(403);
         }
         
-        // Report is already scoped to department via route model binding
-        $forms = Form::where('department_id', $department->id)
-            ->orderBy('name')
-            ->get();
-        $report->load('forms');
-        
+        $formTemplates = $this->templatesForDepartment($authEmployee, $department);
+        $report->load('forms.formTemplate');
+
         return Inertia::render('Companies/Reports/Edit', [
-            'department' => $department,
-            'report' => $report,
-            'forms' => $forms,
+            'department'    => $department,
+            'report'        => $report,
+            'formTemplates' => $formTemplates,
         ]);
     }
 
@@ -212,36 +198,96 @@ class CompanyReportController extends Controller
             abort(403);
         }
         
-        // Report is already scoped to department via route model binding
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'kind' => 'required|string|max:255',
-            'kind_other' => 'nullable|string|max:255',
-            'description' => 'nullable|string',
-            'status' => 'required|in:draft,submitted,reviewed,approved,rejected',
-            'report_date' => 'required|date',
-            'forms' => 'nullable|array',
-            'forms.*' => 'exists:forms,id',
+            'title'              => 'required|string|max:255',
+            'description'        => 'nullable|string',
+            'status'             => 'required|in:draft,submitted,reviewed,approved,rejected',
+            'report_date'        => 'required|date',
+            'form_template_ids'  => 'nullable|array',
+            'form_template_ids.*'=> 'exists:form_templates,id',
         ]);
 
-        if (($validated['kind'] ?? null) === 'other') {
-            $validated['kind'] = $validated['kind_other'] ?? '';
-        }
-        $validated['kind'] = trim((string) ($validated['kind'] ?? ''));
-        if ($validated['kind'] === '') {
-            return back()->withErrors(['kind' => 'Kind is required.'])->onlyInput();
-        }
-
-        $forms = $validated['forms'] ?? [];
-        unset($validated['forms']);
-        unset($validated['kind_other']);
+        $templateIds = $validated['form_template_ids'] ?? [];
+        unset($validated['form_template_ids']);
 
         $report->update($validated);
-        
-        $report->forms()->sync($forms);
+
+        $formIds = $this->resolveFormIds($authEmployee->company_id, $department->id, $templateIds);
+        $report->forms()->sync($formIds);
 
         return redirect()->route('companies.departments.reports.index', $department->id)
             ->with('success', 'Report updated successfully');
+    }
+
+    // ── Helpers ───────────────────────────────────────────────────────────────
+
+    /**
+     * Return FormTemplate records that match the company's sector AND the
+     * department's form_category. Falls back to the full sector set when
+     * form_category is null (e.g. Airport Quality / Operations not yet seeded).
+     */
+    private function templatesForDepartment($authEmployee, Department $department): \Illuminate\Support\Collection
+    {
+        $company = $authEmployee->company;
+        $sector  = $company->sector;
+
+        if (!$sector) {
+            return collect();
+        }
+
+        $query = $sector->formTemplates()->orderBy('name');
+
+        if ($department->form_category) {
+            $query->where('category', $department->form_category);
+        }
+
+        return $query->get(['form_templates.id', 'form_templates.name', 'form_templates.category']);
+    }
+
+    /**
+     * For each selected FormTemplate ID, find an existing Form record for this
+     * company+department+template, or create one (copying fields from the template).
+     * Returns an array of Form IDs ready to attach/sync to a report.
+     */
+    private function resolveFormIds(int $companyId, int $departmentId, array $templateIds): array
+    {
+        $formIds = [];
+
+        foreach ($templateIds as $templateId) {
+            $form = Form::firstOrCreate(
+                [
+                    'company_id'       => $companyId,
+                    'department_id'    => $departmentId,
+                    'form_template_id' => $templateId,
+                ],
+                [
+                    'name' => FormTemplate::find($templateId)?->name ?? 'Form',
+                ]
+            );
+
+            // If newly created, copy fields from the template
+            if ($form->wasRecentlyCreated) {
+                $template = FormTemplate::with('formTemplateFields')->find($templateId);
+                if ($template) {
+                    foreach ($template->formTemplateFields as $order => $tf) {
+                        FormField::create([
+                            'form_id'     => $form->id,
+                            'field_type'  => $tf->field_type,
+                            'label'       => $tf->label,
+                            'name'        => $tf->name,
+                            'placeholder' => $tf->placeholder,
+                            'required'    => $tf->required,
+                            'options'     => $tf->options,
+                            'order'       => $order,
+                        ]);
+                    }
+                }
+            }
+
+            $formIds[] = $form->id;
+        }
+
+        return $formIds;
     }
 
     /**

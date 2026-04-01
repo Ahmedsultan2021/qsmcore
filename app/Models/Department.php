@@ -13,6 +13,7 @@ class Department extends Model
         'company_id',
         'name',
         'description',
+        'form_category',
         'manager_name',
         'phone',
         'email',

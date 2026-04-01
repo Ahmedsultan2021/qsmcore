@@ -6,23 +6,18 @@ defineOptions({ layout: CompanyLayout });
 
 const props = defineProps({
     department: Object,
-    forms: Array,
+    formTemplates: Array,
 });
 
 const form = useForm({
     title: "",
-    kind: "safety",
-    kind_other: "",
     description: "",
     status: "draft",
     report_date: new Date().toISOString().split('T')[0],
-    forms: [],
+    form_template_ids: [],
 });
 
 const submit = () => {
-    if (form.kind === "other") {
-        form.kind = (form.kind_other || "").trim();
-    }
     form.post(route("companies.departments.reports.store", props.department.id));
 };
 </script>
@@ -72,37 +67,6 @@ const submit = () => {
                     <div v-if="form.errors.description" class="mt-1 text-sm text-red-600">{{ form.errors.description }}</div>
                 </div>
 
-                <div class="mb-4">
-                    <label for="kind" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Kind <span class="text-red-500">*</span>
-                    </label>
-                    <select
-                        id="kind"
-                        v-model="form.kind"
-                        required
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                    >
-                        <option value="safety">Safety</option>
-                        <option value="quality">Quality</option>
-                        <option value="other">Other</option>
-                    </select>
-                    <div v-if="form.errors.kind" class="mt-1 text-sm text-red-600">{{ form.errors.kind }}</div>
-                </div>
-
-                <div v-if="form.kind === 'other'" class="mb-4">
-                    <label for="kind_other" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Other Kind <span class="text-red-500">*</span>
-                    </label>
-                    <input
-                        id="kind_other"
-                        v-model="form.kind_other"
-                        type="text"
-                        placeholder="e.g. Near Miss, Observation, Security"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                    />
-                    <div v-if="form.errors.kind_other" class="mt-1 text-sm text-red-600">{{ form.errors.kind_other }}</div>
-                </div>
-
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div>
                         <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -139,20 +103,20 @@ const submit = () => {
                 </div>
 
                 <div class="mb-4">
-                    <label for="forms" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label for="form_template_ids" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Attach Forms
                     </label>
                     <select
-                        id="forms"
-                        v-model="form.forms"
+                        id="form_template_ids"
+                        v-model="form.form_template_ids"
                         multiple
                         class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                     >
-                        <option v-for="formOption in forms" :key="formOption.id" :value="formOption.id">
-                            {{ formOption.name }}
+                        <option v-for="t in (formTemplates ?? [])" :key="t.id" :value="t.id">
+                            {{ t.name }}
                         </option>
                     </select>
-                    <div v-if="form.errors.forms" class="mt-1 text-sm text-red-600">{{ form.errors.forms }}</div>
+                    <div v-if="form.errors.form_template_ids" class="mt-1 text-sm text-red-600">{{ form.errors.form_template_ids }}</div>
                     <p class="mt-1 text-xs text-gray-500">Hold Ctrl (or Cmd on Mac) to select multiple forms</p>
                 </div>
 

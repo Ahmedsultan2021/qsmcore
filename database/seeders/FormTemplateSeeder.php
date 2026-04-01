@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\FormTemplate;
 use App\Models\FormTemplateField;
 use App\Models\Industry;
+use App\Models\Sector;
 use Illuminate\Database\Seeder;
 
 class FormTemplateSeeder extends Seeder
@@ -1582,10 +1583,45 @@ class FormTemplateSeeder extends Seeder
             ],
         ];
 
-        // Resolve the three platform industries once
-        $aviationIndustry      = Industry::where('name', 'Aviation')->first();
-        $ogeIndustry           = Industry::where('name', 'OGE')->first();
-        $logisticsIndustry     = Industry::where('name', 'Logistics & Transportation')->first();
+        // ── Resolve industries ────────────────────────────────────────────────────
+        $aviationIndustry  = Industry::where('name', 'Aviation')->first();
+        $ogeIndustry       = Industry::where('name', 'OGE')->first();
+        $logisticsIndustry = Industry::where('name', 'Logistics & Transportation')->first();
+
+        // ── Resolve sectors (keyed as "IndustryName::SectorName") ─────────────────
+        $sectors = Sector::with('industry')->get()->keyBy(
+            fn ($s) => $s->industry->name . '::' . $s->name
+        );
+
+        // ── Category → sector(s) map ──────────────────────────────────────────────
+        // Each entry lists one or more [IndustryName, SectorName] pairs so that a
+        // single template can appear in multiple sectors (e.g. L&T safety forms
+        // apply to Maritime, Rail, and Road Transport simultaneously).
+        $categoryToSectors = [
+            // AVIATION — Airlines sector
+            'Aviation - Flight Ops'               => [['Aviation', 'Airlines']],
+            'Aviation - Ground Safety'            => [['Aviation', 'Airlines']],
+            'Aviation - OCC'                      => [['Aviation', 'Airlines']],
+            'Aviation - Maintenance'              => [['Aviation', 'Airlines']],
+            'Aviation - Training'                 => [['Aviation', 'Airlines']],
+            'Aviation - Safety'                   => [['Aviation', 'Airlines']],
+            'Aviation - Quality'                  => [['Aviation', 'Airlines']],
+            // AVIATION — MRO sector
+            'Aviation - MRO'                      => [['Aviation', 'MRO']],
+            'Aviation - MRO Safety'               => [['Aviation', 'MRO']],
+            'Aviation - MRO Quality'              => [['Aviation', 'MRO']],
+            // AVIATION — Airport sector
+            'Aviation - Airport Safety'           => [['Aviation', 'Airport']],
+            // OGE sectors
+            'OGE Safety'                          => [['OGE', 'Safety']],
+            'OGE Quality'                         => [['OGE', 'Quality']],
+            // Logistics & Transportation — all three transport sectors
+            'Logistics & Transportation - Safety' => [
+                ['Logistics & Transportation', 'Maritime'],
+                ['Logistics & Transportation', 'Rail'],
+                ['Logistics & Transportation', 'Road Transport'],
+            ],
+        ];
 
         foreach ($templates as $templateData) {
             $fields = $templateData['fields'];
@@ -1596,8 +1632,9 @@ class FormTemplateSeeder extends Seeder
                 $templateData
             );
 
-            // Attach to the correct industry based on category prefix
             $category = $templateData['category'];
+
+            // ── Attach industry ───────────────────────────────────────────────────
             if (str_starts_with($category, 'Aviation') && $aviationIndustry) {
                 $template->industries()->syncWithoutDetaching([$aviationIndustry->id]);
             } elseif (str_starts_with($category, 'OGE') && $ogeIndustry) {
@@ -1606,26 +1643,40 @@ class FormTemplateSeeder extends Seeder
                 $template->industries()->syncWithoutDetaching([$logisticsIndustry->id]);
             }
 
-            // Skip if template already has fields (avoid duplicates on re-seed)
+            // ── Attach sector(s) ──────────────────────────────────────────────────
+            if (isset($categoryToSectors[$category])) {
+                $sectorIds = [];
+                foreach ($categoryToSectors[$category] as [$industryName, $sectorName]) {
+                    $key = $industryName . '::' . $sectorName;
+                    if (isset($sectors[$key])) {
+                        $sectorIds[] = $sectors[$key]->id;
+                    }
+                }
+                if ($sectorIds) {
+                    $template->sectors()->syncWithoutDetaching($sectorIds);
+                }
+            }
+
+            // ── Seed fields (skip if already seeded) ──────────────────────────────
             if ($template->formTemplateFields()->exists()) {
                 continue;
             }
 
             foreach ($fields as $order => $fieldData) {
-                $fieldData['order'] = $order;
-                $fieldData['required'] = $fieldData['required'] ?? false;
-                $fieldData['options'] = $fieldData['options'] ?? null;
+                $fieldData['order']       = $order;
+                $fieldData['required']    = $fieldData['required'] ?? false;
+                $fieldData['options']     = $fieldData['options'] ?? null;
                 $fieldData['placeholder'] = $fieldData['placeholder'] ?? null;
 
                 FormTemplateField::create([
                     'form_template_id' => $template->id,
-                    'field_type' => $fieldData['field_type'],
-                    'label' => $fieldData['label'],
-                    'name' => $fieldData['name'],
-                    'placeholder' => $fieldData['placeholder'],
-                    'required' => $fieldData['required'],
-                    'options' => $fieldData['options'],
-                    'order' => $fieldData['order'],
+                    'field_type'       => $fieldData['field_type'],
+                    'label'            => $fieldData['label'],
+                    'name'             => $fieldData['name'],
+                    'placeholder'      => $fieldData['placeholder'],
+                    'required'         => $fieldData['required'],
+                    'options'          => $fieldData['options'],
+                    'order'            => $fieldData['order'],
                 ]);
             }
         }

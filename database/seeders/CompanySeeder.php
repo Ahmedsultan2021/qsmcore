@@ -8,83 +8,95 @@ use Illuminate\Database\Seeder;
 
 class CompanySeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         $companies = [
+            // ── AVIATION / Airlines ───────────────────────────────────────────────
             [
-                'sector' => 'Food Manufacturing',
-                'industry' => 'Manufacturing',
-                'name' => 'United Foods Co.',
-                'email' => 'info@united-foods.com',
-                'phone' => '+20223456789',
-                'address' => 'Cairo, Industrial Zone',
-                'description' => 'Leading company in food processing and packaging',
+                'industry' => 'Aviation',
+                'sector'   => 'Airlines',
+                'name'     => 'SkyLine Airlines',
+                'email'    => 'info@skyline-airlines.com',
+                'phone'    => '+1-800-100-1000',
+                'address'  => 'Terminal 1, International Airport',
+                'description' => 'Full-service commercial airline operating domestic and international routes',
             ],
+
+            // ── AVIATION / MRO ────────────────────────────────────────────────────
             [
-                'sector' => 'Software',
-                'industry' => 'Technology',
-                'name' => 'Advanced Technology Inc.',
-                'email' => 'contact@advanced-tech.com',
-                'phone' => '+20234567890',
-                'address' => 'Nasr City, Cairo',
-                'description' => 'Software solutions and application development',
+                'industry' => 'Aviation',
+                'sector'   => 'MRO',
+                'name'     => 'AeroTech MRO',
+                'email'    => 'ops@aerotech-mro.com',
+                'phone'    => '+1-800-200-2000',
+                'address'  => 'Hangar Complex, Aviation Park',
+                'description' => 'EASA/FAA-certified aircraft maintenance, repair & overhaul facility',
             ],
+
+            // ── AVIATION / Airport ────────────────────────────────────────────────
             [
-                'sector' => 'Financial Services',
-                'industry' => 'Services',
-                'name' => 'Investment Finance Corp.',
-                'email' => 'info@invest-finance.com',
-                'phone' => '+20245678901',
-                'address' => 'Maadi, Cairo',
-                'description' => 'Financial and investment services',
+                'industry' => 'Aviation',
+                'sector'   => 'Airport',
+                'name'     => 'Central Airport Authority',
+                'email'    => 'info@central-airport.com',
+                'phone'    => '+1-800-300-3000',
+                'address'  => 'Airport Boulevard, Central City',
+                'description' => 'International airport operator managing airside and landside operations',
             ],
+
+            // ── OGE / Safety ──────────────────────────────────────────────────────
             [
-                'sector' => 'Hospitals',
-                'industry' => 'Healthcare',
-                'name' => 'Modern Hospitals Group',
-                'email' => 'info@modern-hospitals.com',
-                'phone' => '+20256789012',
-                'address' => 'Sheikh Zayed, Giza',
-                'description' => 'Network of hospitals and medical centers',
+                'industry' => 'OGE',
+                'sector'   => 'Safety',
+                'name'     => 'Gulf Petroleum HSE Ltd.',
+                'email'    => 'hse@gulf-petroleum.com',
+                'phone'    => '+966-11-400-4000',
+                'address'  => 'Offshore Platform Zone, Gulf Region',
+                'description' => 'Oil & gas operator with a dedicated HSE safety management division',
             ],
+
+            // ── OGE / Quality ─────────────────────────────────────────────────────
             [
-                'sector' => 'Contracting',
-                'industry' => 'Construction',
-                'name' => 'National Building Co.',
-                'email' => 'projects@national-build.com',
-                'phone' => '+20267890123',
-                'address' => '6th of October City',
-                'description' => 'General contracting and infrastructure projects',
+                'industry' => 'OGE',
+                'sector'   => 'Quality',
+                'name'     => 'Petroleum Quality Corp.',
+                'email'    => 'quality@petro-qc.com',
+                'phone'    => '+966-11-500-5000',
+                'address'  => 'Industrial Zone, Energy City',
+                'description' => 'Downstream petroleum processing company with ISO-certified quality division',
             ],
+
+            // ── LOGISTICS & TRANSPORTATION / Maritime ─────────────────────────────
             [
-                'sector' => 'Higher Education',
-                'industry' => 'Education',
-                'name' => 'Renaissance Academy',
-                'email' => 'admission@renaissance-academy.edu',
-                'phone' => '+20278901234',
-                'address' => 'Alexandria',
-                'description' => 'Higher education institution',
+                'industry' => 'Logistics & Transportation',
+                'sector'   => 'Maritime',
+                'name'     => 'SeaRoute Maritime Ltd.',
+                'email'    => 'ops@searoute-maritime.com',
+                'phone'    => '+44-20-600-6000',
+                'address'  => 'Port Authority Building, Harbor District',
+                'description' => 'International sea freight and maritime vessel management company',
             ],
+
+            // ── LOGISTICS & TRANSPORTATION / Rail ────────────────────────────────
             [
-                'sector' => 'Retail',
-                'industry' => 'Retail',
-                'name' => 'Loyalty Stores Chain',
-                'email' => 'support@loyalty-stores.com',
-                'phone' => '+20289012345',
-                'address' => 'Multiple branches',
-                'description' => 'Retail store network',
+                'industry' => 'Logistics & Transportation',
+                'sector'   => 'Rail',
+                'name'     => 'RailConnect Operations',
+                'email'    => 'ops@railconnect.com',
+                'phone'    => '+44-20-700-7000',
+                'address'  => 'Central Rail Depot, Junction City',
+                'description' => 'National rail freight and passenger operations company',
             ],
+
+            // ── LOGISTICS & TRANSPORTATION / Road Transport ───────────────────────
             [
-                'sector' => 'Oil & Gas',
-                'industry' => 'Energy',
-                'name' => 'Eastern Energy Co.',
-                'email' => 'info@eastern-energy.com',
-                'phone' => '+20290123456',
-                'address' => 'Suez',
-                'description' => 'Oil and gas extraction and refining',
+                'industry' => 'Logistics & Transportation',
+                'sector'   => 'Road Transport',
+                'name'     => 'FreightLink Transport Co.',
+                'email'    => 'ops@freightlink.com',
+                'phone'    => '+44-20-800-8000',
+                'address'  => 'Logistics Hub, Motorway Park',
+                'description' => 'Long-haul road haulage and last-mile freight distribution company',
             ],
         ];
 
@@ -100,14 +112,14 @@ class CompanySeeder extends Seeder
             Company::firstOrCreate(
                 [
                     'sector_id' => $sector->id,
-                    'name' => $data['name'],
+                    'name'      => $data['name'],
                 ],
                 [
-                    'sector_id' => $sector->id,
-                    'name' => $data['name'],
-                    'email' => $data['email'],
-                    'phone' => $data['phone'],
-                    'address' => $data['address'],
+                    'sector_id'   => $sector->id,
+                    'name'        => $data['name'],
+                    'email'       => $data['email'],
+                    'phone'       => $data['phone'],
+                    'address'     => $data['address'],
                     'description' => $data['description'],
                 ]
             );

@@ -1,0 +1,42 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to server via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd /home/safynyrx/public_html/qsm
+
+            # Put app in maintenance mode
+            php artisan down
+
+            # Pull latest changes
+            git pull origin main
+
+            # Install/update dependencies
+            composer install --no-dev --optimize-autoloader
+            npm install
+            npm run build
+
+            # Run migrations safely
+            php artisan migrate --force
+
+            # Clear & rebuild cache
+            php artisan optimize:clear
+            php artisan optimize
+
+            # Bring app back up
+            php artisan up

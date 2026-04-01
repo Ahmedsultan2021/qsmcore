@@ -54,6 +54,9 @@ const navs = computed(() => [
                             Position
                         </th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                            Department
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                             Roles
                         </th>
                         <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
@@ -76,13 +79,16 @@ const navs = computed(() => [
                             {{ employee.position || "-" }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                            {{ employee.department?.name || "-" }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                             <div class="flex flex-wrap gap-1">
                                 <span
-                                    v-for="role in employee.roles"
-                                    :key="role.id"
+                                    v-for="role in (employee.roles ?? [])"
+                                    :key="role?.id"
                                     class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
                                 >
-                                    {{ role.name }}
+                                    {{ role?.name }}
                                 </span>
                                 <span v-if="!employee.roles || employee.roles.length === 0" class="text-gray-400">-</span>
                             </div>

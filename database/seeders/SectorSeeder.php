@@ -8,47 +8,51 @@ use Illuminate\Database\Seeder;
 
 class SectorSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         $sectors = [
-            'Manufacturing' => [
-                ['name' => 'Food Manufacturing', 'description' => 'Food processing and packaging'],
-                ['name' => 'Pharmaceuticals', 'description' => 'Pharmaceutical manufacturing'],
-                ['name' => 'Automotive', 'description' => 'Vehicle assembly and components'],
-                ['name' => 'Textiles', 'description' => 'Textiles and apparel'],
+            // ── AVIATION ─────────────────────────────────────────────────────────
+            'Aviation' => [
+                [
+                    'name'        => 'Airlines',
+                    'description' => 'Commercial airline operations including flight ops, ground ops, OCC, maintenance, training, safety, and quality',
+                ],
+                [
+                    'name'        => 'MRO',
+                    'description' => 'Maintenance, Repair & Overhaul facilities covering safety, quality, and operational reports',
+                ],
+                [
+                    'name'        => 'Airport',
+                    'description' => 'Airport management and operations covering safety, quality, and operations reports',
+                ],
             ],
-            'Services' => [
-                ['name' => 'Financial Services', 'description' => 'Banking and insurance'],
-                ['name' => 'Consulting', 'description' => 'Management and legal consulting'],
-                ['name' => 'Logistics', 'description' => 'Transport and warehousing'],
+
+            // ── OGE ──────────────────────────────────────────────────────────────
+            'OGE' => [
+                [
+                    'name'        => 'Safety',
+                    'description' => 'HSE safety reporting for oil, gas & energy operations',
+                ],
+                [
+                    'name'        => 'Quality',
+                    'description' => 'Quality management reporting for oil, gas & energy operations',
+                ],
             ],
-            'Technology' => [
-                ['name' => 'Software', 'description' => 'Software and application development'],
-                ['name' => 'Telecommunications', 'description' => 'Networks and communications services'],
-                ['name' => 'Cybersecurity', 'description' => 'Information and systems security'],
-            ],
-            'Healthcare' => [
-                ['name' => 'Hospitals', 'description' => 'Institutional healthcare'],
-                ['name' => 'Pharmaceutical Distribution', 'description' => 'Drug distribution and marketing'],
-            ],
-            'Construction' => [
-                ['name' => 'Contracting', 'description' => 'Building and construction works'],
-                ['name' => 'Real Estate', 'description' => 'Real estate development and management'],
-            ],
-            'Education' => [
-                ['name' => 'Higher Education', 'description' => 'Universities and institutes'],
-                ['name' => 'Training', 'description' => 'Training and development centers'],
-            ],
-            'Retail' => [
-                ['name' => 'Retail', 'description' => 'Retail stores'],
-                ['name' => 'Wholesale', 'description' => 'Wholesale and distribution'],
-            ],
-            'Energy' => [
-                ['name' => 'Oil & Gas', 'description' => 'Oil and gas extraction and refining'],
-                ['name' => 'Renewable Energy', 'description' => 'Solar and wind energy'],
+
+            // ── LOGISTICS & TRANSPORTATION ────────────────────────────────────────
+            'Logistics & Transportation' => [
+                [
+                    'name'        => 'Maritime',
+                    'description' => 'Sea freight and maritime vessel operations',
+                ],
+                [
+                    'name'        => 'Rail',
+                    'description' => 'Rail transport and track operations',
+                ],
+                [
+                    'name'        => 'Road Transport',
+                    'description' => 'Road haulage, freight logistics, and driver operations',
+                ],
             ],
         ];
 
@@ -57,11 +61,12 @@ class SectorSeeder extends Seeder
             if (!$industry) {
                 continue;
             }
+
             foreach ($sectorList as $sector) {
                 Sector::firstOrCreate(
                     [
                         'industry_id' => $industry->id,
-                        'name' => $sector['name'],
+                        'name'        => $sector['name'],
                     ],
                     array_merge($sector, ['industry_id' => $industry->id])
                 );

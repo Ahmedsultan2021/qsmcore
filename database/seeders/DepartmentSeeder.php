@@ -8,162 +8,85 @@ use Illuminate\Database\Seeder;
 
 class DepartmentSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        $departments = [
-            [
-                'company' => 'United Foods Co.',
-                'name' => 'Production',
-                'description' => 'Production lines and quality management',
-                'manager_name' => 'Ahmed Mahmoud',
-                'phone' => '+20223456790',
-                'email' => 'production@united-foods.com',
+        // form_category must exactly match the 'category' value used in FormTemplateSeeder
+        // so that CompanyReportController can load the correct FormTemplate records per dept.
+        $map = [
+            // ── AVIATION / Airlines ───────────────────────────────────────────────
+            'SkyLine Airlines' => [
+                ['name' => 'Flight Operations', 'form_category' => 'Aviation - Flight Ops',    'description' => 'Crew scheduling, flight dispatch, and airborne safety management'],
+                ['name' => 'Ground Operations', 'form_category' => 'Aviation - Ground Safety', 'description' => 'Ramp services, turnaround coordination, and ground safety'],
+                ['name' => 'OCC',               'form_category' => 'Aviation - OCC',           'description' => 'Operations Control Center — disruption management and crew coordination'],
+                ['name' => 'Maintenance',       'form_category' => 'Aviation - Maintenance',   'description' => 'Line and base aircraft maintenance and MEL control'],
+                ['name' => 'Training',          'form_category' => 'Aviation - Training',      'description' => 'Crew training, simulator sessions, and competency management'],
+                ['name' => 'Safety',            'form_category' => 'Aviation - Safety',        'description' => 'Safety Management System, hazard reporting, and investigations'],
+                ['name' => 'Quality',           'form_category' => 'Aviation - Quality',       'description' => 'Quality audits, NCR management, and compliance monitoring'],
             ],
-            [
-                'company' => 'United Foods Co.',
-                'name' => 'Sales',
-                'description' => 'Sales and distribution',
-                'manager_name' => 'Sara Ali',
-                'phone' => '+20223456791',
-                'email' => 'sales@united-foods.com',
+
+            // ── AVIATION / MRO ────────────────────────────────────────────────────
+            'AeroTech MRO' => [
+                ['name' => 'Safety Reports',      'form_category' => 'Aviation - MRO Safety',  'description' => 'MRO workplace safety, incident reporting, and risk assessment'],
+                ['name' => 'Quality Reports',     'form_category' => 'Aviation - MRO Quality', 'description' => 'MRO audits, NCR/CAR/PAR, calibration, and supplier evaluation'],
+                ['name' => 'Operational Reports', 'form_category' => 'Aviation - MRO',         'description' => 'Technical defects, MEL control, scheduled maintenance, and manpower utilization'],
             ],
-            [
-                'company' => 'United Foods Co.',
-                'name' => 'Human Resources',
-                'description' => 'Recruitment and development',
-                'manager_name' => 'Mohamed Hassan',
-                'phone' => '+20223456792',
-                'email' => 'hr@united-foods.com',
+
+            // ── AVIATION / Airport ────────────────────────────────────────────────
+            'Central Airport Authority' => [
+                ['name' => 'Safety Reports',     'form_category' => 'Aviation - Airport Safety', 'description' => 'Airside incidents, ground vehicle incidents, wildlife strikes, and runway hazards'],
+                ['name' => 'Quality Reports',    'form_category' => null,                        'description' => 'Internal audits, terminal inspections, compliance audits, NCR/CAR/PAR, and contractor evaluation'],
+                ['name' => 'Operations Reports', 'form_category' => null,                        'description' => 'Turnaround oversight, fuel handling, GSE checks, and lost & found audits'],
             ],
-            [
-                'company' => 'Advanced Technology Inc.',
-                'name' => 'Development',
-                'description' => 'Software and application development',
-                'manager_name' => 'Khaled Amr',
-                'phone' => null,
-                'email' => 'dev@advanced-tech.com',
+
+            // ── OGE / Safety ──────────────────────────────────────────────────────
+            'Gulf Petroleum HSE Ltd.' => [
+                ['name' => 'Safety', 'form_category' => 'OGE Safety', 'description' => 'Incident/accident, near miss, hazard, personal injury, spill, fire, equipment failure, process safety, unsafe act, risk assessment'],
             ],
-            [
-                'company' => 'Advanced Technology Inc.',
-                'name' => 'Technical Support',
-                'description' => 'Customer and operations support',
-                'manager_name' => 'Nora Ahmed',
-                'phone' => null,
-                'email' => 'support@advanced-tech.com',
+
+            // ── OGE / Quality ─────────────────────────────────────────────────────
+            'Petroleum Quality Corp.' => [
+                ['name' => 'Quality', 'form_category' => 'OGE Quality', 'description' => 'Internal audits, NCR, CAR, PAR, inspection, material defect, supplier, change management, calibration, quality improvement'],
             ],
-            [
-                'company' => 'Investment Finance Corp.',
-                'name' => 'Investment',
-                'description' => 'Portfolio and investment management',
-                'manager_name' => 'Omar Yusuf',
-                'phone' => null,
-                'email' => 'investment@invest-finance.com',
+
+            // ── LOGISTICS & TRANSPORTATION / Maritime ─────────────────────────────
+            'SeaRoute Maritime Ltd.' => [
+                ['name' => 'Safety',  'form_category' => 'Logistics & Transportation - Safety', 'description' => 'Maritime incident, near miss, safety observations, man overboard, pollution/spill'],
+                ['name' => 'Quality', 'form_category' => null,                                  'description' => 'NCR, audit checklists, and CAPA forms'],
             ],
-            [
-                'company' => 'Investment Finance Corp.',
-                'name' => 'Accounting',
-                'description' => 'Finance and accounting',
-                'manager_name' => 'Huda Ibrahim',
-                'phone' => null,
-                'email' => 'accounts@invest-finance.com',
+
+            // ── LOGISTICS & TRANSPORTATION / Rail ────────────────────────────────
+            'RailConnect Operations' => [
+                ['name' => 'Safety',  'form_category' => 'Logistics & Transportation - Safety', 'description' => 'Track incidents, near miss, safety observations, level crossing incidents'],
+                ['name' => 'Quality', 'form_category' => null,                                  'description' => 'NCR, audit checklists, and CAPA forms'],
             ],
-            [
-                'company' => 'Modern Hospitals Group',
-                'name' => 'Emergency',
-                'description' => 'Emergency and critical care',
-                'manager_name' => 'Dr. Yasser Fathy',
-                'phone' => null,
-                'email' => null,
-            ],
-            [
-                'company' => 'Modern Hospitals Group',
-                'name' => 'Surgery',
-                'description' => 'Surgical operations',
-                'manager_name' => 'Dr. Mona Said',
-                'phone' => null,
-                'email' => null,
-            ],
-            [
-                'company' => 'National Building Co.',
-                'name' => 'Projects',
-                'description' => 'Project and site management',
-                'manager_name' => 'Tariq Abdullah',
-                'phone' => null,
-                'email' => 'projects@national-build.com',
-            ],
-            [
-                'company' => 'National Building Co.',
-                'name' => 'Procurement',
-                'description' => 'Procurement and warehousing',
-                'manager_name' => 'Fatima Mohamed',
-                'phone' => null,
-                'email' => 'procurement@national-build.com',
-            ],
-            [
-                'company' => 'Renaissance Academy',
-                'name' => 'Academic Affairs',
-                'description' => 'Curriculum and examinations',
-                'manager_name' => 'Dr. Karim Abdelrahman',
-                'phone' => null,
-                'email' => null,
-            ],
-            [
-                'company' => 'Renaissance Academy',
-                'name' => 'Student Affairs',
-                'description' => 'Admissions, registration and activities',
-                'manager_name' => 'Lamya Hussein',
-                'phone' => null,
-                'email' => null,
-            ],
-            [
-                'company' => 'Loyalty Stores Chain',
-                'name' => 'Warehouse',
-                'description' => 'Inventory and supply management',
-                'manager_name' => 'Ramy Saad',
-                'phone' => null,
-                'email' => null,
-            ],
-            [
-                'company' => 'Eastern Energy Co.',
-                'name' => 'Operations',
-                'description' => 'Extraction and refining operations',
-                'manager_name' => 'Waleed Gamal',
-                'phone' => null,
-                'email' => null,
-            ],
-            [
-                'company' => 'Eastern Energy Co.',
-                'name' => 'Maintenance',
-                'description' => 'Facilities and equipment maintenance',
-                'manager_name' => 'Emad Nasser',
-                'phone' => null,
-                'email' => null,
+
+            // ── LOGISTICS & TRANSPORTATION / Road Transport ───────────────────────
+            'FreightLink Transport Co.' => [
+                ['name' => 'Safety',  'form_category' => 'Logistics & Transportation - Safety', 'description' => 'Road incidents, near miss, driver behavior, load/vehicle inspections'],
+                ['name' => 'Quality', 'form_category' => null,                                  'description' => 'NCR, audit checklists, and CAPA forms'],
             ],
         ];
 
-        foreach ($departments as $data) {
-            $company = Company::where('name', $data['company'])->first();
+        foreach ($map as $companyName => $departments) {
+            $company = Company::where('name', $companyName)->first();
             if (!$company) {
                 continue;
             }
 
-            Department::firstOrCreate(
-                [
-                    'company_id' => $company->id,
-                    'name' => $data['name'],
-                ],
-                [
-                    'company_id' => $company->id,
-                    'name' => $data['name'],
-                    'description' => $data['description'],
-                    'manager_name' => $data['manager_name'],
-                    'phone' => $data['phone'],
-                    'email' => $data['email'],
-                ]
-            );
+            foreach ($departments as $dept) {
+                Department::firstOrCreate(
+                    [
+                        'company_id' => $company->id,
+                        'name'       => $dept['name'],
+                    ],
+                    [
+                        'company_id'    => $company->id,
+                        'name'          => $dept['name'],
+                        'description'   => $dept['description'],
+                        'form_category' => $dept['form_category'],
+                    ]
+                );
+            }
         }
     }
 }

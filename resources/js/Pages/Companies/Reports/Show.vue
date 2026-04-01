@@ -208,12 +208,6 @@ const deleteFile = (reportFileId) => {
                                 <p class="font-medium text-gray-900 dark:text-white">{{ new Date(report.report_date).toLocaleDateString() }}</p>
                             </div>
                             <div>
-                                <p class="text-gray-500 dark:text-gray-400 mb-0.5">Kind</p>
-                                <p class="font-medium text-gray-900 dark:text-white">
-                                    {{ report.kind ? report.kind.charAt(0).toUpperCase() + report.kind.slice(1) : '-' }}
-                                </p>
-                            </div>
-                            <div>
                                 <p class="text-gray-500 dark:text-gray-400 mb-0.5">Created By</p>
                                 <p class="font-medium text-gray-900 dark:text-white">{{ report.creator ? `${report.creator.fname} ${report.creator.lname}` : '-' }}</p>
                             </div>

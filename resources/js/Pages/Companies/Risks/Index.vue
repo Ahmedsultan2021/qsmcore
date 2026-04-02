@@ -385,18 +385,17 @@ watch([search], () => {
                 <div class="inline-block min-w-full">
                     <!-- Y-axis label -->
                     <div class="flex items-center mb-2">
-                        <div class="w-24 text-center">
-                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300 transform -rotate-90 inline-block">
-                                Impact →
+                        <div class="w-8 text-center">
+                            <span class="text-xs font-medium text-gray-700 dark:text-gray-300 transform -rotate-90 inline-block whitespace-nowrap">
+                                Impact
                             </span>
                         </div>
-                        <div class="flex-1"></div>
                     </div>
                     
                     <div class="flex">
                         <!-- Y-axis values -->
-                        <div class="w-24 flex flex-col-reverse justify-between pr-2">
-                            <div v-for="i in 5" :key="i" class="h-24 flex items-center justify-end">
+                        <div class="flex flex-col-reverse pr-2">
+                            <div v-for="i in 5" :key="i" class="h-24 w-8 flex items-center justify-end">
                                 <span class="text-xs font-medium text-gray-600 dark:text-gray-400">{{ i }}</span>
                             </div>
                         </div>
@@ -429,8 +428,8 @@ watch([search], () => {
                     
                     <!-- X-axis values -->
                     <div class="flex mt-2">
-                        <div class="w-24"></div>
-                        <div class="flex-1 flex justify-around">
+                        <div class="w-8"></div>
+                        <div class="flex">
                             <div v-for="i in 5" :key="i" class="w-24 text-center">
                                 <span class="text-xs font-medium text-gray-600 dark:text-gray-400">{{ i }}</span>
                             </div>
@@ -439,8 +438,8 @@ watch([search], () => {
                     
                     <!-- X-axis label -->
                     <div class="flex mt-2">
-                        <div class="w-24"></div>
-                        <div class="flex-1 text-center">
+                        <div class="w-8"></div>
+                        <div class="text-center" style="width: calc(5 * 6rem)">
                             <span class="text-sm font-medium text-gray-700 dark:text-gray-300">← Likelihood</span>
                         </div>
                     </div>

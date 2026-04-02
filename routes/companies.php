@@ -161,9 +161,9 @@ Route::middleware('auth:employee')->prefix('companies')->name('companies.')->gro
     Route::delete('departments/{department}/reports/{report}/files/{reportFile}', [CompanyReportFileController::class, 'destroy'])->name('departments.reports.files.destroy')->scopeBindings();
 
     // Form Submissions routes (nested under departments.reports.forms)
-    Route::get('departments/{department}/reports/{report}/forms/{form}/create', [CompanyFormSubmissionController::class, 'create'])->name('departments.reports.forms.create')->scopeBindings();
-    Route::post('departments/{department}/reports/{report}/forms/{form}', [CompanyFormSubmissionController::class, 'store'])->name('departments.reports.forms.store')->scopeBindings();
-    Route::get('departments/{department}/reports/{report}/forms/{form}', [CompanyFormSubmissionController::class, 'show'])->name('departments.reports.forms.show')->scopeBindings();
+    Route::get('departments/{department}/reports/{report}/forms/{form}/create', [CompanyFormSubmissionController::class, 'create'])->name('departments.reports.forms.create');
+    Route::post('departments/{department}/reports/{report}/forms/{form}', [CompanyFormSubmissionController::class, 'store'])->name('departments.reports.forms.store');
+    Route::get('departments/{department}/reports/{report}/forms/{form}', [CompanyFormSubmissionController::class, 'show'])->name('departments.reports.forms.show');
 });
 
 // Legacy Employee Routes (for backward compatibility - redirects to companies portal)

@@ -6,10 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\Form;
 use App\Models\FormField;
 use App\Models\FormTemplate;
+use App\Models\Department;
 use App\Exports\FormFieldsTemplateExport;
 use App\Imports\FormFieldsImport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -197,42 +199,84 @@ class CompanyFormController extends Controller
     }
 
     /**
-     * Display the form template bank for adding templates to company forms.
-     * Shows only form templates attached to the company's industry.
+     * Display the form template bank: industry → sector → department → templates linked via
+     * department_form_template (subgrouped by template library_key for readability).
      */
     public function templateBank()
     {
         $employee = Auth::guard('employee')->user();
+        $employee->loadMissing('company.sector.industry');
         $company  = $employee->company;
-        $sector   = $company->sector;
+        $sector   = $company?->sector;
+        $industry = $sector?->industry;
 
         if ($sector) {
-            // Show only templates attached to the company's specific sector
-            $templates = $sector->formTemplates()
+            $allTemplates = $sector->formTemplates()
                 ->with('formTemplateFields')
-                ->orderBy('category')
+                ->orderBy('library_key')
                 ->orderBy('name')
-                ->get()
-                ->groupBy('category');
+                ->get();
         } else {
-            // Fallback: show all templates if company has no sector
-            $templates = FormTemplate::with('formTemplateFields')
-                ->orderBy('category')
+            $allTemplates = FormTemplate::with('formTemplateFields')
+                ->orderBy('library_key')
                 ->orderBy('name')
-                ->get()
-                ->groupBy('category');
+                ->get();
         }
 
-        $departments = \App\Models\Department::where('company_id', $employee->company_id)
-            ->select('id', 'name', 'form_category')
+        $groupScoped = function ($scoped) {
+            return $scoped
+                ->groupBy(fn ($t) => $t->library_key ?? '')
+                ->sortKeys()
+                ->map(fn ($templates, $key) => [
+                    'group_key' => (string) $key,
+                    'group_label' => $key !== '' ? Str::title(str_replace('-', ' ', (string) $key)) : 'General',
+                    'templates' => $templates->values(),
+                ])
+                ->values();
+        };
+
+        $departments = Department::where('company_id', $employee->company_id)
+            ->with([
+                'formTemplates' => fn ($q) => $q->with('formTemplateFields')->orderBy('library_key')->orderBy('name'),
+            ])
             ->orderBy('name')
             ->get();
 
+        $treeDepartments = $departments->map(function (Department $dept) use ($groupScoped) {
+            $scoped = $dept->formTemplates;
+
+            return [
+                'id' => $dept->id,
+                'name' => $dept->name,
+                'description' => $dept->description,
+                'linked_template_count' => $scoped->count(),
+                'template_groups' => $groupScoped($scoped),
+            ];
+        });
+
+        if ($treeDepartments->isEmpty()) {
+            $treeDepartments = collect([[
+                'id' => null,
+                'name' => 'Form templates',
+                'description' => 'Create departments to organise templates by area. Until then, all templates for your sector are listed below.',
+                'linked_template_count' => $allTemplates->count(),
+                'template_groups' => $groupScoped($allTemplates),
+            ]]);
+        }
+
+        $departmentOptions = $departments->map(fn (Department $d) => [
+            'id' => $d->id,
+            'name' => $d->name,
+            'linked_template_ids' => $d->formTemplates->pluck('id')->values()->all(),
+        ])->values();
+
         return Inertia::render('Companies/Forms/TemplateBank', [
-            'templates'    => $templates,
-            'departments'  => $departments,
-            'sectorName'   => $sector?->name ?? null,
-            'industryName' => $sector?->industry?->name ?? null,
+            'formTree' => [
+                'industry' => $industry ? ['id' => $industry->id, 'name' => $industry->name] : null,
+                'sector' => $sector ? ['id' => $sector->id, 'name' => $sector->name] : null,
+                'departments' => $treeDepartments,
+            ],
+            'departments' => $departmentOptions,
         ]);
     }
 
@@ -260,11 +304,16 @@ class CompanyFormController extends Controller
             }
         }
 
-        // If department is specified, ensure it belongs to the employee's company
+        // If department is specified, ensure it belongs to the employee's company; template allowed via department pivot
         if (!empty($validated['department_id'])) {
-            $department = \App\Models\Department::find($validated['department_id']);
+            $department = Department::find($validated['department_id']);
             if (!$department || $department->company_id !== $employee->company_id) {
                 return back()->withErrors(['department_id' => 'Invalid department selected.']);
+            }
+            if (! $template->appliesToDepartment($department)) {
+                return back()->withErrors([
+                    'department_id' => 'This template is not linked to the selected department.',
+                ]);
             }
         }
 

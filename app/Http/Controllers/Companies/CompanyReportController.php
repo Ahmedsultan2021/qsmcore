@@ -222,9 +222,7 @@ class CompanyReportController extends Controller
     // ── Helpers ───────────────────────────────────────────────────────────────
 
     /**
-     * Return FormTemplate records that match the company's sector AND the
-     * department's form_category. Falls back to the full sector set when
-     * form_category is null (e.g. Airport Quality / Operations not yet seeded).
+     * Return FormTemplate records for the company's sector that are linked to the department.
      */
     private function templatesForDepartment($authEmployee, Department $department): \Illuminate\Support\Collection
     {
@@ -235,13 +233,11 @@ class CompanyReportController extends Controller
             return collect();
         }
 
-        $query = $sector->formTemplates()->orderBy('name');
+        $query = $sector->formTemplates()
+            ->linkedToDepartment($department)
+            ->orderBy('name');
 
-        if ($department->form_category) {
-            $query->where('category', $department->form_category);
-        }
-
-        return $query->get(['form_templates.id', 'form_templates.name', 'form_templates.category']);
+        return $query->get(['form_templates.id', 'form_templates.name', 'form_templates.library_key']);
     }
 
     /**

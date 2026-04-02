@@ -3,6 +3,7 @@ import CompanyLayout from "@/Layouts/CompanyLayout.vue";
 import { Head, Link, router } from "@inertiajs/vue3";
 import { computed, ref } from "vue";
 import { usePage } from "@inertiajs/vue3";
+import { useDark } from "@vueuse/core";
 
 defineOptions({ layout: CompanyLayout });
 
@@ -15,6 +16,7 @@ const props = defineProps({
 });
 
 const page = usePage();
+const isDark = useDark();
 const employee = computed(() => page.props.authEmployee?.employee);
 
 const companyIndustry = computed(() =>
@@ -52,11 +54,11 @@ const statCards = computed(() => [
 
 // Report status legend driven by real counts
 const STATUS_CONFIG = {
-    draft:     { label: "Draft",     color: "bg-blue-600" },
-    submitted: { label: "Submitted", color: "bg-emerald-600" },
-    reviewed:  { label: "Reviewed",  color: "bg-amber-500" },
-    approved:  { label: "Approved",  color: "bg-green-600" },
-    rejected:  { label: "Rejected",  color: "bg-rose-500" },
+    draft:     { label: "Draft",     color: "bg-blue-600",     chartColor: "#2563eb" },
+    submitted: { label: "Submitted", color: "bg-emerald-600", chartColor: "#059669" },
+    reviewed:  { label: "Reviewed",  color: "bg-amber-500",  chartColor: "#f59e0b" },
+    approved:  { label: "Approved",  color: "bg-green-600", chartColor: "#16a34a" },
+    rejected:  { label: "Rejected",  color: "bg-rose-500",  chartColor: "#f43f5e" },
 };
 
 const reportStatus = computed(() =>
@@ -65,6 +67,30 @@ const reportStatus = computed(() =>
         value: props.statusCounts[key] ?? 0,
     }))
 );
+
+/** Conic-gradient segments proportional to status counts (real data from backend). */
+const reportStatusDonutStyle = computed(() => {
+    const items = reportStatus.value;
+    const total = items.reduce((a, s) => a + s.value, 0);
+    if (total === 0) {
+        const track = isDark.value ? "#334155" : "#e2e8f0";
+        return { background: `conic-gradient(${track} 0deg 360deg)` };
+    }
+    let angle = 0;
+    const parts = [];
+    for (const s of items) {
+        if (s.value <= 0) continue;
+        const sweep = (s.value / total) * 360;
+        const end = angle + sweep;
+        parts.push(`${s.chartColor} ${angle}deg ${end}deg`);
+        angle = end;
+    }
+    if (parts.length === 0) {
+        const track = isDark.value ? "#334155" : "#e2e8f0";
+        return { background: `conic-gradient(${track} 0deg 360deg)` };
+    }
+    return { background: `conic-gradient(${parts.join(", ")})` };
+});
 
 // Status badge classes for the table
 const STATUS_BADGE = {
@@ -174,9 +200,13 @@ const alertDotClass = (status) => {
                     <div class="xl:col-span-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm p-4">
                         <h3 class="text-sm font-extrabold text-gray-900 dark:text-white">Report Status</h3>
                         <div class="mt-4 flex items-center gap-5">
-                            <div class="relative w-24 h-24 shrink-0 rounded-full border-8 border-gray-100 dark:border-gray-700">
-                                <div class="absolute inset-0 rounded-full border-8 border-blue-600 border-r-amber-500 border-b-rose-500 border-l-emerald-600"></div>
-                                <div class="absolute inset-0 m-auto w-12 h-12 rounded-full bg-white dark:bg-gray-800"></div>
+                            <div
+                                class="relative w-24 h-24 shrink-0 rounded-full ring-1 ring-gray-200/80 dark:ring-gray-600 shadow-inner"
+                                :style="reportStatusDonutStyle"
+                                role="img"
+                                :aria-label="`Report status: ${reportStatus.map(s => `${s.label} ${s.value}`).join(', ')}`"
+                            >
+                                <div class="absolute inset-0 m-auto w-12 h-12 rounded-full bg-white dark:bg-gray-800 shadow-sm" aria-hidden="true" />
                             </div>
                             <div class="space-y-1.5">
                                 <div v-for="s in reportStatus" :key="s.label" class="flex items-center justify-between gap-3 text-sm">

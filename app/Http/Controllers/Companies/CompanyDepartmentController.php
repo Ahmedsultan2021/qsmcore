@@ -4,15 +4,54 @@ namespace App\Http\Controllers\Companies;
 
 use App\Http\Controllers\Controller;
 use App\Models\Department;
+use App\Models\Employee;
 use App\Models\Audit;
 use App\Models\Form;
 use App\Models\FormResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class CompanyDepartmentController extends Controller
 {
+    /**
+     * @return list<array{group_key: string, group_label: string, templates: list<object>}>
+     */
+    protected function sectorTemplateGroups(Employee $employee): array
+    {
+        $employee->loadMissing('company.sector');
+        $sector = $employee->company?->sector;
+        if (! $sector) {
+            return [];
+        }
+
+        return $sector->formTemplates()
+            ->get(['form_templates.id', 'form_templates.name', 'form_templates.library_key'])
+            ->sortBy(['library_key', 'name'])
+            ->groupBy(fn ($t) => $t->library_key ?? '')
+            ->sortKeys()
+            ->map(fn ($group, $key) => [
+                'group_key' => (string) $key,
+                'group_label' => $key !== '' ? Str::title(str_replace('-', ' ', (string) $key)) : 'General',
+                'templates' => $group->values()->all(),
+            ])
+            ->values()
+            ->all();
+    }
+
+    protected function allowedTemplateIds(Employee $employee): \Illuminate\Support\Collection
+    {
+        $employee->loadMissing('company.sector');
+        $sector = $employee->company?->sector;
+        if (! $sector) {
+            return collect();
+        }
+
+        return $sector->formTemplates()->pluck('form_templates.id');
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -35,9 +74,10 @@ class CompanyDepartmentController extends Controller
     public function create()
     {
         $employee = Auth::guard('employee')->user();
-        
+
         return Inertia::render('Companies/Departments/Create', [
             'company_id' => $employee->company_id,
+            'sectorTemplateGroups' => $this->sectorTemplateGroups($employee),
         ]);
     }
 
@@ -47,18 +87,31 @@ class CompanyDepartmentController extends Controller
     public function store(Request $request)
     {
         $employee = Auth::guard('employee')->user();
-        
-        $validated = $request->validate([
+
+        $allowed = $this->allowedTemplateIds($employee);
+        $rules = [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'manager_name' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:255',
             'email' => 'nullable|email|max:255',
-        ]);
+            'template_ids' => ['nullable', 'array'],
+        ];
+        if ($allowed->isNotEmpty()) {
+            $rules['template_ids.*'] = ['integer', Rule::in($allowed->all())];
+        }
+        $validated = $request->validate($rules);
 
         $validated['company_id'] = $employee->company_id;
+        $templateIds = $validated['template_ids'] ?? null;
+        unset($validated['template_ids']);
 
-        Department::create($validated);
+        $department = Department::create($validated);
+
+        if (! is_array($templateIds) || $templateIds === []) {
+            $templateIds = $allowed->all();
+        }
+        $department->formTemplates()->sync(array_values(array_unique($templateIds)));
 
         return redirect()->route('companies.departments.index')
             ->with('success', 'Department created successfully');
@@ -214,8 +267,11 @@ class CompanyDepartmentController extends Controller
             abort(403);
         }
         
+g        $department->load(['formTemplates:id,name,library_key']);
+
         return Inertia::render('Companies/Departments/Edit', [
             'department' => $department,
+            'sectorTemplateGroups' => $this->sectorTemplateGroups($authEmployee),
         ]);
     }
 
@@ -231,15 +287,29 @@ class CompanyDepartmentController extends Controller
             abort(403);
         }
         
+        $allowed = $this->allowedTemplateIds($authEmployee);
+        foreach ($department->formTemplates()->pluck('form_templates.id') as $id) {
+            if (! $allowed->contains($id)) {
+                $allowed = $allowed->push($id);
+            }
+        }
+        $allowed = $allowed->unique()->values();
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'manager_name' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:255',
             'email' => 'nullable|email|max:255',
+            'template_ids' => ['required', 'array', 'min:1'],
+            'template_ids.*' => ['integer', Rule::in($allowed->all())],
         ]);
 
+        $templateIds = $validated['template_ids'];
+        unset($validated['template_ids']);
+
         $department->update($validated);
+        $department->formTemplates()->sync(array_values(array_unique($templateIds)));
 
         return redirect()->route('companies.departments.index')
             ->with('success', 'Department updated successfully');

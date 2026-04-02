@@ -27,10 +27,10 @@ class IndustryController extends Controller
     public function create()
     {
         $formTemplates = FormTemplate::with('formTemplateFields')
-            ->orderBy('category')
+            ->orderBy('library_key')
             ->orderBy('name')
             ->get()
-            ->groupBy('category');
+            ->groupBy(fn ($t) => $t->library_key ?? '');
 
         return Inertia::render('Admin/Industries/Create', [
             'formTemplates' => $formTemplates,
@@ -82,10 +82,10 @@ class IndustryController extends Controller
         $industry->load('formTemplates');
 
         $formTemplates = FormTemplate::with('formTemplateFields')
-            ->orderBy('category')
+            ->orderBy('library_key')
             ->orderBy('name')
             ->get()
-            ->groupBy('category');
+            ->groupBy(fn ($t) => $t->library_key ?? '');
 
         return Inertia::render('Admin/Industries/Edit', [
             'industry' => $industry,

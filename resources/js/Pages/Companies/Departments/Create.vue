@@ -1,11 +1,16 @@
 <script setup>
 import CompanyLayout from "@/Layouts/CompanyLayout.vue";
 import { Head, Link, useForm } from "@inertiajs/vue3";
+import { computed } from "vue";
 
 defineOptions({ layout: CompanyLayout });
 
 const props = defineProps({
     company_id: Number,
+    sectorTemplateGroups: {
+        type: Array,
+        default: () => [],
+    },
 });
 
 const form = useForm({
@@ -14,7 +19,20 @@ const form = useForm({
     manager_name: "",
     phone: "",
     email: "",
+    template_ids: [],
 });
+
+const allSectorTemplateIds = computed(() =>
+    props.sectorTemplateGroups.flatMap((g) => g.templates.map((t) => t.id))
+);
+
+const selectAllSectorTemplates = () => {
+    form.template_ids = [...allSectorTemplateIds.value];
+};
+
+const clearTemplateSelection = () => {
+    form.template_ids = [];
+};
 
 const submit = () => {
     form.post(route("companies.departments.store"));
@@ -50,6 +68,58 @@ const submit = () => {
                         class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                     />
                     <div v-if="form.errors.name" class="mt-1 text-sm text-red-600">{{ form.errors.name }}</div>
+                </div>
+
+                <div class="mb-4 rounded-lg border border-gray-200 dark:border-gray-600 p-4 bg-gray-50/80 dark:bg-gray-900/40">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Form templates for this department
+                        </label>
+                        <div class="flex flex-wrap gap-2">
+                            <button
+                                type="button"
+                                class="text-xs px-2 py-1 rounded border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                @click="selectAllSectorTemplates"
+                            >
+                                Select all
+                            </button>
+                            <button
+                                type="button"
+                                class="text-xs px-2 py-1 rounded border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                @click="clearTemplateSelection"
+                            >
+                                Clear
+                            </button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">
+                        Choose which templates this department may use. If you leave none selected, every template for your
+                        sector will be linked (same as a full library).
+                    </p>
+                    <div v-if="!sectorTemplateGroups.length" class="text-sm text-amber-700 dark:text-amber-300">
+                        No templates are attached to your sector yet. You can create the department; link templates later or
+                        ask an administrator to configure the sector library.
+                    </div>
+                    <div v-else class="space-y-4 max-h-72 overflow-y-auto pr-1">
+                        <div v-for="group in sectorTemplateGroups" :key="group.group_key">
+                            <p class="text-xs font-semibold text-gray-600 dark:text-gray-400 mb-2">{{ group.group_label }}</p>
+                            <ul class="space-y-2">
+                                <li v-for="tpl in group.templates" :key="tpl.id" class="flex items-start gap-2">
+                                    <input
+                                        :id="`tpl-${tpl.id}`"
+                                        v-model="form.template_ids"
+                                        type="checkbox"
+                                        class="mt-1 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                        :value="tpl.id"
+                                    />
+                                    <label :for="`tpl-${tpl.id}`" class="text-sm text-gray-800 dark:text-gray-200 cursor-pointer">
+                                        {{ tpl.name }}
+                                    </label>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div v-if="form.errors.template_ids" class="mt-2 text-sm text-red-600">{{ form.errors.template_ids }}</div>
                 </div>
 
                 <div class="mb-4">
@@ -125,4 +195,3 @@ const submit = () => {
         </div>
     </div>
 </template>
-

@@ -63,6 +63,9 @@ Route::middleware('auth')->group(function () {
     
     // Sectors Management (Admin CRUD)
     Route::resource('sectors', SectorController::class);
+
+    // Global form template library (read-only index)
+    Route::get('form-templates', [\App\Http\Controllers\Admin\FormTemplateController::class, 'index'])->name('form-templates.index');
     
     // Companies Management (Admin CRUD - no roles/permissions access)
     Route::resource('companies', CompanyController::class);

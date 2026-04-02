@@ -31,6 +31,16 @@ const isSelected = (id) => (form.form_template_ids || []).includes(id);
 
 const categories = computed(() => Object.keys(props.formTemplates || {}));
 
+const libraryGroupLabel = (key) => {
+    if (key === "" || key == null) {
+        return "General";
+    }
+    return key
+        .split("-")
+        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(" ");
+};
+
 const submit = () => {
     form.post(route("industries.store"));
 };
@@ -97,7 +107,7 @@ const submit = () => {
                             class="space-y-2"
                         >
                             <h4 class="text-sm font-semibold text-gray-800 dark:text-gray-200">
-                                {{ category }}
+                                {{ libraryGroupLabel(category) }}
                             </h4>
                             <div class="space-y-2 pl-2">
                                 <label

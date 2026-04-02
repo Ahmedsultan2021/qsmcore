@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Companies;
 use App\Http\Controllers\Controller;
 use App\Models\Audit;
 use App\Models\Report;
-use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;

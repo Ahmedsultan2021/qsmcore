@@ -14,27 +14,27 @@ use Illuminate\Database\Seeder;
 class ReportSeeder extends Seeder
 {
     /**
-     * Map department name to form template categories (logical match by department role).
+     * Map department name to form template library_key slugs (matches FormTemplateSeeder).
      */
-    protected function departmentCategories(): array
+    protected function departmentLibraryKeys(): array
     {
         return [
-            'Production' => ['Aviation - Quality', 'Aviation - Maintenance'],
-            'Sales' => ['Aviation - Quality'],
-            'Human Resources' => ['Aviation - Safety', 'Aviation - Training'],
-            'Development' => ['Aviation - Safety'],
-            'Technical Support' => ['Aviation - Safety'],
-            'Investment' => ['Aviation - Quality'],
-            'Accounting' => ['Aviation - Quality'],
-            'Emergency' => ['Aviation - Safety', 'Aviation - Quality'],
-            'Surgery' => ['Aviation - Safety', 'Aviation - Quality'],
-            'Projects' => ['Aviation - Maintenance', 'Aviation - Safety', 'Aviation - Quality'],
-            'Procurement' => ['Aviation - Maintenance', 'Aviation - Safety', 'Aviation - Quality'],
-            'Academic Affairs' => ['Aviation - Training', 'Aviation - Quality'],
-            'Student Affairs' => ['Aviation - Training', 'Aviation - Quality'],
-            'Warehouse' => ['Aviation - Safety', 'Aviation - Maintenance'],
-            'Operations' => ['Aviation - Maintenance', 'Aviation - Safety'],
-            'Maintenance' => ['Aviation - Maintenance', 'Aviation - Safety'],
+            'Production' => ['aviation-quality', 'aviation-maintenance'],
+            'Sales' => ['aviation-quality'],
+            'Human Resources' => ['aviation-safety', 'aviation-training'],
+            'Development' => ['aviation-safety'],
+            'Technical Support' => ['aviation-safety'],
+            'Investment' => ['aviation-quality'],
+            'Accounting' => ['aviation-quality'],
+            'Emergency' => ['aviation-safety', 'aviation-quality'],
+            'Surgery' => ['aviation-safety', 'aviation-quality'],
+            'Projects' => ['aviation-maintenance', 'aviation-safety', 'aviation-quality'],
+            'Procurement' => ['aviation-maintenance', 'aviation-safety', 'aviation-quality'],
+            'Academic Affairs' => ['aviation-training', 'aviation-quality'],
+            'Student Affairs' => ['aviation-training', 'aviation-quality'],
+            'Warehouse' => ['aviation-safety', 'aviation-maintenance'],
+            'Operations' => ['aviation-maintenance', 'aviation-safety'],
+            'Maintenance' => ['aviation-maintenance', 'aviation-safety'],
         ];
     }
 
@@ -80,15 +80,15 @@ class ReportSeeder extends Seeder
      */
     public function run(): void
     {
-        $categoriesMap = $this->departmentCategories();
+        $libraryKeysMap = $this->departmentLibraryKeys();
         $now = Carbon::now();
         $reportStatuses = ['draft', 'submitted', 'submitted', 'approved', 'approved']; // bias to submitted/approved
 
-        Department::with('company')->get()->each(function (Department $department) use ($categoriesMap, $now, $reportStatuses) {
-            $categories = $categoriesMap[$department->name] ?? ['Aviation - Quality', 'Aviation - Safety'];
-            $templates = FormTemplate::whereIn('category', $categories)
+        Department::with('company')->get()->each(function (Department $department) use ($libraryKeysMap, $now, $reportStatuses) {
+            $libraryKeys = $libraryKeysMap[$department->name] ?? ['aviation-quality', 'aviation-safety'];
+            $templates = FormTemplate::whereIn('library_key', $libraryKeys)
                 ->with('formTemplateFields')
-                ->orderBy('category')
+                ->orderBy('library_key')
                 ->orderBy('name')
                 ->limit(4)
                 ->get();

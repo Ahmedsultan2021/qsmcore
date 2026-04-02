@@ -13,7 +13,6 @@ class Department extends Model
         'company_id',
         'name',
         'description',
-        'form_category',
         'manager_name',
         'phone',
         'email',
@@ -37,5 +36,14 @@ class Department extends Model
     public function risks()
     {
         return $this->hasMany(Risk::class);
+    }
+
+    /**
+     * Form templates this department may use (reports, template bank). Also constrained by sector on each template.
+     */
+    public function formTemplates()
+    {
+        return $this->belongsToMany(FormTemplate::class, 'department_form_template')
+            ->withTimestamps();
     }
 }

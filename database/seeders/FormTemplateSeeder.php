@@ -4,14 +4,16 @@ namespace Database\Seeders;
 
 use App\Models\FormTemplate;
 use App\Models\FormTemplateField;
-use App\Models\Industry;
+use App\Models\FormTheme;
 use App\Models\Sector;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class FormTemplateSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Seeds form_templates + fields. Each template gets a stable `library_key` slug (from the legacy label in the array),
+     * sector/industry pivots, optional KPI themes (safety/quality) when the slug contains those words, and fields.
      */
     public function run(): void
     {
@@ -19,7 +21,7 @@ class FormTemplateSeeder extends Seeder
             // 1. Quality - Non-Conformance Report (NCR)
             [
                 'name' => 'Non-Conformance Report (NCR)',
-                'category' => 'Aviation - Quality',
+                'library_key' => 'Aviation - Quality',
                 'description' => 'Report and track non-conformances in processes, documents, equipment, or human error.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'NCR ID', 'name' => 'ncr_id', 'required' => true],
@@ -41,7 +43,7 @@ class FormTemplateSeeder extends Seeder
             // 2. Quality - Internal Audit Report
             [
                 'name' => 'Internal Audit Report – Quality Department',
-                'category' => 'Aviation - Quality',
+                'library_key' => 'Aviation - Quality',
                 'description' => 'Document internal audit findings and compliance status.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Audit ID', 'name' => 'audit_id', 'required' => true],
@@ -64,7 +66,7 @@ class FormTemplateSeeder extends Seeder
             // 3. Quality - Quality Compliance Checklist
             [
                 'name' => 'Quality Compliance Checklist – Quality Department',
-                'category' => 'Aviation - Quality',
+                'library_key' => 'Aviation - Quality',
                 'description' => 'Checklist for reviewing procedure and process compliance.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Checklist ID', 'name' => 'checklist_id', 'required' => true],
@@ -93,7 +95,7 @@ class FormTemplateSeeder extends Seeder
             // 4. Quality - CAR/PAR Report
             [
                 'name' => 'CAR/PAR Report (Corrective / Preventive Action)',
-                'category' => 'Aviation - Quality',
+                'library_key' => 'Aviation - Quality',
                 'description' => 'Document corrective and preventive actions linked to NCRs.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'CAR/PAR ID', 'name' => 'car_par_id', 'required' => true],
@@ -117,7 +119,7 @@ class FormTemplateSeeder extends Seeder
             // 5. MRO - Technical Defect Report
             [
                 'name' => 'Technical Defect Report',
-                'category' => 'Aviation - MRO',
+                'library_key' => 'Aviation - MRO',
                 'description' => 'Report technical defects for aircraft or components.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'TDR Number', 'name' => 'tdr_number', 'required' => true],
@@ -142,7 +144,7 @@ class FormTemplateSeeder extends Seeder
             // 6. MRO - MEL Usage & Control Form
             [
                 'name' => 'MEL Usage & Control Form',
-                'category' => 'Aviation - MRO',
+                'library_key' => 'Aviation - MRO',
                 'description' => 'Track MEL deferrals and extensions.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'MEL Item Ref.', 'name' => 'mel_item_ref', 'required' => true],
@@ -158,7 +160,7 @@ class FormTemplateSeeder extends Seeder
             // 7. MRO - Scheduled Maintenance Audit
             [
                 'name' => 'Scheduled Maintenance Audit',
-                'category' => 'Aviation - MRO',
+                'library_key' => 'Aviation - MRO',
                 'description' => 'Audit scheduled maintenance work packages.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Audit ID', 'name' => 'audit_id', 'required' => true],
@@ -174,7 +176,7 @@ class FormTemplateSeeder extends Seeder
             // 8. MRO - Manpower Utilization Report
             [
                 'name' => 'Manpower Utilization Report',
-                'category' => 'Aviation - MRO',
+                'library_key' => 'Aviation - MRO',
                 'description' => 'Track technician utilization and work completion.',
                 'fields' => [
                     ['field_type' => 'date', 'label' => 'Date', 'name' => 'report_date', 'required' => true],
@@ -190,7 +192,7 @@ class FormTemplateSeeder extends Seeder
             // === MRO SAFETY FORMS ===
             [
                 'name' => 'Hazard Identification Report',
-                'category' => 'Aviation - MRO Safety',
+                'library_key' => 'Aviation - MRO Safety',
                 'description' => 'Identify and document workplace hazards.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Hazard ID', 'name' => 'hazard_id', 'required' => true],
@@ -209,7 +211,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Safety Investigation Template',
-                'category' => 'Aviation - MRO Safety',
+                'library_key' => 'Aviation - MRO Safety',
                 'description' => 'Template for conducting safety investigations.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Investigation ID', 'name' => 'investigation_id', 'required' => true],
@@ -228,7 +230,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Maintenance Safety Report (MRO)',
-                'category' => 'Aviation - MRO Safety',
+                'library_key' => 'Aviation - MRO Safety',
                 'description' => 'Report maintenance-related safety incidents.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report Number', 'name' => 'report_number', 'required' => true],
@@ -250,7 +252,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Incident / Accident Report',
-                'category' => 'Aviation - MRO Safety',
+                'library_key' => 'Aviation - MRO Safety',
                 'description' => 'Report incidents and accidents.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report Number', 'name' => 'report_number', 'required' => true],
@@ -268,10 +270,27 @@ class FormTemplateSeeder extends Seeder
                     ['field_type' => 'select', 'label' => 'Report Status', 'name' => 'report_status', 'options' => ['Open', 'Under Investigation', 'Closed']],
                 ],
             ],
+            [
+                'name' => 'Risk Assessment Form',
+                'library_key' => 'Aviation - MRO Safety',
+                'description' => 'Assess and document risks (MRO / hangar context).',
+                'fields' => [
+                    ['field_type' => 'text', 'label' => 'Assessment ID', 'name' => 'assessment_id', 'required' => true],
+                    ['field_type' => 'date', 'label' => 'Date', 'name' => 'assessment_date', 'required' => true],
+                    ['field_type' => 'text', 'label' => 'Assessed By', 'name' => 'assessed_by'],
+                    ['field_type' => 'text', 'label' => 'Hazard/Issue Being Assessed', 'name' => 'hazard_issue'],
+                    ['field_type' => 'select', 'label' => 'Likelihood', 'name' => 'likelihood', 'options' => ['Rare', 'Unlikely', 'Possible', 'Likely', 'Almost Certain']],
+                    ['field_type' => 'select', 'label' => 'Severity', 'name' => 'severity', 'options' => ['Negligible', 'Minor', 'Major', 'Hazardous', 'Catastrophic']],
+                    ['field_type' => 'select', 'label' => 'Initial Risk Rating', 'name' => 'initial_risk_rating', 'options' => ['Low', 'Med', 'High']],
+                    ['field_type' => 'textarea', 'label' => 'Controls in Place', 'name' => 'controls_in_place'],
+                    ['field_type' => 'select', 'label' => 'Residual Risk Rating', 'name' => 'residual_risk_rating', 'options' => ['Low', 'Med', 'High']],
+                    ['field_type' => 'textarea', 'label' => 'Recommended Mitigations', 'name' => 'recommended_mitigations'],
+                ],
+            ],
             // === MAINTENANCE FORMS ===
             [
                 'name' => 'MEL Usage Report',
-                'category' => 'Aviation - Maintenance',
+                'library_key' => 'Aviation - Maintenance',
                 'description' => 'Report MEL usage and deferrals.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report ID', 'name' => 'report_id', 'required' => true],
@@ -295,7 +314,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Maintenance Safety Report',
-                'category' => 'Aviation - Maintenance',
+                'library_key' => 'Aviation - Maintenance',
                 'description' => 'Report maintenance safety issues and incidents.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report ID', 'name' => 'report_id', 'required' => true],
@@ -319,7 +338,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Scheduled Maintenance Audit Report',
-                'category' => 'Aviation - Maintenance',
+                'library_key' => 'Aviation - Maintenance',
                 'description' => 'Audit report for scheduled maintenance tasks.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Audit ID', 'name' => 'audit_id', 'required' => true],
@@ -345,7 +364,7 @@ class FormTemplateSeeder extends Seeder
             // === SAFETY REPORTS ===
             [
                 'name' => 'Corrective & Preventive Action (CAPA) Form',
-                'category' => 'Aviation - Safety',
+                'library_key' => 'Aviation - Safety',
                 'description' => 'Document corrective and preventive actions.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'CAPA ID', 'name' => 'capa_id', 'required' => true],
@@ -363,7 +382,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Injury Report',
-                'category' => 'Aviation - Safety',
+                'library_key' => 'Aviation - Safety',
                 'description' => 'Report workplace injuries.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report ID', 'name' => 'report_id', 'required' => true],
@@ -382,7 +401,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Occurrence Report',
-                'category' => 'Aviation - Safety',
+                'library_key' => 'Aviation - Safety',
                 'description' => 'Report aviation occurrences and events.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Occurrence ID', 'name' => 'occurrence_id', 'required' => true],
@@ -400,7 +419,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Bird Strike Report',
-                'category' => 'Aviation - Safety',
+                'library_key' => 'Aviation - Safety',
                 'description' => 'Report bird strike incidents.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report ID', 'name' => 'report_id', 'required' => true],
@@ -419,7 +438,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Safety Concern Report',
-                'category' => 'Aviation - Safety',
+                'library_key' => 'Aviation - Safety',
                 'description' => 'Report safety concerns and near misses.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report ID', 'name' => 'report_id', 'required' => true],
@@ -437,7 +456,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Security Incident Report',
-                'category' => 'Aviation - Safety',
+                'library_key' => 'Aviation - Safety',
                 'description' => 'Report security incidents.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report ID', 'name' => 'report_id', 'required' => true],
@@ -454,7 +473,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Safety Investigation Form',
-                'category' => 'Aviation - Safety',
+                'library_key' => 'Aviation - Safety',
                 'description' => 'Conduct safety investigations.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Investigation ID', 'name' => 'investigation_id', 'required' => true],
@@ -470,7 +489,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Risk Assessment Form',
-                'category' => 'Aviation - Safety',
+                'library_key' => 'Aviation - Safety',
                 'description' => 'Assess and document risks.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Assessment ID', 'name' => 'assessment_id', 'required' => true],
@@ -487,7 +506,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Hazard Report',
-                'category' => 'Aviation - Safety',
+                'library_key' => 'Aviation - Safety',
                 'description' => 'Report workplace hazards.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report ID', 'name' => 'report_id', 'required' => true],
@@ -509,7 +528,7 @@ class FormTemplateSeeder extends Seeder
             // === FLIGHT OPS ===
             [
                 'name' => 'Line Check Report',
-                'category' => 'Aviation - Flight Ops',
+                'library_key' => 'Aviation - Flight Ops',
                 'description' => 'Document line check evaluations.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Line Check Number', 'name' => 'line_check_number', 'required' => true],
@@ -529,7 +548,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Fatigue Report',
-                'category' => 'Aviation - Flight Ops',
+                'library_key' => 'Aviation - Flight Ops',
                 'description' => 'Report crew fatigue incidents.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report Number', 'name' => 'report_number', 'required' => true],
@@ -549,7 +568,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'ASR – Aviation Safety Report',
-                'category' => 'Aviation - Flight Ops',
+                'library_key' => 'Aviation - Flight Ops',
                 'description' => 'Aviation safety reporting.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report Number', 'name' => 'report_number', 'required' => true],
@@ -572,7 +591,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Route Check Report',
-                'category' => 'Aviation - Flight Ops',
+                'library_key' => 'Aviation - Flight Ops',
                 'description' => 'Document route check evaluations.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Route Check Number', 'name' => 'route_check_number', 'required' => true],
@@ -593,7 +612,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Cabin Safety Report',
-                'category' => 'Aviation - Flight Ops',
+                'library_key' => 'Aviation - Flight Ops',
                 'description' => 'Report cabin safety events.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report Number', 'name' => 'report_number', 'required' => true],
@@ -615,7 +634,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'FDM Deviation Report',
-                'category' => 'Aviation - Flight Ops',
+                'library_key' => 'Aviation - Flight Ops',
                 'description' => 'Report FDM events and deviations.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'FDM Event ID', 'name' => 'fdm_event_id', 'required' => true],
@@ -637,7 +656,7 @@ class FormTemplateSeeder extends Seeder
             // === OCC FORMS ===
             [
                 'name' => 'Crew Scheduling Concern Report',
-                'category' => 'Aviation - OCC',
+                'library_key' => 'Aviation - OCC',
                 'description' => 'Report crew scheduling concerns and fatigue risks.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report ID', 'name' => 'report_id', 'required' => true],
@@ -658,7 +677,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Disruption Safety Report',
-                'category' => 'Aviation - OCC',
+                'library_key' => 'Aviation - OCC',
                 'description' => 'Report operational disruptions and safety impact.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report ID', 'name' => 'report_id', 'required' => true],
@@ -681,7 +700,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Delay Root Cause Analysis',
-                'category' => 'Aviation - OCC',
+                'library_key' => 'Aviation - OCC',
                 'description' => 'Analyze flight delay root causes.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report ID', 'name' => 'report_id', 'required' => true],
@@ -706,7 +725,7 @@ class FormTemplateSeeder extends Seeder
             // === TRAINING FORMS ===
             [
                 'name' => 'Simulator Session Report',
-                'category' => 'Aviation - Training',
+                'library_key' => 'Aviation - Training',
                 'description' => 'Document simulator training sessions and evaluations.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report ID', 'name' => 'report_id', 'required' => true],
@@ -729,7 +748,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Trainee Feedback Form',
-                'category' => 'Aviation - Training',
+                'library_key' => 'Aviation - Training',
                 'description' => 'Collect trainee feedback on training sessions.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Feedback ID', 'name' => 'feedback_id', 'required' => true],
@@ -752,7 +771,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Training Observation Report',
-                'category' => 'Aviation - Training',
+                'library_key' => 'Aviation - Training',
                 'description' => 'Document training session observations.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report ID', 'name' => 'report_id', 'required' => true],
@@ -777,8 +796,23 @@ class FormTemplateSeeder extends Seeder
             ],
             // === AIRPORT SAFETY FORMS ===
             [
+                'name' => 'Airside Safety Incident Report',
+                'library_key' => 'Aviation - Airport Safety',
+                'description' => 'Report airside safety incidents (personnel, aircraft, infrastructure).',
+                'fields' => [
+                    ['field_type' => 'text', 'label' => 'Report Number', 'name' => 'report_number', 'required' => true],
+                    ['field_type' => 'date', 'label' => 'Date of Incident', 'name' => 'incident_date', 'required' => true],
+                    ['field_type' => 'text', 'label' => 'Time', 'name' => 'incident_time'],
+                    ['field_type' => 'text', 'label' => 'Location (Apron / Taxiway / Stand / Other)', 'name' => 'location'],
+                    ['field_type' => 'select', 'label' => 'Incident Type', 'name' => 'incident_type', 'options' => ['Aircraft damage', 'Ground injury', 'FOD event', 'Near miss', 'Other']],
+                    ['field_type' => 'textarea', 'label' => 'Description', 'name' => 'description', 'required' => true],
+                    ['field_type' => 'textarea', 'label' => 'Immediate Actions', 'name' => 'immediate_actions'],
+                    ['field_type' => 'text', 'label' => 'Reported By', 'name' => 'reported_by'],
+                ],
+            ],
+            [
                 'name' => 'Risk Assessment Form (Airport-Specific)',
-                'category' => 'Aviation - Airport Safety',
+                'library_key' => 'Aviation - Airport Safety',
                 'description' => 'Airport-specific hazard identification and risk assessment.',
                 'fields' => [
                     ['field_type' => 'textarea', 'label' => 'Description of Hazard', 'name' => 'hazard_description', 'required' => true],
@@ -797,7 +831,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Safety Observation Report',
-                'category' => 'Aviation - Airport Safety',
+                'library_key' => 'Aviation - Airport Safety',
                 'description' => 'Report safety observations and behaviors.',
                 'fields' => [
                     ['field_type' => 'date', 'label' => 'Date', 'name' => 'observation_date', 'required' => true],
@@ -812,7 +846,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Ground Vehicle Incident Report',
-                'category' => 'Aviation - Airport Safety',
+                'library_key' => 'Aviation - Airport Safety',
                 'description' => 'Report ground vehicle incidents on the airside.',
                 'fields' => [
                     ['field_type' => 'date', 'label' => 'Date', 'name' => 'incident_date', 'required' => true],
@@ -841,7 +875,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Wildlife Strike Report',
-                'category' => 'Aviation - Airport Safety',
+                'library_key' => 'Aviation - Airport Safety',
                 'description' => 'Report wildlife strikes with expanded content.',
                 'fields' => [
                     ['field_type' => 'date', 'label' => 'Date', 'name' => 'strike_date', 'required' => true],
@@ -866,7 +900,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Runway/Taxiway Hazard Report',
-                'category' => 'Aviation - Airport Safety',
+                'library_key' => 'Aviation - Airport Safety',
                 'description' => 'Report hazards on runways and taxiways.',
                 'fields' => [
                     ['field_type' => 'date', 'label' => 'Date Detected', 'name' => 'date_detected', 'required' => true],
@@ -886,7 +920,7 @@ class FormTemplateSeeder extends Seeder
             // === MRO QUALITY FORMS ===
             [
                 'name' => 'Supplier Evaluation Report',
-                'category' => 'Aviation - MRO Quality',
+                'library_key' => 'Aviation - MRO Quality',
                 'description' => 'Evaluate suppliers for parts, services, and tools.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Supplier Name', 'name' => 'supplier_name', 'required' => true],
@@ -902,7 +936,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Tool & Equipment Calibration Report',
-                'category' => 'Aviation - MRO Quality',
+                'library_key' => 'Aviation - MRO Quality',
                 'description' => 'Track tool and equipment calibration.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Equipment ID', 'name' => 'equipment_id', 'required' => true],
@@ -917,7 +951,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Non-Conformance Report (NCR) – MRO Quality',
-                'category' => 'Aviation - MRO Quality',
+                'library_key' => 'Aviation - MRO Quality',
                 'description' => 'Report non-conformances in MRO quality processes.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'NCR Number', 'name' => 'ncr_number', 'required' => true],
@@ -933,7 +967,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Work Order Quality Checklist',
-                'category' => 'Aviation - MRO Quality',
+                'library_key' => 'Aviation - MRO Quality',
                 'description' => 'Quality checklist for work orders.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Work Order Number', 'name' => 'work_order_number', 'required' => true],
@@ -948,7 +982,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Internal Audit Report – MRO Quality',
-                'category' => 'Aviation - MRO Quality',
+                'library_key' => 'Aviation - MRO Quality',
                 'description' => 'Internal audit report for MRO quality department.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Audit Number', 'name' => 'audit_number', 'required' => true],
@@ -968,7 +1002,7 @@ class FormTemplateSeeder extends Seeder
             // === GROUND SAFETY FORMS ===
             [
                 'name' => 'Ground Safety Report (GSR)',
-                'category' => 'Aviation - Ground Safety',
+                'library_key' => 'Aviation - Ground Safety',
                 'description' => 'Report ground safety concerns and events.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report ID', 'name' => 'report_id', 'required' => true],
@@ -988,7 +1022,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Baggage Handling Issue Report',
-                'category' => 'Aviation - Ground Safety',
+                'library_key' => 'Aviation - Ground Safety',
                 'description' => 'Report baggage handling issues and mishandling.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report ID', 'name' => 'report_id', 'required' => true],
@@ -1007,7 +1041,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Turnaround Incident Report',
-                'category' => 'Aviation - Ground Safety',
+                'library_key' => 'Aviation - Ground Safety',
                 'description' => 'Report turnaround and ground handling incidents.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report ID', 'name' => 'report_id', 'required' => true],
@@ -1028,7 +1062,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Ramp Equipment Defect Report',
-                'category' => 'Aviation - Ground Safety',
+                'library_key' => 'Aviation - Ground Safety',
                 'description' => 'Report defects in ramp equipment.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report ID', 'name' => 'report_id', 'required' => true],
@@ -1049,7 +1083,7 @@ class FormTemplateSeeder extends Seeder
             // === OGE QUALITY REPORTS (Oil, Gas & Energy) ===
             [
                 'name' => 'Internal Audit Report (OGE)',
-                'category' => 'OGE Quality',
+                'library_key' => 'OGE Quality',
                 'description' => 'Oil, Gas & Energy – Internal Audit Report for documenting audit findings and compliance.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Audit No.', 'name' => 'audit_no', 'required' => true],
@@ -1085,7 +1119,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Non-Conformance Report (NCR) (OGE)',
-                'category' => 'OGE Quality',
+                'library_key' => 'OGE Quality',
                 'description' => 'Oil, Gas & Energy – Non-Conformance Report for documenting and tracking NCRs.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'NCR No.', 'name' => 'ncr_no', 'required' => true],
@@ -1109,7 +1143,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Corrective Action Request (CAR) (OGE)',
-                'category' => 'OGE Quality',
+                'library_key' => 'OGE Quality',
                 'description' => 'Oil, Gas & Energy – Corrective Action Request for tracking corrective actions.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'CAR No.', 'name' => 'car_no', 'required' => true],
@@ -1132,7 +1166,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Preventive Action Request (PAR) (OGE)',
-                'category' => 'OGE Quality',
+                'library_key' => 'OGE Quality',
                 'description' => 'Oil, Gas & Energy – Preventive Action Request for potential issues and risks.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'PAR No.', 'name' => 'par_no', 'required' => true],
@@ -1152,7 +1186,7 @@ class FormTemplateSeeder extends Seeder
             // === OGE SAFETY REPORTS ===
             [
                 'name' => 'Incident / Accident Report (OGE)',
-                'category' => 'OGE Safety',
+                'library_key' => 'OGE Safety',
                 'description' => 'Oil, Gas & Energy – Incident / Accident Report.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report No.', 'name' => 'report_no', 'required' => true],
@@ -1216,7 +1250,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Near Miss Report (OGE)',
-                'category' => 'OGE Safety',
+                'library_key' => 'OGE Safety',
                 'description' => 'Oil, Gas & Energy – Near Miss Report.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report No.', 'name' => 'report_no', 'required' => true],
@@ -1289,7 +1323,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Hazard Identification Report (OGE)',
-                'category' => 'OGE Safety',
+                'library_key' => 'OGE Safety',
                 'description' => 'Oil, Gas & Energy – Hazard Identification Report.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report No.', 'name' => 'report_no', 'required' => true],
@@ -1351,7 +1385,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'HSE Observation / BBS Report (OGE)',
-                'category' => 'OGE Safety',
+                'library_key' => 'OGE Safety',
                 'description' => 'Oil, Gas & Energy – HSE Observation / Behavior-Based Safety Report.',
                 'fields' => [
                     ['field_type' => 'date', 'label' => 'Date', 'name' => 'date', 'required' => true],
@@ -1396,7 +1430,7 @@ class FormTemplateSeeder extends Seeder
             // === LOGISTICS & TRANSPORTATION SAFETY REPORTS ===
             [
                 'name' => 'Incident / Accident Report – Logistics & Transportation',
-                'category' => 'Logistics & Transportation - Safety',
+                'library_key' => 'Logistics & Transportation - Safety',
                 'description' => 'Incident / Accident reporting for Logistics & Transportation.',
                 'fields' => [
                     ['field_type' => 'date', 'label' => 'Date of Incident', 'name' => 'date_of_incident', 'required' => true],
@@ -1431,7 +1465,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Near Miss Report – Logistics & Transportation',
-                'category' => 'Logistics & Transportation - Safety',
+                'library_key' => 'Logistics & Transportation - Safety',
                 'description' => 'Near miss reporting for Logistics & Transportation.',
                 'fields' => [
                     ['field_type' => 'date', 'label' => 'Date', 'name' => 'date', 'required' => true],
@@ -1456,7 +1490,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Hazard Report – Logistics & Transportation',
-                'category' => 'Logistics & Transportation - Safety',
+                'library_key' => 'Logistics & Transportation - Safety',
                 'description' => 'Hazard reporting for Logistics & Transportation.',
                 'fields' => [
                     ['field_type' => 'date', 'label' => 'Date of Observation', 'name' => 'date_of_observation', 'required' => true],
@@ -1482,7 +1516,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Fatigue / Fitness for Duty Report – Logistics & Transportation',
-                'category' => 'Logistics & Transportation - Safety',
+                'library_key' => 'Logistics & Transportation - Safety',
                 'description' => 'Fatigue / fitness for duty reporting for Logistics & Transportation.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Employee Name', 'name' => 'employee_name', 'required' => true],
@@ -1508,7 +1542,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Security Incident Report – Logistics & Transportation',
-                'category' => 'Logistics & Transportation - Safety',
+                'library_key' => 'Logistics & Transportation - Safety',
                 'description' => 'Security incident reporting for Logistics & Transportation.',
                 'fields' => [
                     ['field_type' => 'date', 'label' => 'Date of Incident', 'name' => 'date_of_incident', 'required' => true],
@@ -1536,7 +1570,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Inspection / Verification Report (OGE)',
-                'category' => 'OGE Quality',
+                'library_key' => 'OGE Quality',
                 'description' => 'Oil, Gas & Energy – Inspection Report for equipment and area verification.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report No.', 'name' => 'report_no', 'required' => true],
@@ -1561,7 +1595,7 @@ class FormTemplateSeeder extends Seeder
             ],
             [
                 'name' => 'Material / Equipment Defect Report (OGE)',
-                'category' => 'OGE Quality',
+                'library_key' => 'OGE Quality',
                 'description' => 'Oil, Gas & Energy – Defect Report for materials and equipment.',
                 'fields' => [
                     ['field_type' => 'text', 'label' => 'Report No.', 'name' => 'report_no', 'required' => true],
@@ -1581,23 +1615,207 @@ class FormTemplateSeeder extends Seeder
                     ['field_type' => 'date', 'label' => 'Responsible Person Date', 'name' => 'responsible_date'],
                 ],
             ],
-        ];
 
-        // ── Resolve industries ────────────────────────────────────────────────────
-        $aviationIndustry  = Industry::where('name', 'Aviation')->first();
-        $ogeIndustry       = Industry::where('name', 'OGE')->first();
-        $logisticsIndustry = Industry::where('name', 'Logistics & Transportation')->first();
+            // === AVIATION — Airport Quality (sector: Airport; dept: Central Airport Authority → Quality Reports) ===
+            [
+                'name' => 'Internal Audit Report – Airport Quality',
+                'library_key' => 'Aviation - Airport Quality',
+                'description' => 'Internal audit for airport quality / compliance.',
+                'fields' => [
+                    ['field_type' => 'text', 'label' => 'Audit ID', 'name' => 'audit_id', 'required' => true],
+                    ['field_type' => 'date', 'label' => 'Date of Audit', 'name' => 'date_of_audit', 'required' => true],
+                    ['field_type' => 'text', 'label' => 'Auditor Name', 'name' => 'auditor_name', 'required' => true],
+                    ['field_type' => 'text', 'label' => 'Terminal / Area Audited', 'name' => 'area_audited'],
+                    ['field_type' => 'textarea', 'label' => 'Audit Scope & Standards', 'name' => 'audit_scope'],
+                    ['field_type' => 'textarea', 'label' => 'Findings Summary', 'name' => 'findings_summary'],
+                    ['field_type' => 'radio', 'label' => 'Compliance Status', 'name' => 'compliance_status', 'options' => ['Compliant', 'Minor Non-Compliance', 'Major Non-Compliance']],
+                    ['field_type' => 'textarea', 'label' => 'Corrective Actions Recommended', 'name' => 'corrective_actions'],
+                    ['field_type' => 'signature', 'label' => 'Auditor Signature', 'name' => 'auditor_signature'],
+                ],
+            ],
+            [
+                'name' => 'Terminal Inspection Checklist',
+                'library_key' => 'Aviation - Airport Quality',
+                'description' => 'Terminal facility inspection checklist.',
+                'fields' => [
+                    ['field_type' => 'text', 'label' => 'Inspection ID', 'name' => 'inspection_id', 'required' => true],
+                    ['field_type' => 'date', 'label' => 'Date', 'name' => 'inspection_date', 'required' => true],
+                    ['field_type' => 'text', 'label' => 'Terminal / Zone', 'name' => 'terminal_zone'],
+                    ['field_type' => 'text', 'label' => 'Inspector', 'name' => 'inspector'],
+                    ['field_type' => 'radio', 'label' => 'Passenger flow & signage', 'name' => 'item_signage', 'options' => ['OK', 'NOK', 'N/A']],
+                    ['field_type' => 'radio', 'label' => 'Cleaning & housekeeping', 'name' => 'item_cleaning', 'options' => ['OK', 'NOK', 'N/A']],
+                    ['field_type' => 'radio', 'label' => 'Access control & security checkpoints', 'name' => 'item_access', 'options' => ['OK', 'NOK', 'N/A']],
+                    ['field_type' => 'textarea', 'label' => 'Observations & Non-conformities', 'name' => 'observations'],
+                    ['field_type' => 'signature', 'label' => 'Inspector Signature', 'name' => 'inspector_signature'],
+                ],
+            ],
+            [
+                'name' => 'Compliance & Regulatory Audit – Airport',
+                'library_key' => 'Aviation - Airport Quality',
+                'description' => 'Regulatory / compliance audit for airport operations.',
+                'fields' => [
+                    ['field_type' => 'text', 'label' => 'Audit Reference', 'name' => 'audit_ref', 'required' => true],
+                    ['field_type' => 'date', 'label' => 'Date', 'name' => 'audit_date', 'required' => true],
+                    ['field_type' => 'text', 'label' => 'Regulation / Standard', 'name' => 'regulation_standard'],
+                    ['field_type' => 'textarea', 'label' => 'Scope', 'name' => 'scope'],
+                    ['field_type' => 'textarea', 'label' => 'Evidence Reviewed', 'name' => 'evidence'],
+                    ['field_type' => 'textarea', 'label' => 'Findings', 'name' => 'findings'],
+                    ['field_type' => 'textarea', 'label' => 'Recommendations', 'name' => 'recommendations'],
+                    ['field_type' => 'signature', 'label' => 'Lead Auditor', 'name' => 'lead_auditor_sig'],
+                ],
+            ],
+            [
+                'name' => 'Non-Conformance Report (NCR) – Airport Quality',
+                'library_key' => 'Aviation - Airport Quality',
+                'description' => 'NCR for airport quality processes.',
+                'fields' => [
+                    ['field_type' => 'text', 'label' => 'NCR ID', 'name' => 'ncr_id', 'required' => true],
+                    ['field_type' => 'date', 'label' => 'Date', 'name' => 'date_of_issue', 'required' => true],
+                    ['field_type' => 'text', 'label' => 'Reported By', 'name' => 'reported_by', 'required' => true],
+                    ['field_type' => 'textarea', 'label' => 'Description', 'name' => 'description', 'required' => true],
+                    ['field_type' => 'select', 'label' => 'Severity', 'name' => 'severity', 'options' => ['Minor', 'Major', 'Critical']],
+                    ['field_type' => 'textarea', 'label' => 'Immediate Action', 'name' => 'immediate_action'],
+                ],
+            ],
+            [
+                'name' => 'Contractor Evaluation Form – Airport',
+                'library_key' => 'Aviation - Airport Quality',
+                'description' => 'Evaluate contractors working on airport premises.',
+                'fields' => [
+                    ['field_type' => 'text', 'label' => 'Contractor Name', 'name' => 'contractor_name', 'required' => true],
+                    ['field_type' => 'date', 'label' => 'Evaluation Date', 'name' => 'evaluation_date', 'required' => true],
+                    ['field_type' => 'text', 'label' => 'Contract / Work Package', 'name' => 'contract_ref'],
+                    ['field_type' => 'textarea', 'label' => 'Criteria (safety, quality, schedule)', 'name' => 'criteria'],
+                    ['field_type' => 'select', 'label' => 'Overall Rating', 'name' => 'rating', 'options' => ['Satisfactory', 'Needs Improvement', 'Unsatisfactory']],
+                    ['field_type' => 'textarea', 'label' => 'Comments', 'name' => 'comments'],
+                    ['field_type' => 'text', 'label' => 'Evaluator', 'name' => 'evaluator'],
+                ],
+            ],
+            [
+                'name' => 'NCR / CAR / PAR Forms – Airport',
+                'library_key' => 'Aviation - Airport Quality',
+                'description' => 'Combined NCR and corrective/preventive action for airport quality.',
+                'fields' => [
+                    ['field_type' => 'text', 'label' => 'Record ID', 'name' => 'record_id', 'required' => true],
+                    ['field_type' => 'radio', 'label' => 'Type', 'name' => 'record_type', 'options' => ['NCR', 'CAR', 'PAR']],
+                    ['field_type' => 'date', 'label' => 'Date Raised', 'name' => 'date_raised', 'required' => true],
+                    ['field_type' => 'textarea', 'label' => 'Summary', 'name' => 'summary', 'required' => true],
+                    ['field_type' => 'textarea', 'label' => 'Root Cause', 'name' => 'root_cause'],
+                    ['field_type' => 'textarea', 'label' => 'Action Plan', 'name' => 'action_plan'],
+                    ['field_type' => 'date', 'label' => 'Target Closure', 'name' => 'target_closure'],
+                ],
+            ],
+
+            // === AVIATION — Airport Operations ===
+            [
+                'name' => 'Turnaround Oversight Report',
+                'library_key' => 'Aviation - Airport Operations',
+                'description' => 'Oversight of aircraft turnaround on stand.',
+                'fields' => [
+                    ['field_type' => 'text', 'label' => 'Report ID', 'name' => 'report_id', 'required' => true],
+                    ['field_type' => 'date', 'label' => 'Date', 'name' => 'report_date', 'required' => true],
+                    ['field_type' => 'text', 'label' => 'Flight / Stand', 'name' => 'flight_stand'],
+                    ['field_type' => 'text', 'label' => 'Scheduled vs Actual Off-Block', 'name' => 'off_block_times'],
+                    ['field_type' => 'textarea', 'label' => 'Service Coordination Notes', 'name' => 'coordination_notes'],
+                    ['field_type' => 'textarea', 'label' => 'Delays / Issues', 'name' => 'delays_issues'],
+                    ['field_type' => 'text', 'label' => 'Oversight Officer', 'name' => 'officer'],
+                ],
+            ],
+            [
+                'name' => 'Fuel Handling Incident Report',
+                'library_key' => 'Aviation - Airport Operations',
+                'description' => 'Report fuel handling incidents on the airfield.',
+                'fields' => [
+                    ['field_type' => 'date', 'label' => 'Date', 'name' => 'incident_date', 'required' => true],
+                    ['field_type' => 'text', 'label' => 'Location / Hydrant / Truck', 'name' => 'location'],
+                    ['field_type' => 'textarea', 'label' => 'Description', 'name' => 'description', 'required' => true],
+                    ['field_type' => 'radio', 'label' => 'Spill?', 'name' => 'spill', 'options' => ['Yes', 'No']],
+                    ['field_type' => 'textarea', 'label' => 'Immediate Response', 'name' => 'response'],
+                    ['field_type' => 'text', 'label' => 'Reported By', 'name' => 'reported_by'],
+                ],
+            ],
+            [
+                'name' => 'GSE (Ground Support Equipment) Check',
+                'library_key' => 'Aviation - Airport Operations',
+                'description' => 'Daily / periodic GSE inspection checklist.',
+                'fields' => [
+                    ['field_type' => 'text', 'label' => 'Equipment ID', 'name' => 'equipment_id', 'required' => true],
+                    ['field_type' => 'date', 'label' => 'Check Date', 'name' => 'check_date', 'required' => true],
+                    ['field_type' => 'select', 'label' => 'Equipment Type', 'name' => 'equipment_type', 'options' => ['GPU', 'Belt loader', 'Pushback', 'ASU', 'Other']],
+                    ['field_type' => 'radio', 'label' => 'Brakes / steering', 'name' => 'chk_brakes', 'options' => ['OK', 'NOK']],
+                    ['field_type' => 'radio', 'label' => 'Visual structural condition', 'name' => 'chk_structure', 'options' => ['OK', 'NOK']],
+                    ['field_type' => 'textarea', 'label' => 'Defects / Remarks', 'name' => 'remarks'],
+                    ['field_type' => 'text', 'label' => 'Inspector', 'name' => 'inspector'],
+                ],
+            ],
+            [
+                'name' => 'Lost & Found Process Audit',
+                'library_key' => 'Aviation - Airport Operations',
+                'description' => 'Audit lost & found handling process.',
+                'fields' => [
+                    ['field_type' => 'text', 'label' => 'Audit ID', 'name' => 'audit_id', 'required' => true],
+                    ['field_type' => 'date', 'label' => 'Date', 'name' => 'audit_date', 'required' => true],
+                    ['field_type' => 'textarea', 'label' => 'Process Steps Reviewed', 'name' => 'steps'],
+                    ['field_type' => 'textarea', 'label' => 'Sampling / Findings', 'name' => 'findings'],
+                    ['field_type' => 'textarea', 'label' => 'Recommendations', 'name' => 'recommendations'],
+                    ['field_type' => 'text', 'label' => 'Auditor', 'name' => 'auditor'],
+                ],
+            ],
+
+            // === LOGISTICS & TRANSPORTATION — Quality (all segments: Maritime / Rail / Road) ===
+            [
+                'name' => 'Non-Conformance Report (NCR) – Logistics & Transportation',
+                'library_key' => 'Logistics & Transportation - Quality',
+                'description' => 'NCR for maritime, rail, or road transport operations.',
+                'fields' => [
+                    ['field_type' => 'text', 'label' => 'NCR ID', 'name' => 'ncr_id', 'required' => true],
+                    ['field_type' => 'date', 'label' => 'Date', 'name' => 'date_raised', 'required' => true],
+                    ['field_type' => 'text', 'label' => 'Raised By', 'name' => 'raised_by'],
+                    ['field_type' => 'textarea', 'label' => 'Description of Non-Conformance', 'name' => 'description', 'required' => true],
+                    ['field_type' => 'select', 'label' => 'Severity', 'name' => 'severity', 'options' => ['Minor', 'Major', 'Critical']],
+                    ['field_type' => 'textarea', 'label' => 'Immediate Action', 'name' => 'immediate_action'],
+                    ['field_type' => 'textarea', 'label' => 'Disposition / Root Cause (if known)', 'name' => 'root_cause'],
+                ],
+            ],
+            [
+                'name' => 'Audit Checklist – Logistics & Transportation',
+                'library_key' => 'Logistics & Transportation - Quality',
+                'description' => 'Generic audit checklist for L&T quality.',
+                'fields' => [
+                    ['field_type' => 'text', 'label' => 'Audit Reference', 'name' => 'audit_ref', 'required' => true],
+                    ['field_type' => 'date', 'label' => 'Date', 'name' => 'audit_date', 'required' => true],
+                    ['field_type' => 'text', 'label' => 'Site / Asset', 'name' => 'site_asset'],
+                    ['field_type' => 'text', 'label' => 'Auditor', 'name' => 'auditor'],
+                    ['field_type' => 'textarea', 'label' => 'Checklist Items & Results', 'name' => 'checklist_results'],
+                    ['field_type' => 'radio', 'label' => 'Overall Result', 'name' => 'overall_result', 'options' => ['Pass', 'Pass with observations', 'Fail']],
+                    ['field_type' => 'textarea', 'label' => 'Observations', 'name' => 'observations'],
+                ],
+            ],
+            [
+                'name' => 'Corrective/Preventive Action Form (CAPA) – Logistics & Transportation',
+                'library_key' => 'Logistics & Transportation - Quality',
+                'description' => 'CAPA for logistics & transportation quality.',
+                'fields' => [
+                    ['field_type' => 'text', 'label' => 'CAPA ID', 'name' => 'capa_id', 'required' => true],
+                    ['field_type' => 'text', 'label' => 'Linked NCR / Audit Ref.', 'name' => 'linked_ref'],
+                    ['field_type' => 'date', 'label' => 'Date Raised', 'name' => 'date_raised', 'required' => true],
+                    ['field_type' => 'radio', 'label' => 'Action Type', 'name' => 'action_type', 'options' => ['Corrective', 'Preventive']],
+                    ['field_type' => 'textarea', 'label' => 'Problem / Opportunity', 'name' => 'problem', 'required' => true],
+                    ['field_type' => 'textarea', 'label' => 'Action Plan', 'name' => 'action_plan'],
+                    ['field_type' => 'text', 'label' => 'Responsible Person', 'name' => 'responsible'],
+                    ['field_type' => 'date', 'label' => 'Target Date', 'name' => 'target_date'],
+                    ['field_type' => 'date', 'label' => 'Completion Date', 'name' => 'completion_date'],
+                ],
+            ],
+        ];
 
         // ── Resolve sectors (keyed as "IndustryName::SectorName") ─────────────────
         $sectors = Sector::with('industry')->get()->keyBy(
             fn ($s) => $s->industry->name . '::' . $s->name
         );
 
-        // ── Category → sector(s) map ──────────────────────────────────────────────
-        // Each entry lists one or more [IndustryName, SectorName] pairs so that a
-        // single template can appear in multiple sectors (e.g. L&T safety forms
-        // apply to Maritime, Rail, and Road Transport simultaneously).
-        $categoryToSectors = [
+        // ── Legacy label → sector(s) map (matched before slugging `library_key`) ───
+        $legacyLabelToSectors = [
             // AVIATION — Airlines sector
             'Aviation - Flight Ops'               => [['Aviation', 'Airlines']],
             'Aviation - Ground Safety'            => [['Aviation', 'Airlines']],
@@ -1612,49 +1830,72 @@ class FormTemplateSeeder extends Seeder
             'Aviation - MRO Quality'              => [['Aviation', 'MRO']],
             // AVIATION — Airport sector
             'Aviation - Airport Safety'           => [['Aviation', 'Airport']],
+            'Aviation - Airport Quality'          => [['Aviation', 'Airport']],
+            'Aviation - Airport Operations'       => [['Aviation', 'Airport']],
             // OGE sectors
             'OGE Safety'                          => [['OGE', 'Safety']],
             'OGE Quality'                         => [['OGE', 'Quality']],
-            // Logistics & Transportation — all three transport sectors
+            // Logistics & Transportation — all three transport segments
             'Logistics & Transportation - Safety' => [
+                ['Logistics & Transportation', 'Maritime'],
+                ['Logistics & Transportation', 'Rail'],
+                ['Logistics & Transportation', 'Road Transport'],
+            ],
+            'Logistics & Transportation - Quality' => [
                 ['Logistics & Transportation', 'Maritime'],
                 ['Logistics & Transportation', 'Rail'],
                 ['Logistics & Transportation', 'Road Transport'],
             ],
         ];
 
+        $themeSafety = FormTheme::firstOrCreate(['slug' => 'safety'], ['name' => 'Safety']);
+        $themeQuality = FormTheme::firstOrCreate(['slug' => 'quality'], ['name' => 'Quality']);
+
         foreach ($templates as $templateData) {
             $fields = $templateData['fields'];
-            unset($templateData['fields']);
+            $sectorPairs = $templateData['sectors'] ?? null;
+            unset($templateData['fields'], $templateData['sectors']);
+
+            $legacyLabel = $templateData['library_key'];
+            $libraryKey = Str::slug($legacyLabel);
 
             $template = FormTemplate::firstOrCreate(
-                ['name' => $templateData['name'], 'category' => $templateData['category']],
-                $templateData
+                ['name' => $templateData['name']],
+                [
+                    'description' => $templateData['description'] ?? null,
+                    'library_key' => $libraryKey,
+                ]
             );
+            $template->update([
+                'description' => $templateData['description'] ?? null,
+                'library_key' => $libraryKey,
+            ]);
 
-            $category = $templateData['category'];
-
-            // ── Attach industry ───────────────────────────────────────────────────
-            if (str_starts_with($category, 'Aviation') && $aviationIndustry) {
-                $template->industries()->syncWithoutDetaching([$aviationIndustry->id]);
-            } elseif (str_starts_with($category, 'OGE') && $ogeIndustry) {
-                $template->industries()->syncWithoutDetaching([$ogeIndustry->id]);
-            } elseif (str_starts_with($category, 'Logistics & Transportation') && $logisticsIndustry) {
-                $template->industries()->syncWithoutDetaching([$logisticsIndustry->id]);
-            }
-
-            // ── Attach sector(s) ──────────────────────────────────────────────────
-            if (isset($categoryToSectors[$category])) {
-                $sectorIds = [];
-                foreach ($categoryToSectors[$category] as [$industryName, $sectorName]) {
+            $pairs = $sectorPairs ?? $legacyLabelToSectors[$legacyLabel] ?? [];
+            $sectorIds = [];
+            if ($pairs !== []) {
+                foreach ($pairs as [$industryName, $sectorName]) {
                     $key = $industryName . '::' . $sectorName;
                     if (isset($sectors[$key])) {
                         $sectorIds[] = $sectors[$key]->id;
                     }
                 }
-                if ($sectorIds) {
+                if ($sectorIds !== []) {
                     $template->sectors()->syncWithoutDetaching($sectorIds);
+                    $industryIds = Sector::whereIn('id', $sectorIds)->pluck('industry_id')->unique()->filter()->all();
+                    $template->industries()->syncWithoutDetaching($industryIds);
                 }
+            }
+
+            $themeIds = [];
+            if (str_contains($libraryKey, 'safety')) {
+                $themeIds[] = $themeSafety->id;
+            }
+            if (str_contains($libraryKey, 'quality')) {
+                $themeIds[] = $themeQuality->id;
+            }
+            if ($themeIds !== []) {
+                $template->themes()->syncWithoutDetaching($themeIds);
             }
 
             // ── Seed fields (skip if already seeded) ──────────────────────────────

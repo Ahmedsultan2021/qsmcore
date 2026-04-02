@@ -47,15 +47,15 @@ Route::middleware('auth:employee')->prefix('companies')->name('companies.')->gro
 
         $deptIds = $departments->pluck('id');
 
-        // KPI counts — derived from department form_category instead of report kind
-        $openSafety = Report::whereHas('department', fn ($q) => $q->where('form_category', 'like', '%Safety%'))
-            ->whereIn('department_id', $deptIds)
+        // KPI counts — reports tied to departments that have at least one template with Safety / Quality theme
+        $openSafety = Report::whereIn('department_id', $deptIds)
             ->whereNotIn('status', ['approved', 'rejected'])
+            ->whereHas('department.formTemplates.themes', fn ($q) => $q->where('form_themes.slug', 'safety'))
             ->count();
 
-        $openQuality = Report::whereHas('department', fn ($q) => $q->where('form_category', 'like', '%Quality%'))
-            ->whereIn('department_id', $deptIds)
+        $openQuality = Report::whereIn('department_id', $deptIds)
             ->whereNotIn('status', ['approved', 'rejected'])
+            ->whereHas('department.formTemplates.themes', fn ($q) => $q->where('form_themes.slug', 'quality'))
             ->count();
 
         $closedReports = Report::whereIn('department_id', $deptIds)

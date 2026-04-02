@@ -33,7 +33,7 @@ class CompanyFormSubmissionController extends Controller
         ]);
 
         // Ensure department belongs to same company
-        if ($department->company_id !== $authEmployee->company_id) {
+        if ((int) $department->company_id !== (int) $authEmployee->company_id) {
             Log::warning('[FillForm] 403 – department company mismatch', [
                 'department_company_id' => $department->company_id,
                 'employee_company_id'   => $authEmployee->company_id,
@@ -42,7 +42,7 @@ class CompanyFormSubmissionController extends Controller
         }
 
         // Ensure report belongs to department
-        if ($report->department_id !== $department->id) {
+        if ((int) $report->department_id !== (int) $department->id) {
             Log::warning('[FillForm] 404 – report does not belong to department', [
                 'report_department_id' => $report->department_id,
                 'department_id'        => $department->id,
@@ -85,7 +85,7 @@ class CompanyFormSubmissionController extends Controller
         $authEmployee = Auth::guard('employee')->user();
         
         // Ensure department belongs to same company
-        if ($department->company_id !== $authEmployee->company_id) {
+        if ((int) $department->company_id !== (int) $authEmployee->company_id) {
             abort(403);
         }
         
@@ -174,7 +174,7 @@ class CompanyFormSubmissionController extends Controller
         $authEmployee = Auth::guard('employee')->user();
         
         // Ensure department belongs to same company
-        if ($department->company_id !== $authEmployee->company_id) {
+        if ((int) $department->company_id !== (int) $authEmployee->company_id) {
             abort(403);
         }
         

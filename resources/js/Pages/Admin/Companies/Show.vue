@@ -29,8 +29,15 @@ const deleteCompany = () => {
         </div>
 
         <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-            <div class="flex justify-between items-start mb-6">
-                <div>
+            <div class="flex justify-between items-start mb-6 gap-4">
+                <div class="flex items-start gap-4 min-w-0">
+                    <img
+                        v-if="company.logo_url"
+                        :src="company.logo_url"
+                        :alt="`${company.name} logo`"
+                        class="h-16 w-16 sm:h-20 sm:w-20 shrink-0 object-contain rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 p-1"
+                    />
+                    <div class="min-w-0">
                     <h1 class="text-3xl font-bold text-gray-900 dark:text-white">{{ company.name }}</h1>
                     <div class="mt-2 space-y-1 text-sm text-gray-600 dark:text-gray-400">
                         <p v-if="company.email">Email: {{ company.email }}</p>
@@ -47,8 +54,9 @@ const deleteCompany = () => {
                         </p>
                     </div>
                     <p v-if="company.description" class="mt-2 text-gray-600 dark:text-gray-400">{{ company.description }}</p>
+                    </div>
                 </div>
-                <div class="flex space-x-3">
+                <div class="flex space-x-3 shrink-0">
                     <Link
                         :href="route('companies.edit', company.id)"
                         class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"

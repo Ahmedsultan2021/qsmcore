@@ -139,6 +139,8 @@ class CompanyReportController extends Controller
         if ($department->company_id !== $authEmployee->company_id) {
             abort(403);
         }
+
+        $department->load('company');
         
         // Report is already scoped to department via route model binding
         $report->load([

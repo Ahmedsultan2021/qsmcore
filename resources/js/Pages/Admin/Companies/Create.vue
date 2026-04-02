@@ -16,10 +16,17 @@ const form = useForm({
     phone: "",
     address: "",
     description: "",
+    logo: null,
 });
 
 const submit = () => {
-    form.post(route("companies.store"));
+    form.post(route("companies.store"), {
+        forceFormData: true,
+    });
+};
+
+const clearLogo = () => {
+    form.logo = null;
 };
 </script>
 
@@ -122,6 +129,31 @@ const submit = () => {
                         class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                     ></textarea>
                     <div v-if="form.errors.description" class="mt-1 text-sm text-red-600">{{ form.errors.description }}</div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="logo" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Logo
+                    </label>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">PNG, JPG, WebP, or GIF. Max 2 MB.</p>
+                    <div class="flex flex-wrap items-center gap-3">
+                        <input
+                            id="logo"
+                            type="file"
+                            accept="image/*"
+                            class="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-gray-600 dark:file:text-gray-200"
+                            @input="form.logo = $event.target.files[0]"
+                        />
+                        <button
+                            v-if="form.logo"
+                            type="button"
+                            class="text-sm text-red-600 hover:text-red-800 dark:text-red-400"
+                            @click="clearLogo"
+                        >
+                            Clear file
+                        </button>
+                    </div>
+                    <div v-if="form.errors.logo" class="mt-1 text-sm text-red-600">{{ form.errors.logo }}</div>
                 </div>
 
                 <div class="flex items-center justify-end space-x-3">

@@ -1,14 +1,16 @@
 <script setup>
 import CompanyLayout from "@/Layouts/CompanyLayout.vue";
 import BaseDashboardHeader from "@/Components/BaseDashboardHeader.vue";
+import CompanyFormBranding from "@/Components/CompanyFormBranding.vue";
 import SignaturePad from "@/Components/SignaturePad.vue";
 import { Head, Link, useForm } from "@inertiajs/vue3";
-import { computed, ref } from "vue";
+import { computed } from "vue";
 
 defineOptions({ layout: CompanyLayout });
 
 const props = defineProps({
     department: Object,
+    company: Object,
     report: Object,
     form: Object,
     existingResponse: Object,
@@ -52,6 +54,8 @@ const navs = computed(() => [
         />
 
         <div class="bg-white dark:bg-gray-800 shadow rounded-lg border border-gray-200 dark:border-gray-700 p-6 mt-6">
+            <CompanyFormBranding :company="company" />
+
             <div class="mb-6 pb-4 border-b border-gray-200 dark:border-gray-700">
                 <p class="text-sm text-gray-500 dark:text-gray-400">Report</p>
                 <p class="font-medium text-gray-900 dark:text-white">{{ report.title }}</p>

@@ -131,6 +131,9 @@ const filteredSectors = computed(() => {
                 <thead class="bg-gray-50 dark:bg-gray-700">
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                            Logo
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                             Sector
                         </th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
@@ -152,6 +155,15 @@ const filteredSectors = computed(() => {
                 </thead>
                 <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                     <tr v-for="company in companies.data" :key="company.id" class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                        <td class="px-6 py-3 whitespace-nowrap">
+                            <img
+                                v-if="company.logo_url"
+                                :src="company.logo_url"
+                                :alt="`${company.name} logo`"
+                                class="h-10 w-10 object-contain rounded border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 p-0.5"
+                            />
+                            <span v-else class="text-gray-400 dark:text-gray-500 text-sm">—</span>
+                        </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                             <Link
                                 :href="route('sectors.show', company.sector.id)"

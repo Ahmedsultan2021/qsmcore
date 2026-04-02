@@ -1,6 +1,7 @@
 <script setup>
 import CompanyLayout from "@/Layouts/CompanyLayout.vue";
 import BaseDashboardHeader from "@/Components/BaseDashboardHeader.vue";
+import CompanyFormBranding from "@/Components/CompanyFormBranding.vue";
 import { Head, Link, router, useForm } from "@inertiajs/vue3";
 import { computed, ref } from "vue";
 
@@ -56,6 +57,10 @@ const getGeneralStatusColor = (status) => {
     };
     return colors[status] || colors.pending;
 };
+
+const reportCompany = computed(
+    () => props.department?.company || props.report?.department?.company || null
+);
 
 const fileInputRef = ref(null);
 const fileForm = useForm({ file: null });
@@ -196,6 +201,9 @@ const deleteFile = (reportFileId) => {
         />
 
         <div class="bg-white dark:bg-gray-800 shadow rounded-lg border border-gray-200 dark:border-gray-700 mt-6">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50/80 dark:bg-gray-900/30">
+                <CompanyFormBranding class="!mb-0 !pb-0 !border-0" :company="reportCompany" />
+            </div>
             <div class="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div class="space-y-3">

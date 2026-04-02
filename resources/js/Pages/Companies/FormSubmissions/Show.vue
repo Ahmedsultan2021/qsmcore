@@ -1,6 +1,7 @@
 <script setup>
 import CompanyLayout from "@/Layouts/CompanyLayout.vue";
 import BaseDashboardHeader from "@/Components/BaseDashboardHeader.vue";
+import CompanyFormBranding from "@/Components/CompanyFormBranding.vue";
 import { Head, Link } from "@inertiajs/vue3";
 import { computed } from "vue";
 
@@ -8,6 +9,7 @@ defineOptions({ layout: CompanyLayout });
 
 const props = defineProps({
     department: Object,
+    company: Object,
     report: Object,
     form: Object,
     response: Object,
@@ -38,6 +40,8 @@ const navs = computed(() => [
         />
 
         <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 mt-6">
+            <CompanyFormBranding :company="company" />
+
             <div class="mb-4">
                 <p class="text-sm text-gray-600 dark:text-gray-400">
                     Report: <span class="font-medium text-gray-900 dark:text-white">{{ report.title }}</span>

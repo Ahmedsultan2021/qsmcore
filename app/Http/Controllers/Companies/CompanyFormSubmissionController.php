@@ -63,6 +63,8 @@ class CompanyFormSubmissionController extends Controller
         }
         
         $form->load('formFields');
+
+        $department->load('company');
         
         // Check if user already submitted this form for this report
         $existingResponse = FormResponse::where('report_id', $report->id)
@@ -72,6 +74,7 @@ class CompanyFormSubmissionController extends Controller
         
         return Inertia::render('Companies/FormSubmissions/Create', [
             'department' => $department,
+            'company' => $department->company,
             'report' => $report,
             'form' => $form,
             'existingResponse' => $existingResponse,
@@ -203,9 +206,12 @@ class CompanyFormSubmissionController extends Controller
         if (!$response) {
             return redirect()->route('companies.departments.reports.forms.create', ['department' => $department->id, 'report' => $report->id, 'form' => $form->id]);
         }
+
+        $department->load('company');
         
         return Inertia::render('Companies/FormSubmissions/Show', [
             'department' => $department,
+            'company' => $department->company,
             'report' => $report,
             'form' => $form,
             'response' => $response,

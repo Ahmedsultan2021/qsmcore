@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Company;
 use App\Models\Sector;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class CompanyController extends Controller
@@ -76,9 +77,15 @@ class CompanyController extends Controller
             'phone' => 'nullable|string|max:255',
             'address' => 'nullable|string',
             'description' => 'nullable|string',
+            'logo' => 'nullable|image|max:2048',
         ]);
 
-        $company = Company::create($validated);
+        $company = Company::create(collect($validated)->except('logo')->all());
+
+        if ($request->hasFile('logo')) {
+            $path = $request->file('logo')->store("company-logos/{$company->id}", 'public');
+            $company->update(['logo_path' => $path]);
+        }
 
         return redirect()->route('companies.index', ['sector_id' => $company->sector_id])
             ->with('success', 'Company created successfully');
@@ -121,9 +128,24 @@ class CompanyController extends Controller
             'phone' => 'nullable|string|max:255',
             'address' => 'nullable|string',
             'description' => 'nullable|string',
+            'logo' => 'nullable|image|max:10240',
+            'remove_logo' => 'nullable|boolean',
         ]);
 
-        $company->update($validated);
+        $company->update(collect($validated)->except(['logo', 'remove_logo'])->all());
+
+        if ($request->hasFile('logo')) {
+            if ($company->logo_path) {
+                Storage::disk('public')->delete($company->logo_path);
+            }
+            $path = $request->file('logo')->store("company-logos/{$company->id}", 'public');
+            $company->update(['logo_path' => $path]);
+        } elseif ($request->boolean('remove_logo')) {
+            if ($company->logo_path) {
+                Storage::disk('public')->delete($company->logo_path);
+                $company->update(['logo_path' => null]);
+            }
+        }
 
         return redirect()->route('companies.index', ['sector_id' => $company->sector_id])
             ->with('success', 'Company updated successfully');
@@ -135,6 +157,9 @@ class CompanyController extends Controller
     public function destroy(Company $company)
     {
         $sectorId = $company->sector_id;
+        if ($company->logo_path) {
+            Storage::disk('public')->delete($company->logo_path);
+        }
         $company->delete();
 
         return redirect()->route('companies.index', ['sector_id' => $sectorId])

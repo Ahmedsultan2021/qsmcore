@@ -23,6 +23,9 @@ class Company extends Model
     protected $hidden = [
         'logo_path',
     ];
+    protected $appends = [
+        'logo_url',
+    ];
 
     protected function getLogoUrlAttribute()
     {

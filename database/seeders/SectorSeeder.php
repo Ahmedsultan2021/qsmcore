@@ -30,12 +30,8 @@ class SectorSeeder extends Seeder
             // ── OGE ──────────────────────────────────────────────────────────────
             'OGE' => [
                 [
-                    'name'        => 'Safety',
-                    'description' => 'HSE safety reporting for oil, gas & energy operations',
-                ],
-                [
-                    'name'        => 'Quality',
-                    'description' => 'Quality management reporting for oil, gas & energy operations',
+                    'name'        => 'OGE Sector',
+                    'description' => 'Oil, gas & energy safety and quality reporting (single sector for OGE industry)',
                 ],
             ],
 

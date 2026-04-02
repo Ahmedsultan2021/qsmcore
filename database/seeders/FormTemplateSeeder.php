@@ -1832,9 +1832,9 @@ class FormTemplateSeeder extends Seeder
             'Aviation - Airport Safety'           => [['Aviation', 'Airport']],
             'Aviation - Airport Quality'          => [['Aviation', 'Airport']],
             'Aviation - Airport Operations'       => [['Aviation', 'Airport']],
-            // OGE sectors
-            'OGE Safety'                          => [['OGE', 'Safety']],
-            'OGE Quality'                         => [['OGE', 'Quality']],
+            // OGE (single sector: OGE Sector)
+            'OGE Safety'                          => [['OGE', 'OGE Sector']],
+            'OGE Quality'                         => [['OGE', 'OGE Sector']],
             // Logistics & Transportation — all three transport segments
             'Logistics & Transportation - Safety' => [
                 ['Logistics & Transportation', 'Maritime'],

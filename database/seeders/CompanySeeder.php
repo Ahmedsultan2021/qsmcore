@@ -44,10 +44,10 @@ class CompanySeeder extends Seeder
                 'description' => 'International airport operator managing airside and landside operations',
             ],
 
-            // ── OGE / Safety ──────────────────────────────────────────────────────
+            // ── OGE ───────────────────────────────────────────────────────────────
             [
                 'industry' => 'OGE',
-                'sector'   => 'Safety',
+                'sector'   => 'OGE Sector',
                 'name'     => 'Gulf Petroleum HSE Ltd.',
                 'email'    => 'hse@gulf-petroleum.com',
                 'phone'    => '+966-11-400-4000',
@@ -55,10 +55,9 @@ class CompanySeeder extends Seeder
                 'description' => 'Oil & gas operator with a dedicated HSE safety management division',
             ],
 
-            // ── OGE / Quality ─────────────────────────────────────────────────────
             [
                 'industry' => 'OGE',
-                'sector'   => 'Quality',
+                'sector'   => 'OGE Sector',
                 'name'     => 'Petroleum Quality Corp.',
                 'email'    => 'quality@petro-qc.com',
                 'phone'    => '+966-11-500-5000',

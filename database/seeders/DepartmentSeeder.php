@@ -42,12 +42,12 @@ class DepartmentSeeder extends Seeder
                 ['name' => 'Operations Reports', 'template_category' => 'Aviation - Airport Operations', 'description' => 'Turnaround oversight, fuel handling, GSE checks, and lost & found audits'],
             ],
 
-            // ── OGE / Safety ──────────────────────────────────────────────────────
+            // ── OGE (Gulf Petroleum — OGE Sector) ────────────────────────────────
             'Gulf Petroleum HSE Ltd.' => [
                 ['name' => 'Safety', 'template_category' => 'OGE Safety', 'description' => 'Incident/accident, near miss, hazard, personal injury, spill, fire, equipment failure, process safety, unsafe act, risk assessment'],
             ],
 
-            // ── OGE / Quality ─────────────────────────────────────────────────────
+            // ── OGE (Petroleum Quality — OGE Sector) ─────────────────────────────
             'Petroleum Quality Corp.' => [
                 ['name' => 'Quality', 'template_category' => 'OGE Quality', 'description' => 'Internal audits, NCR, CAR, PAR, inspection, material defect, supplier, change management, calibration, quality improvement'],
             ],

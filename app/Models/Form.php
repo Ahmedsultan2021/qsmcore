@@ -9,6 +9,12 @@ class Form extends Model
 {
     use HasFactory;
 
+    protected $casts = [
+        'company_id' => 'integer',
+        'department_id' => 'integer',
+        'form_template_id' => 'integer',
+    ];
+
     protected $fillable = [
         'company_id',
         'department_id',

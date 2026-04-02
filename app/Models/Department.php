@@ -9,6 +9,10 @@ class Department extends Model
 {
     use HasFactory;
 
+    protected $casts = [
+        'company_id' => 'integer',
+    ];
+
     protected $fillable = [
         'company_id',
         'name',

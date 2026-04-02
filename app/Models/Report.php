@@ -21,6 +21,8 @@ class Report extends Model
     ];
 
     protected $casts = [
+        'department_id' => 'integer',
+        'created_by' => 'integer',
         'report_date' => 'date',
     ];
 

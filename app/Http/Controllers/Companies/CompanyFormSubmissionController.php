@@ -52,10 +52,11 @@ class CompanyFormSubmissionController extends Controller
 
         // Ensure form is attached to report
         $report->load('forms');
-        $attachedFormIds = $report->forms->pluck('id')->toArray();
-        if (!$report->forms->contains($form->id)) {
+        $attachedFormIds = $report->forms->pluck('id')->map(fn ($id) => (int) $id)->toArray();
+        $formId = (int) $form->id;
+        if (! $report->forms->contains(fn ($f) => (int) $f->id === $formId)) {
             Log::warning('[FillForm] 404 – form not attached to report', [
-                'form_id'          => $form->id,
+                'form_id'           => $formId,
                 'attached_form_ids' => $attachedFormIds,
             ]);
             abort(404, 'Form is not attached to this report');
@@ -89,19 +90,20 @@ class CompanyFormSubmissionController extends Controller
             abort(403);
         }
         
-        // Ensure report belongs to department
-        if ($report->department_id !== $department->id) {
+        // Ensure report belongs to department (normalize types: PDO / JSON can return strings)
+        if ((int) $report->department_id !== (int) $department->id) {
             abort(404);
         }
-        
+
         // Ensure form is attached to report
         $report->load('forms');
-        if (!$report->forms->contains($form->id)) {
+        $formId = (int) $form->id;
+        if (! $report->forms->contains(fn ($f) => (int) $f->id === $formId)) {
             abort(404, 'Form is not attached to this report');
         }
-        
+
         $form->load('formFields');
-        
+
         // Build validation rules from form fields
         $rules = [];
         $fieldNames = [];
@@ -178,19 +180,20 @@ class CompanyFormSubmissionController extends Controller
             abort(403);
         }
         
-        // Ensure report belongs to department
-        if ($report->department_id !== $department->id) {
+        // Ensure report belongs to department (normalize types: PDO / JSON can return strings)
+        if ((int) $report->department_id !== (int) $department->id) {
             abort(404);
         }
-        
+
         // Ensure form is attached to report
         $report->load('forms');
-        if (!$report->forms->contains($form->id)) {
+        $formId = (int) $form->id;
+        if (! $report->forms->contains(fn ($f) => (int) $f->id === $formId)) {
             abort(404, 'Form is not attached to this report');
         }
-        
+
         $form->load('formFields');
-        
+
         $response = FormResponse::where('report_id', $report->id)
             ->where('form_id', $form->id)
             ->where('submitted_by', $authEmployee->id)

@@ -34,10 +34,12 @@ class RouteServiceProvider extends ServiceProvider
         // Scope form binding when in report context (departments.reports.forms routes)
         Route::bind('form', function ($value, $route) {
             $report = $route->parameter('report');
-            if ($report instanceof Report) {
-                return $report->forms()->findOrFail($value);
+            if (! $report instanceof Report) {
+                $report = Report::query()->findOrFail($report);
             }
-            return Form::findOrFail($value);
+            $formId = is_numeric($value) ? (int) $value : $value;
+
+            return $report->forms()->where('forms.id', $formId)->firstOrFail();
         });
 
         Route::bind('reportFile', function ($value, $route) {

@@ -29,6 +29,8 @@ class Employee extends Authenticatable
     ];
 
     protected $casts = [
+        'company_id' => 'integer',
+        'department_id' => 'integer',
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];

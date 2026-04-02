@@ -24,19 +24,12 @@ class Company extends Model
         'logo_path',
     ];
 
-    protected $appends = [
-        'logo_url',
-    ];
-
-    protected function logoUrl(): Attribute
+    protected function getLogoUrlAttribute()
     {
-        return Attribute::get(function () {
-            if (! $this->logo_path) {
-                return null;
-            }
-
-            return Storage::disk('public')->url($this->logo_path);
-        });
+        if (! $this->logo_path) {
+            return null;
+        }
+        return asset('storage/' . $this->logo_path);
     }
 
     public function sector()

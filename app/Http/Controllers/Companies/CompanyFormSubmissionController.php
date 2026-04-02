@@ -9,6 +9,7 @@ use App\Models\FormResponse;
 use App\Models\Report;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class CompanyFormSubmissionController extends Controller
@@ -19,20 +20,44 @@ class CompanyFormSubmissionController extends Controller
     public function create(Department $department, Report $report, Form $form)
     {
         $authEmployee = Auth::guard('employee')->user();
-        
+
+        Log::info('[FillForm] create called', [
+            'url'           => request()->fullUrl(),
+            'department_id' => $department->id,
+            'department_company_id' => $department->company_id,
+            'report_id'     => $report->id,
+            'report_department_id' => $report->department_id,
+            'form_id'       => $form->id,
+            'employee_id'   => $authEmployee?->id,
+            'employee_company_id' => $authEmployee?->company_id,
+        ]);
+
         // Ensure department belongs to same company
         if ($department->company_id !== $authEmployee->company_id) {
+            Log::warning('[FillForm] 403 – department company mismatch', [
+                'department_company_id' => $department->company_id,
+                'employee_company_id'   => $authEmployee->company_id,
+            ]);
             abort(403);
         }
-        
+
         // Ensure report belongs to department
         if ($report->department_id !== $department->id) {
+            Log::warning('[FillForm] 404 – report does not belong to department', [
+                'report_department_id' => $report->department_id,
+                'department_id'        => $department->id,
+            ]);
             abort(404);
         }
-        
+
         // Ensure form is attached to report
         $report->load('forms');
+        $attachedFormIds = $report->forms->pluck('id')->toArray();
         if (!$report->forms->contains($form->id)) {
+            Log::warning('[FillForm] 404 – form not attached to report', [
+                'form_id'          => $form->id,
+                'attached_form_ids' => $attachedFormIds,
+            ]);
             abort(404, 'Form is not attached to this report');
         }
         

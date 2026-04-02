@@ -74,16 +74,17 @@ class Report extends Model
             return 'pending';
         }
         
-        // Get all form IDs that have responses for this report
+        // Distinct form IDs that have at least one saved response (any submitter)
         $completedFormIds = $this->formResponses()
             ->distinct()
             ->pluck('form_id')
-            ->toArray();
-        
-        // Check if all forms have responses
-        $allFormsCompleted = $forms->every(function ($form) use ($completedFormIds) {
-            return in_array($form->id, $completedFormIds);
-        });
+            ->map(fn ($id) => (int) $id)
+            ->all();
+
+        // Check if all attached forms have at least one response (normalize types for DB/PDO)
+        $allFormsCompleted = $forms->every(
+            fn ($form) => in_array((int) $form->id, $completedFormIds, true)
+        );
         
         return $allFormsCompleted ? 'complete' : 'pending';
     }

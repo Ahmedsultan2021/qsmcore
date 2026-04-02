@@ -17,6 +17,9 @@ class FormResponse extends Model
     ];
 
     protected $casts = [
+        'report_id' => 'integer',
+        'form_id' => 'integer',
+        'submitted_by' => 'integer',
         'responses' => 'array',
     ];
 

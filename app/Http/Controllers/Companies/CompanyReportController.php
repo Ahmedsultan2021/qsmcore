@@ -154,7 +154,9 @@ class CompanyReportController extends Controller
         $submittedForms = FormResponse::where('report_id', $report->id)
             ->where('submitted_by', $authEmployee->id)
             ->pluck('form_id')
-            ->toArray();
+            ->map(fn ($id) => (int) $id)
+            ->values()
+            ->all();
         
         return Inertia::render('Companies/Reports/Show', [
             'department' => $department,

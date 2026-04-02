@@ -23,8 +23,13 @@ const navs = computed(() => [
     { name: props.report.title, linkName: "companies.departments.reports.show", param: { department: props.department.id, report: props.report.id } },
 ]);
 
+/** Loose ID match: Laravel/JSON can mix string vs number for the same id. */
 const isFormSubmitted = (formId) => {
-    return props.submittedForms && props.submittedForms.includes(formId);
+    const id = Number(formId);
+    if (Number.isNaN(id)) {
+        return false;
+    }
+    return (props.submittedForms ?? []).some((fid) => Number(fid) === id);
 };
 
 const deleteReport = () => {

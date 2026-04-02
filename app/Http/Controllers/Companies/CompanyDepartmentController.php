@@ -267,7 +267,7 @@ class CompanyDepartmentController extends Controller
             abort(403);
         }
         
-g        $department->load(['formTemplates:id,name,library_key']);
+        $department->load(['formTemplates:id,name,library_key']);
 
         return Inertia::render('Companies/Departments/Edit', [
             'department' => $department,

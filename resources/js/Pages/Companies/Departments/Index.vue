@@ -3,6 +3,7 @@ import CompanyLayout from "@/Layouts/CompanyLayout.vue";
 import BaseDashboardHeader from "@/Components/BaseDashboardHeader.vue";
 import { Head, Link, router } from "@inertiajs/vue3";
 import { computed, ref } from "vue";
+import { usePage } from "@inertiajs/vue3";
 
 defineOptions({ layout: CompanyLayout });
 
@@ -15,6 +16,12 @@ const viewMode = ref('grid'); // 'grid' or 'list'
 const deleteDepartment = (id) => {
     if (confirm("Are you sure you want to delete this department?")) {
         router.delete(route("companies.departments.destroy", id));
+    }
+};
+
+const seedDefaults = () => {
+    if (confirm("This will create default departments for your sector (existing ones won't be duplicated). Continue?")) {
+        router.post(route("companies.departments.seed-defaults"));
     }
 };
 
@@ -37,8 +44,18 @@ const navs = computed(() => [
             :addSearchInput="false"
         />
 
-        <!-- View Mode Toggle -->
+        <!-- Seed Defaults Button -->
         <div class="flex justify-end mt-6">
+            <button
+                @click="seedDefaults"
+                class="inline-flex items-center px-4 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 transition-colors"
+            >
+                <i class="fa-solid fa-wand-magic-sparkles mr-2"></i>Seed Default Departments
+            </button>
+        </div>
+
+        <!-- View Mode Toggle -->
+        <div class="flex justify-end mt-3">
             <div class="inline-flex rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-1">
                 <button
                     @click="viewMode = 'grid'"

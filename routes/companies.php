@@ -129,6 +129,7 @@ Route::middleware('auth:employee')->prefix('companies')->name('companies.')->gro
     Route::resource('employees', CompanyEmployeeController::class);
     
     // Departments routes (for companies portal)
+    Route::post('departments/seed-defaults', [CompanyDepartmentController::class, 'seedDefaults'])->name('departments.seed-defaults');
     Route::resource('departments', CompanyDepartmentController::class);
     
     // Risks routes (for risk register)

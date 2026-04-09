@@ -9,6 +9,11 @@ const isDark = useDark();
 const toggleDark = useToggle(isDark);
 const page = usePage();
 const employee = computed(() => page.props.authEmployee?.employee);
+const impersonating = computed(() => page.props.impersonating);
+
+const leaveImpersonation = () => {
+    router.post(route("companies.leave-impersonation"));
+};
 
 onMounted(() => {
     initFlowbite();
@@ -21,6 +26,23 @@ const logout = () => {
 
 <template>
     <div class="min-h-screen bg-slate-50 dark:bg-gray-900">
+        <!-- Admin Impersonation Banner -->
+        <div
+            v-if="impersonating"
+            class="w-full bg-amber-500 text-white text-sm px-4 py-2 flex items-center justify-between"
+        >
+            <span>
+                <i class="fa-solid fa-eye mr-2"></i>
+                You are viewing as <strong>{{ employee?.company?.name }}</strong> ({{ employee?.fname }} {{ employee?.lname }})
+            </span>
+            <button
+                @click="leaveImpersonation"
+                class="ml-4 px-3 py-1 bg-white text-amber-600 font-semibold rounded hover:bg-amber-50 transition-colors text-xs"
+            >
+                <i class="fa-solid fa-arrow-left mr-1"></i>Return to Admin
+            </button>
+        </div>
+
         <nav class="sticky top-0 z-50 w-full bg-white/90 backdrop-blur border-b border-gray-200 dark:bg-gray-800/90 dark:border-gray-700">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="h-16 flex items-center justify-between gap-4">

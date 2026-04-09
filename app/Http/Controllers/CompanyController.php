@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Company;
 use App\Models\Sector;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -149,6 +150,24 @@ class CompanyController extends Controller
 
         return redirect()->route('companies.index', ['sector_id' => $company->sector_id])
             ->with('success', 'Company updated successfully');
+    }
+
+    /**
+     * Log in as the first employee of the given company (admin impersonation).
+     */
+    public function impersonate(Company $company)
+    {
+        $employee = $company->employees()->first();
+
+        if (! $employee) {
+            return redirect()->route('companies.index')
+                ->with('error', "No employees found for \"{$company->name}\". Add an employee first.");
+        }
+
+        Auth::guard('employee')->login($employee);
+        session(['impersonating' => true]);
+
+        return redirect()->route('companies.dashboard');
     }
 
     /**

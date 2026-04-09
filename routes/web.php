@@ -68,6 +68,7 @@ Route::middleware('auth')->group(function () {
     Route::get('form-templates', [\App\Http\Controllers\Admin\FormTemplateController::class, 'index'])->name('form-templates.index');
     
     // Companies Management (Admin CRUD - no roles/permissions access)
+    Route::post('companies/{company}/impersonate', [CompanyController::class, 'impersonate'])->name('companies.impersonate');
     Route::resource('companies', CompanyController::class);
     
     // Employees Management (Admin CRUD - no roles/permissions access)

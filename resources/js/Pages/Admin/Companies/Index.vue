@@ -19,6 +19,12 @@ const deleteCompany = (id) => {
     }
 };
 
+const loginAsCompany = (id, name) => {
+    if (confirm(`Login as "${name}"?`)) {
+        router.post(route("companies.impersonate", id));
+    }
+};
+
 const navs = computed(() => [
     { name: "Dashboard", linkName: "dashboard" },
     { name: "Companies", linkName: "companies.index" },
@@ -185,6 +191,13 @@ const filteredSectors = computed(() => {
                             {{ company.employees ? company.employees.length : 0 }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <button
+                                @click="loginAsCompany(company.id, company.name)"
+                                class="text-emerald-600 hover:text-emerald-900 dark:text-emerald-400 dark:hover:text-emerald-300 mr-3"
+                                title="Login as this company"
+                            >
+                                <i class="fa-solid fa-arrow-right-to-bracket mr-1"></i>Login as
+                            </button>
                             <Link
                                 :href="route('companies.show', company.id)"
                                 class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mr-3"

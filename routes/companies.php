@@ -35,6 +35,7 @@ Route::post('/companies/login', [EmployeeAuthController::class, 'store'])->middl
 // Companies Portal Authenticated Routes
 Route::middleware('auth:employee')->prefix('companies')->name('companies.')->group(function () {
     Route::post('/logout', [EmployeeAuthController::class, 'destroy'])->name('logout');
+    Route::post('/leave-impersonation', [EmployeeAuthController::class, 'leaveImpersonation'])->name('leave-impersonation');
     
     Route::get('/dashboard', function () {
         $authEmployee = Auth::guard('employee')->user();

@@ -64,4 +64,15 @@ class EmployeeAuthController extends Controller
         // All employee logouts redirect to companies login
         return redirect()->route('companies.login');
     }
+
+    /**
+     * Leave admin impersonation: log out the employee guard and return to admin panel.
+     */
+    public function leaveImpersonation(Request $request)
+    {
+        Auth::guard('employee')->logout();
+        $request->session()->forget('impersonating');
+
+        return redirect()->route('companies.index');
+    }
 }

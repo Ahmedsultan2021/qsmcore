@@ -4,7 +4,7 @@
     {
       "name": "Laravel",
       "runtimeExecutable": "php",
-      "runtimeArgs": ["artisan", "serve", "--host=127.0.0.1", "--port=8000"],
+      "runtimeArgs": ["C:/Users/Sultan Gdn/Documents/qsm/artisan", "serve", "--host=127.0.0.1", "--port=8000"],
       "port": 8000
     },
     {

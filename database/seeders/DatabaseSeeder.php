@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             EmployeeSeeder::class,
             RiskSeeder::class,
             ReportSeeder::class,
+            VacancySeeder::class,
         ]);
     }
 }

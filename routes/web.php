@@ -6,6 +6,7 @@ use App\Http\Controllers\SectorController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\CareerController;
 use App\Models\BlogPost;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -37,6 +38,11 @@ Route::get('/', function () {
 
 // Contact form submission
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+
+// Careers (public)
+Route::get('/careers', [CareerController::class, 'index'])->name('careers.index');
+Route::get('/careers/{vacancy}', [CareerController::class, 'show'])->name('careers.show');
+Route::post('/careers/{vacancy}/apply', [CareerController::class, 'apply'])->name('careers.apply');
 
 // Blog Listing Page
 Route::get('/blog', function () {
@@ -82,6 +88,12 @@ Route::middleware('auth')->group(function () {
     
     // Blog Posts Management (Admin CRUD)
     Route::resource('blog-posts', \App\Http\Controllers\Admin\BlogPostController::class);
+
+    // Vacancies & Applications (Admin)
+    Route::post('vacancies/{vacancy}/toggle-active', [\App\Http\Controllers\Admin\VacancyController::class, 'toggleActive'])->name('vacancies.toggle-active');
+    Route::resource('vacancies', \App\Http\Controllers\Admin\VacancyController::class);
+    Route::patch('applications/{application}/status', [\App\Http\Controllers\Admin\ApplicationController::class, 'updateStatus'])->name('applications.update-status');
+    Route::delete('applications/{application}', [\App\Http\Controllers\Admin\ApplicationController::class, 'destroy'])->name('applications.destroy');
 
     // Inquiries (from public contact form)
     Route::get('inquiries', [\App\Http\Controllers\Admin\InquiryController::class, 'index'])->name('inquiries.index');

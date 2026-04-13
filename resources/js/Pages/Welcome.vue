@@ -229,6 +229,12 @@ onMounted(() => {
                         >
                             Blog
                         </Link>
+                        <Link
+                            :href="route('careers.index')"
+                            class="text-gray-700 hover:text-brand-blue font-medium transition-colors whitespace-nowrap"
+                        >
+                            Careers
+                        </Link>
                         <button
                             @click="scrollToContact"
                             class="text-gray-700 hover:text-brand-blue font-medium transition-colors whitespace-nowrap"
@@ -275,6 +281,7 @@ onMounted(() => {
                     <div v-show="mobileMenuOpen" class="lg:hidden border-t border-gray-200 py-4 space-y-1">
                         <Link href="/" class="block py-2 px-3 text-gray-700 hover:text-brand-blue hover:bg-slate-50 rounded-lg font-medium" @click="mobileMenuOpen = false">Home</Link>
                         <Link :href="route('blog.index')" class="block py-2 px-3 text-gray-700 hover:text-brand-blue hover:bg-slate-50 rounded-lg font-medium" @click="mobileMenuOpen = false">Blog</Link>
+                        <Link :href="route('careers.index')" class="block py-2 px-3 text-gray-700 hover:text-brand-blue hover:bg-slate-50 rounded-lg font-medium" @click="mobileMenuOpen = false">Careers</Link>
                         <button @click="scrollToContact" class="block w-full text-left py-2 px-3 text-gray-700 hover:text-brand-blue hover:bg-slate-50 rounded-lg font-medium">Contact</button>
                         <Link :href="route('login')" class="block py-2 px-3 text-gray-700 hover:text-brand-blue hover:bg-slate-50 rounded-lg font-medium" @click="mobileMenuOpen = false">Admin Portal</Link>
                         <Link :href="route('companies.login')" class="block py-3 px-3 bg-gradient-to-r from-brand-navy to-brand-blue text-white rounded-lg font-semibold text-center hover:from-brand-blue hover:to-brand-sky" @click="mobileMenuOpen = false">Company Portal</Link>
@@ -951,6 +958,7 @@ onMounted(() => {
                         <ul class="space-y-1.5 sm:space-y-2 text-gray-400 text-sm sm:text-base">
                             <li><Link href="/" class="hover:text-white transition-colors">Home</Link></li>
                             <li><Link :href="route('blog.index')" class="hover:text-white transition-colors">Blog</Link></li>
+                            <li><Link :href="route('careers.index')" class="hover:text-white transition-colors">Careers</Link></li>
                             <li><button @click="scrollToContact" class="hover:text-white transition-colors">Contact</button></li>
                             <li><Link :href="route('login')" class="hover:text-white transition-colors">Admin Portal</Link></li>
                             <li><Link :href="route('companies.login')" class="hover:text-white transition-colors">Company Portal</Link></li>

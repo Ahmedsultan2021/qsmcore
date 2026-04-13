@@ -21,6 +21,7 @@ class Employee extends Authenticatable
         'password',
         'phone',
         'position',
+        'is_active',
     ];
 
     protected $hidden = [
@@ -33,6 +34,7 @@ class Employee extends Authenticatable
         'department_id' => 'integer',
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'is_active' => 'boolean',
     ];
 
     protected $guard_name = 'employee';

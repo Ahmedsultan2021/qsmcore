@@ -29,10 +29,12 @@ Route::get('/', function () {
         ->get();
     
     $industries = \App\Models\Industry::orderBy('name')->get();
-    
+    $partners   = \App\Models\Partner::active()->get();
+
     return Inertia::render('Welcome', [
         'blogPosts' => $blogPosts,
         'industries' => $industries,
+        'partners'   => $partners,
     ]);
 })->name('welcome');
 
@@ -88,6 +90,10 @@ Route::middleware('auth')->group(function () {
     
     // Blog Posts Management (Admin CRUD)
     Route::resource('blog-posts', \App\Http\Controllers\Admin\BlogPostController::class);
+
+    // Partners (Admin)
+    Route::post('partners/{partner}/toggle-active', [\App\Http\Controllers\Admin\PartnerController::class, 'toggleActive'])->name('partners.toggle-active');
+    Route::resource('partners', \App\Http\Controllers\Admin\PartnerController::class)->except(['show']);
 
     // Vacancies & Applications (Admin)
     Route::post('vacancies/{vacancy}/toggle-active', [\App\Http\Controllers\Admin\VacancyController::class, 'toggleActive'])->name('vacancies.toggle-active');

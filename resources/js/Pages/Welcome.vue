@@ -445,357 +445,89 @@ onMounted(() => {
         </section>
 
         <!-- Industries Section -->
-        <section class="py-16 sm:py-24 bg-white/80 backdrop-blur-sm">
+        <section class="py-20 bg-white border-t border-gray-100">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12 sm:mb-16">
-                    <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 px-2">
-                        Trusted Across
-                        <span class="bg-gradient-to-r from-brand-navy to-brand-blue bg-clip-text text-transparent">
-                            Multiple Industries
-                        </span>
-                    </h2>
-                    <p class="text-base sm:text-xl text-gray-600 max-w-2xl mx-auto px-2">
-                        From aviation and energy to logistics and manufacturing—QSMCore adapts to your industry
-                    </p>
+                <div class="mb-12">
+                    <p class="text-xs font-semibold tracking-widest text-gray-400 uppercase mb-3">Coverage</p>
+                    <h2 class="text-2xl sm:text-3xl font-semibold text-gray-900">Industries We Serve</h2>
                 </div>
-                <div class="flex flex-wrap justify-center gap-4 sm:gap-6">
-                    <div 
-                        v-for="(industry, index) in displayIndustries" 
+                <div class="flex flex-wrap gap-3">
+                    <div
+                        v-for="(industry, index) in displayIndustries"
                         :key="index"
-                        class="group relative bg-white rounded-2xl p-5 sm:p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 overflow-hidden w-48 sm:w-56"
+                        class="flex items-center gap-2.5 border border-gray-200 rounded px-4 py-2.5 bg-white hover:border-gray-400 transition-colors"
                     >
-                        <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-slate-100 to-slate-50 rounded-bl-full opacity-60 group-hover:opacity-100 transition-opacity"></div>
-                        <div class="relative">
-                            <div class="bg-gradient-to-br from-brand-navy to-brand-blue text-white rounded-xl w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform">
-                                <svg class="w-7 h-7 sm:w-8 sm:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="getIndustryIcon(industry.name)" />
-                                </svg>
-                            </div>
-                            <h3 class="text-base sm:text-lg font-bold text-gray-900 mb-1">{{ industry.name }}</h3>
-                            <p v-if="industry.description" class="text-sm text-gray-600 line-clamp-2">{{ industry.description }}</p>
-                        </div>
+                        <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" :d="getIndustryIcon(industry.name)" />
+                        </svg>
+                        <span class="text-sm font-medium text-gray-700">{{ industry.name }}</span>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- About QSMCore Section -->
-        <section class="py-16 sm:py-24 bg-gradient-to-br from-slate-50 via-slate-50 to-brand-bg">
-            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-10">
-                    <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-                        What is <span class="bg-gradient-to-r from-brand-navy to-brand-blue bg-clip-text text-transparent">QSMCore</span>?
-                    </h2>
-                </div>
-                <div class="bg-white/90 backdrop-blur-sm rounded-2xl p-6 sm:p-10 shadow-xl border border-gray-100 space-y-6 text-gray-700 leading-relaxed">
-                    <p class="text-base sm:text-lg">
-                        QSMCore is a digital platform designed to simplify and strengthen Safety and Quality Management Systems (SMS & QMS) across multiple industries.
-                    </p>
-                    <p class="text-base sm:text-lg">
-                        Built with operational environments in mind, QSMCore provides structured reporting tools, risk management features, audit tracking, and performance dashboards that help organizations monitor safety events, manage quality processes, and ensure regulatory compliance.
-                    </p>
-                    <p class="text-base sm:text-lg">
-                        From aviation operations and maintenance to energy and logistics sectors, QSMCore centralizes critical reporting and transforms operational data into actionable insights. By streamlining incident reporting, investigation workflows, corrective actions, and performance monitoring, the platform helps organizations build a proactive safety culture and maintain high operational standards.
-                    </p>
-                    <p class="text-base sm:text-lg">
-                        With an intuitive interface and industry-aligned reporting templates, QSMCore empowers teams to report, analyze, and improve continuously.
-                    </p>
+        <!-- About Section -->
+        <section class="py-20 bg-gray-50 border-t border-gray-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
+                    <div class="lg:col-span-4">
+                        <p class="text-xs font-semibold tracking-widest text-gray-400 uppercase mb-3">About</p>
+                        <h2 class="text-2xl sm:text-3xl font-semibold text-gray-900 leading-snug">What is QSMCore?</h2>
+                    </div>
+                    <div class="lg:col-span-8 space-y-5 text-gray-600 text-base leading-relaxed">
+                        <p>QSMCore is a digital platform designed to simplify and strengthen Safety and Quality Management Systems (SMS & QMS) across multiple industries.</p>
+                        <p>Built with operational environments in mind, QSMCore provides structured reporting tools, risk management features, audit tracking, and performance dashboards that help organizations monitor safety events, manage quality processes, and ensure regulatory compliance.</p>
+                        <p>From aviation operations and maintenance to energy and logistics sectors, QSMCore centralizes critical reporting and transforms operational data into actionable insights—helping organizations build a proactive safety culture and maintain high operational standards.</p>
+                    </div>
                 </div>
             </div>
         </section>
 
         <!-- Features Section -->
-        <section class="py-16 sm:py-24 bg-white/50 backdrop-blur-sm">
+        <section class="py-20 bg-white border-t border-gray-100">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12 sm:mb-20">
-                    <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 px-2">
-                        Powerful Features for
-                        <span class="bg-gradient-to-r from-brand-navy to-brand-blue bg-clip-text text-transparent">
-                            Modern Organizations
-                        </span>
-                    </h2>
-                    <p class="text-base sm:text-xl text-gray-600 max-w-2xl mx-auto px-2">
-                        Everything you need to manage quality and safety across your entire organization
-                    </p>
+                <div class="mb-12">
+                    <p class="text-xs font-semibold tracking-widest text-gray-400 uppercase mb-3">Capabilities</p>
+                    <h2 class="text-2xl sm:text-3xl font-semibold text-gray-900">Platform Features</h2>
                 </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-                    <div 
-                        v-for="(feature, index) in features" 
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-gray-200">
+                    <div
+                        v-for="(feature, index) in features"
                         :key="index"
-                        class="group relative bg-white rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100"
+                        class="bg-white p-8 hover:bg-gray-50 transition-colors"
                     >
-                        <div :class="['absolute top-0 right-0 w-32 h-32 bg-gradient-to-br', feature.bgColor, 'rounded-bl-full opacity-50 group-hover:opacity-100 transition-opacity']"></div>
-                        <div class="relative">
-                            <div :class="['bg-gradient-to-br', feature.color, 'text-white rounded-2xl w-16 h-16 flex items-center justify-center text-2xl font-bold mb-6 shadow-lg']">
-                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="feature.icon" />
-                                </svg>
-                            </div>
-                            <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-2 sm:mb-3">{{ feature.title }}</h3>
-                            <p class="text-gray-600 leading-relaxed">
-                                {{ feature.description }}
-                            </p>
+                        <div class="w-8 h-8 mb-5">
+                            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" :d="feature.icon" />
+                            </svg>
                         </div>
+                        <h3 class="text-base font-semibold text-gray-900 mb-2">{{ feature.title }}</h3>
+                        <p class="text-sm text-gray-500 leading-relaxed">{{ feature.description }}</p>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- How It Works Section -->
-        <section class="py-16 sm:py-24 bg-gradient-to-br from-gray-50 to-brand-bg">
+        <section class="py-20 bg-gray-50 border-t border-gray-100">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12 sm:mb-20">
-                    <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 px-2">
-                        How It
-                        <span class="bg-gradient-to-r from-brand-navy to-brand-blue bg-clip-text text-transparent">
-                            Works
-                        </span>
-                    </h2>
-                    <p class="text-base sm:text-xl text-gray-600 max-w-2xl mx-auto px-2">
-                        Get started with QSMCore in three simple steps
-                    </p>
+                <div class="mb-12">
+                    <p class="text-xs font-semibold tracking-widest text-gray-400 uppercase mb-3">Process</p>
+                    <h2 class="text-2xl sm:text-3xl font-semibold text-gray-900">How It Works</h2>
                 </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 relative">
-                    <div 
-                        v-for="(step, index) in howItWorks" 
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div
+                        v-for="(step, index) in howItWorks"
                         :key="index"
                         class="relative"
                     >
-                        <div class="relative bg-white rounded-2xl p-6 sm:p-8 shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
-                            <div class="absolute -top-6 -left-6 w-16 h-16 bg-gradient-to-br from-brand-navy to-brand-blue rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg">
-                                {{ step.step }}
-                            </div>
-                            <div class="mt-4 mb-6">
-                                <div class="bg-gradient-to-br from-slate-100 to-slate-50 rounded-xl w-16 h-16 flex items-center justify-center mb-6">
-                                    <svg class="w-8 h-8 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="step.icon" />
-                                    </svg>
-                                </div>
-                                <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-2 sm:mb-3">{{ step.title }}</h3>
-                                <p class="text-gray-600 leading-relaxed">
-                                    {{ step.description }}
-                                </p>
-                            </div>
-                        </div>
-                        <div v-if="index < howItWorks.length - 1" class="hidden md:block absolute top-1/2 -right-4 w-8 h-0.5 bg-gradient-to-r from-brand-sky to-brand-blue transform -translate-y-1/2 z-0">
-                            <div class="absolute right-0 top-1/2 transform -translate-y-1/2 w-3 h-3 bg-brand-blue rounded-full"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Benefits Section -->
-        <section class="py-16 sm:py-24 bg-white">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-center">
-                    <div>
-                        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 sm:mb-6 px-1">
-                            Why Choose
-                            <span class="bg-gradient-to-r from-brand-navy to-brand-blue bg-clip-text text-transparent">
-                                QSMCore?
-                            </span>
-                        </h2>
-                        <p class="text-base sm:text-xl text-gray-600 mb-6 sm:mb-8 px-1">
-                            Experience the difference with our comprehensive quality and safety management platform
-                        </p>
-                        <div class="space-y-4 sm:space-y-6">
-                            <div class="flex items-start space-x-4">
-                                <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg flex items-center justify-center">
-                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-1 sm:mb-2">Reduce Response Time</h3>
-                                    <p class="text-gray-600">Automated workflows and real-time notifications help you respond to incidents 60% faster.</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start space-x-4">
-                                <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-lg flex items-center justify-center">
-                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-1 sm:mb-2">Improve Compliance</h3>
-                                    <p class="text-gray-600">Stay ahead of regulations with automated compliance tracking and comprehensive audit trails.</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start space-x-4">
-                                <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
-                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-1 sm:mb-2">Data-Driven Decisions</h3>
-                                    <p class="text-gray-600">Powerful analytics and reporting tools provide insights to make informed decisions.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="relative order-first lg:order-none">
-                        <div class="bg-gradient-to-br from-brand-navy to-brand-blue rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-2xl">
-                            <div class="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6">
-                                <div class="flex items-center justify-between mb-4">
-                                    <span class="text-white/80 text-sm">Incidents Resolved</span>
-                                    <span class="text-white font-bold text-2xl">94%</span>
-                                </div>
-                                <div class="w-full bg-white/20 rounded-full h-3 mb-6">
-                                    <div class="bg-white h-3 rounded-full" style="width: 94%"></div>
-                                </div>
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4">
-                                        <div class="text-white/60 text-xs mb-1">Avg Response</div>
-                                        <div class="text-white font-bold text-xl">2.3 hrs</div>
-                                    </div>
-                                    <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4">
-                                        <div class="text-white/60 text-xs mb-1">Compliance</div>
-                                        <div class="text-white font-bold text-xl">99.8%</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6">
-                                <h4 class="text-white font-bold text-lg mb-4">Key Metrics</h4>
-                                <div class="space-y-3">
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-white/80">Active Users</span>
-                                        <span class="text-white font-semibold">1,247</span>
-                                    </div>
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-white/80">Companies</span>
-                                        <span class="text-white font-semibold">156</span>
-                                    </div>
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-white/80">Industries</span>
-                                        <span class="text-white font-semibold">23</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="absolute -bottom-6 -right-6 w-32 h-32 bg-yellow-400 rounded-full mix-blend-multiply filter blur-2xl opacity-30 animate-pulse"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Testimonials Section -->
-        <section class="py-16 sm:py-24 bg-gradient-to-br from-slate-50 via-brand-bg to-slate-50">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12 sm:mb-20">
-                    <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 px-2">
-                        Trusted by
-                        <span class="bg-gradient-to-r from-brand-navy to-brand-blue bg-clip-text text-transparent">
-                            Industry Leaders
-                        </span>
-                    </h2>
-                    <p class="text-base sm:text-xl text-gray-600 max-w-2xl mx-auto px-2">
-                        See what our customers have to say about QSMCore
-                    </p>
-                </div>
-                
-                <div class="relative max-w-4xl mx-auto px-2 sm:px-4">
-                    <div class="overflow-hidden rounded-2xl sm:rounded-3xl">
-                        <div 
-                            class="flex transition-transform duration-500 ease-in-out"
-                            :style="{ transform: `translateX(-${activeTestimonial * 100}%)` }"
-                        >
-                            <div 
-                                v-for="(testimonial, index) in testimonials" 
-                                :key="index"
-                                class="min-w-full px-4 sm:px-8"
-                            >
-                                <div class="bg-white rounded-xl sm:rounded-2xl p-6 sm:p-8 md:p-12 shadow-2xl">
-                                    <div class="text-5xl sm:text-6xl mb-4 sm:mb-6">{{ testimonial.avatar }}</div>
-                                    <p class="text-base sm:text-xl md:text-2xl text-gray-700 mb-6 sm:mb-8 leading-relaxed italic">
-                                        "{{ testimonial.content }}"
-                                    </p>
-                                    <div class="flex items-center space-x-4">
-                                        <div class="w-16 h-16 bg-gradient-to-br from-brand-navy to-brand-blue rounded-full flex items-center justify-center text-white text-2xl font-bold">
-                                            {{ testimonial.name.charAt(0) }}
-                                        </div>
-                                        <div>
-                                            <div class="font-bold text-gray-900 text-lg">{{ testimonial.name }}</div>
-                                            <div class="text-gray-600">{{ testimonial.role }}</div>
-                                            <div class="text-brand-blue font-semibold">{{ testimonial.company }}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex justify-center space-x-2 mt-8">
-                        <button
-                            v-for="(testimonial, index) in testimonials"
-                            :key="index"
-                            @click="activeTestimonial = index"
-                            :class="['w-3 h-3 rounded-full transition-all duration-300', activeTestimonial === index ? 'bg-brand-blue w-8' : 'bg-gray-300']"
-                        ></button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Blog Section -->
-        <section v-if="blogPosts && blogPosts.length > 0" class="py-16 sm:py-24 bg-white">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12 sm:mb-20">
-                    <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 px-2">
-                        Latest from
-                        <span class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                            QSMCore Blog
-                        </span>
-                    </h2>
-                    <p class="text-base sm:text-xl text-gray-600 max-w-2xl mx-auto px-2">
-                        Stay updated with the latest insights, news, and best practices in quality and safety management
-                    </p>
-                </div>
-                
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-                    <div
-                        v-for="post in blogPosts"
-                        :key="post.id"
-                        class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 overflow-hidden"
-                    >
-                        <div v-if="post.featured_image" class="relative h-48 overflow-hidden">
-                            <img
-                                :src="post.featured_image"
-                                :alt="post.title"
-                                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                            />
-                        </div>
-                            <div v-else class="h-48 bg-gradient-to-br from-slate-100 to-slate-50 flex items-center justify-center">
-                            <svg class="w-16 h-16 text-brand-sky" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        <div class="text-4xl font-light text-gray-200 mb-4 select-none">{{ step.step }}</div>
+                        <h3 class="text-base font-semibold text-gray-900 mb-2">{{ step.title }}</h3>
+                        <p class="text-sm text-gray-500 leading-relaxed">{{ step.description }}</p>
+                        <div v-if="index < howItWorks.length - 1" class="hidden md:block absolute top-5 right-0 translate-x-1/2 text-gray-300">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7" />
                             </svg>
-                        </div>
-                        <div class="p-6">
-                            <div class="flex items-center text-sm text-gray-500 mb-3">
-                                <span>{{ new Date(post.published_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) }}</span>
-                                <span class="mx-2">•</span>
-                                <span>{{ post.user?.name || 'Admin' }}</span>
-                            </div>
-                            <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-brand-blue transition-colors line-clamp-2">
-                                {{ post.title }}
-                            </h3>
-                            <p v-if="post.excerpt" class="text-gray-600 mb-4 line-clamp-3">
-                                {{ post.excerpt }}
-                            </p>
-                            <p v-else class="text-gray-600 mb-4 line-clamp-3">
-                                {{ post.content.substring(0, 150) }}{{ post.content.length > 150 ? '...' : '' }}
-                            </p>
-                            <Link
-                                href="#"
-                                class="inline-flex items-center text-brand-blue font-semibold hover:text-brand-navy group-hover:translate-x-1 transition-transform"
-                            >
-                                Read More
-                                <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                                </svg>
-                            </Link>
                         </div>
                     </div>
                 </div>
@@ -803,72 +535,122 @@ onMounted(() => {
         </section>
 
         <!-- Stats Section -->
-        <section class="py-12 sm:py-20 bg-gradient-to-r from-brand-navy to-brand-blue text-white">
+        <section class="py-16 bg-brand-navy border-t border-brand-navy">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8 text-center">
-                    <div class="py-4">
-                        <div class="text-2xl sm:text-4xl md:text-5xl font-bold mb-1 sm:mb-2">100+</div>
-                        <div class="text-white/80 text-sm sm:text-base">Companies</div>
+                <div class="grid grid-cols-2 md:grid-cols-4 divide-x divide-white/10">
+                    <div class="px-8 py-4 text-center">
+                        <div class="text-3xl sm:text-4xl font-semibold text-white mb-1">100+</div>
+                        <div class="text-xs font-medium tracking-widest text-white/50 uppercase">Companies</div>
                     </div>
-                    <div class="py-4">
-                        <div class="text-2xl sm:text-4xl md:text-5xl font-bold mb-1 sm:mb-2">50+</div>
-                        <div class="text-white/80 text-sm sm:text-base">Industries</div>
+                    <div class="px-8 py-4 text-center">
+                        <div class="text-3xl sm:text-4xl font-semibold text-white mb-1">50+</div>
+                        <div class="text-xs font-medium tracking-widest text-white/50 uppercase">Industries</div>
                     </div>
-                    <div class="py-4">
-                        <div class="text-2xl sm:text-4xl md:text-5xl font-bold mb-1 sm:mb-2">1000+</div>
-                        <div class="text-white/80 text-sm sm:text-base">Active Users</div>
+                    <div class="px-8 py-4 text-center">
+                        <div class="text-3xl sm:text-4xl font-semibold text-white mb-1">1,000+</div>
+                        <div class="text-xs font-medium tracking-widest text-white/50 uppercase">Active Users</div>
                     </div>
-                    <div class="py-4">
-                        <div class="text-2xl sm:text-4xl md:text-5xl font-bold mb-1 sm:mb-2">99.9%</div>
-                        <div class="text-white/80 text-sm sm:text-base">Uptime</div>
+                    <div class="px-8 py-4 text-center">
+                        <div class="text-3xl sm:text-4xl font-semibold text-white mb-1">99.9%</div>
+                        <div class="text-xs font-medium tracking-widest text-white/50 uppercase">Uptime</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section class="py-20 bg-white border-t border-gray-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="mb-12">
+                    <p class="text-xs font-semibold tracking-widest text-gray-400 uppercase mb-3">Testimonials</p>
+                    <h2 class="text-2xl sm:text-3xl font-semibold text-gray-900">What Our Clients Say</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div
+                        v-for="(testimonial, index) in testimonials"
+                        :key="index"
+                        class="border border-gray-200 p-8"
+                    >
+                        <p class="text-gray-600 text-sm leading-relaxed mb-8">"{{ testimonial.content }}"</p>
+                        <div class="border-t border-gray-100 pt-5">
+                            <div class="text-sm font-semibold text-gray-900">{{ testimonial.name }}</div>
+                            <div class="text-xs text-gray-500 mt-0.5">{{ testimonial.role }}, {{ testimonial.company }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Blog Section -->
+        <section v-if="blogPosts && blogPosts.length > 0" class="py-20 bg-gray-50 border-t border-gray-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-end justify-between mb-12">
+                    <div>
+                        <p class="text-xs font-semibold tracking-widest text-gray-400 uppercase mb-3">Insights</p>
+                        <h2 class="text-2xl sm:text-3xl font-semibold text-gray-900">Latest Articles</h2>
+                    </div>
+                    <Link :href="route('blog.index')" class="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors hidden sm:block">
+                        View all →
+                    </Link>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div
+                        v-for="post in blogPosts"
+                        :key="post.id"
+                        class="group"
+                    >
+                        <div v-if="post.featured_image" class="h-44 overflow-hidden bg-gray-100 mb-5">
+                            <img :src="post.featured_image" :alt="post.title" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        </div>
+                        <div v-else class="h-44 bg-gray-100 mb-5 flex items-center justify-center">
+                            <svg class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                        </div>
+                        <div class="text-xs text-gray-400 mb-2">
+                            {{ new Date(post.published_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) }}
+                            <span class="mx-1.5">·</span>
+                            {{ post.user?.name || 'Admin' }}
+                        </div>
+                        <h3 class="text-base font-semibold text-gray-900 mb-2 line-clamp-2 group-hover:text-brand-navy transition-colors">{{ post.title }}</h3>
+                        <p class="text-sm text-gray-500 line-clamp-3 leading-relaxed">
+                            {{ post.excerpt || post.content.substring(0, 130) }}{{ (!post.excerpt && post.content.length > 130) ? '…' : '' }}
+                        </p>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- Partners Section -->
-        <section v-if="partners && partners.length > 0" class="py-16 sm:py-24 bg-white">
+        <section v-if="partners && partners.length > 0" class="py-20 bg-white border-t border-gray-100">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12 sm:mb-16">
-                    <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4">
-                        Our
-                        <span class="bg-gradient-to-r from-brand-navy to-brand-blue bg-clip-text text-transparent">
-                            Partners
-                        </span>
-                    </h2>
-                    <p class="text-base sm:text-xl text-gray-600 max-w-2xl mx-auto">
-                        Trusted by leading organizations across industries
-                    </p>
+                <div class="mb-12">
+                    <p class="text-xs font-semibold tracking-widest text-gray-400 uppercase mb-3">Network</p>
+                    <h2 class="text-2xl sm:text-3xl font-semibold text-gray-900">Our Companies</h2>
                 </div>
-
-                <!-- Partners Grid -->
-                <div class="flex flex-wrap justify-center gap-6 sm:gap-8 mb-16">
+                <!-- Grid -->
+                <div class="flex flex-wrap gap-4 mb-14">
                     <div
                         v-for="partner in partners"
                         :key="partner.id"
-                        class="flex flex-col items-center justify-center bg-white border border-gray-100 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 p-5 sm:p-6 w-40 sm:w-48"
+                        class="flex items-center gap-3 border border-gray-200 px-4 py-3 hover:border-gray-400 transition-colors"
                     >
-                        <img v-if="partner.logo_url" :src="partner.logo_url" :alt="partner.name" class="h-14 w-full object-contain mb-3" />
-                        <div v-else class="h-14 w-full flex items-center justify-center bg-gradient-to-br from-brand-navy to-brand-blue rounded-xl mb-3">
-                            <span class="text-white font-bold text-lg">{{ partner.name.charAt(0) }}</span>
-                        </div>
-                        <span class="text-sm font-semibold text-gray-700 text-center leading-tight">{{ partner.name }}</span>
+                        <img v-if="partner.logo_url" :src="partner.logo_url" :alt="partner.name" class="h-7 w-auto max-w-[80px] object-contain" />
+                        <span class="text-sm font-medium text-gray-700">{{ partner.name }}</span>
                     </div>
                 </div>
             </div>
-
-            <!-- Scrolling Logo Marquee Bar -->
-            <div class="bg-gray-50 border-y border-gray-100 py-6 overflow-hidden">
-                <div class="marquee-track flex items-center gap-12">
-                    <!-- Render twice for seamless loop -->
+            <!-- Scrolling marquee -->
+            <div class="border-t border-gray-100 py-6 overflow-hidden">
+                <div class="marquee-track flex items-center gap-16">
                     <template v-for="n in 2" :key="n">
                         <div
                             v-for="partner in partners"
                             :key="`${n}-${partner.id}`"
                             class="flex-shrink-0 flex items-center gap-3 px-2"
                         >
-                            <img v-if="partner.logo_url" :src="partner.logo_url" :alt="partner.name" class="h-10 w-auto max-w-[120px] object-contain grayscale hover:grayscale-0 transition-all duration-300 opacity-60 hover:opacity-100" />
-                            <span v-else class="text-sm font-semibold text-gray-400 whitespace-nowrap">{{ partner.name }}</span>
+                            <img v-if="partner.logo_url" :src="partner.logo_url" :alt="partner.name" class="h-8 w-auto max-w-[100px] object-contain grayscale opacity-40 hover:opacity-70 hover:grayscale-0 transition-all duration-300" />
+                            <span v-else class="text-sm font-medium text-gray-300 whitespace-nowrap">{{ partner.name }}</span>
                         </div>
                     </template>
                 </div>
@@ -876,113 +658,66 @@ onMounted(() => {
         </section>
 
         <!-- Contact Section -->
-        <section id="contact" class="py-16 sm:py-24 bg-white">
+        <section id="contact" class="py-20 bg-gray-50 border-t border-gray-100">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12">
-                    <span class="inline-block bg-blue-100 text-blue-700 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">Get In Touch</span>
-                    <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Add Your Inquiry</h2>
-                    <p class="text-gray-500 max-w-xl mx-auto">Have a question or want to learn more? Fill in the form and we'll get back to you.</p>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-                    <!-- Contact Info -->
-                    <div class="space-y-8">
-                        <div class="flex items-start gap-4">
-                            <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
-                                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                                </svg>
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
+                    <!-- Left -->
+                    <div class="lg:col-span-4">
+                        <p class="text-xs font-semibold tracking-widest text-gray-400 uppercase mb-3">Contact</p>
+                        <h2 class="text-2xl sm:text-3xl font-semibold text-gray-900 mb-6">Get in Touch</h2>
+                        <p class="text-gray-500 text-sm leading-relaxed mb-10">Have a question or want to learn more? Fill in the form and we'll get back to you within one business day.</p>
+                        <div class="space-y-6">
+                            <div>
+                                <div class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1">Email</div>
+                                <a href="mailto:support@qsm.com" class="text-sm text-gray-700 hover:text-brand-navy transition-colors">support@qsm.com</a>
                             </div>
                             <div>
-                                <h4 class="font-semibold text-gray-900 mb-1">Email</h4>
-                                <a href="mailto:support@qsm.com" class="text-blue-600 hover:underline">support@qsm.com</a>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-4">
-                            <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
-                                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <h4 class="font-semibold text-gray-900 mb-1">Response Time</h4>
-                                <p class="text-gray-500">We typically respond within 24 hours on business days.</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-4">
-                            <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
-                                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <h4 class="font-semibold text-gray-900 mb-1">Secure & Confidential</h4>
-                                <p class="text-gray-500">Your information is safe with us and never shared with third parties.</p>
+                                <div class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1">Response Time</div>
+                                <p class="text-sm text-gray-500">Within 24 hours on business days</p>
                             </div>
                         </div>
                     </div>
 
                     <!-- Form -->
-                    <div class="bg-gray-50 rounded-2xl p-6 sm:p-8 shadow-sm border border-gray-100">
-                        <!-- Success message -->
-                        <div v-if="contactSuccess" class="mb-6 flex items-center gap-3 bg-green-50 border border-green-200 text-green-700 rounded-xl px-4 py-3">
-                            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="lg:col-span-8">
+                        <div v-if="contactSuccess" class="mb-6 flex items-center gap-3 border border-green-200 bg-green-50 text-green-700 px-4 py-3 text-sm">
+                            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                             </svg>
-                            <span class="font-medium">Your inquiry was sent successfully! We'll be in touch soon.</span>
+                            Your inquiry was submitted. We'll be in touch shortly.
                         </div>
-
                         <form @submit.prevent="submitContact" class="space-y-5">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1.5">Full Name <span class="text-red-500">*</span></label>
-                                <input
-                                    v-model="contactForm.name"
-                                    type="text"
-                                    placeholder="Your full name"
-                                    class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
-                                    :class="{ 'border-red-400': contactForm.errors.name }"
-                                />
-                                <p v-if="contactForm.errors.name" class="text-red-500 text-xs mt-1">{{ contactForm.errors.name }}</p>
-                            </div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Email <span class="text-red-500">*</span></label>
-                                    <input
-                                        v-model="contactForm.email"
-                                        type="email"
-                                        placeholder="your@email.com"
-                                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
-                                        :class="{ 'border-red-400': contactForm.errors.email }"
-                                    />
-                                    <p v-if="contactForm.errors.email" class="text-red-500 text-xs mt-1">{{ contactForm.errors.email }}</p>
+                                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2">Full Name <span class="text-red-400">*</span></label>
+                                    <input v-model="contactForm.name" type="text" placeholder="Your full name"
+                                        class="w-full px-4 py-3 border border-gray-300 bg-white text-sm text-gray-900 focus:outline-none focus:border-gray-500 transition-colors"
+                                        :class="{ 'border-red-400': contactForm.errors.name }" />
+                                    <p v-if="contactForm.errors.name" class="text-red-500 text-xs mt-1">{{ contactForm.errors.name }}</p>
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Mobile Number</label>
-                                    <input
-                                        v-model="contactForm.phone"
-                                        type="tel"
-                                        placeholder="+1 234 567 8900"
-                                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
-                                    />
+                                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2">Mobile Number</label>
+                                    <input v-model="contactForm.phone" type="tel" placeholder="+1 234 567 8900"
+                                        class="w-full px-4 py-3 border border-gray-300 bg-white text-sm text-gray-900 focus:outline-none focus:border-gray-500 transition-colors" />
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1.5">Your Request <span class="text-red-500">*</span></label>
-                                <textarea
-                                    v-model="contactForm.message"
-                                    rows="5"
-                                    placeholder="Tell us how we can help you..."
-                                    class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900 resize-none"
-                                    :class="{ 'border-red-400': contactForm.errors.message }"
-                                ></textarea>
+                                <label class="block text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2">Email <span class="text-red-400">*</span></label>
+                                <input v-model="contactForm.email" type="email" placeholder="your@email.com"
+                                    class="w-full px-4 py-3 border border-gray-300 bg-white text-sm text-gray-900 focus:outline-none focus:border-gray-500 transition-colors"
+                                    :class="{ 'border-red-400': contactForm.errors.email }" />
+                                <p v-if="contactForm.errors.email" class="text-red-500 text-xs mt-1">{{ contactForm.errors.email }}</p>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2">Message <span class="text-red-400">*</span></label>
+                                <textarea v-model="contactForm.message" rows="5" placeholder="Tell us how we can help you..."
+                                    class="w-full px-4 py-3 border border-gray-300 bg-white text-sm text-gray-900 focus:outline-none focus:border-gray-500 transition-colors resize-none"
+                                    :class="{ 'border-red-400': contactForm.errors.message }"></textarea>
                                 <p v-if="contactForm.errors.message" class="text-red-500 text-xs mt-1">{{ contactForm.errors.message }}</p>
                             </div>
-                            <button
-                                type="submit"
-                                :disabled="contactForm.processing"
-                                class="w-full bg-gradient-to-r from-brand-navy to-brand-blue text-white font-semibold py-3 px-6 rounded-xl hover:from-brand-blue hover:to-brand-sky transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-60 disabled:cursor-not-allowed"
-                            >
-                                <span v-if="contactForm.processing">Sending...</span>
+                            <button type="submit" :disabled="contactForm.processing"
+                                class="px-8 py-3 bg-brand-navy text-white text-sm font-semibold hover:bg-brand-blue transition-colors disabled:opacity-50">
+                                <span v-if="contactForm.processing">Sending…</span>
                                 <span v-else>Send Inquiry</span>
                             </button>
                         </form>
@@ -992,42 +727,37 @@ onMounted(() => {
         </section>
 
         <!-- Footer -->
-        <footer class="bg-gray-900 text-white py-10 sm:py-12">
+        <footer class="bg-gray-900 text-white py-12 border-t border-gray-800">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 mb-6 sm:mb-8">
-                    <div class="sm:col-span-2 md:col-span-1">
-                        <div class="flex items-center space-x-2 sm:space-x-3 mb-3 sm:mb-4">
-                            <div class="bg-gradient-to-br from-blue-600 to-indigo-600 p-1.5 sm:p-2 rounded-lg flex-shrink-0">
-                                <img src="/logos/lo.png" class="h-6 sm:h-8 w-auto" alt="QSMCore Logo" />
-                            </div>
-                            <h3 class="text-lg sm:text-xl font-bold">QSMCore</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-10 mb-10">
+                    <div>
+                        <div class="flex items-center gap-3 mb-4">
+                            <img src="/logos/lo.png" class="h-8 w-auto" alt="QSMCore Logo" />
+                            <span class="text-base font-semibold tracking-wide">QSMCore</span>
                         </div>
-                        <p class="text-gray-400 text-sm sm:text-base">
-                            From Reporting to Insight – One Platform for Safety & Quality across industries. Integrated SMS & QMS for aviation, energy, logistics, and more.
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Integrated SMS & QMS for aviation, energy, logistics, and more.
                         </p>
                     </div>
                     <div>
-                        <h4 class="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Quick Links</h4>
-                        <ul class="space-y-1.5 sm:space-y-2 text-gray-400 text-sm sm:text-base">
+                        <h4 class="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-4">Navigation</h4>
+                        <ul class="space-y-2 text-sm text-gray-400">
                             <li><Link href="/" class="hover:text-white transition-colors">Home</Link></li>
                             <li><Link :href="route('blog.index')" class="hover:text-white transition-colors">Blog</Link></li>
                             <li><Link :href="route('careers.index')" class="hover:text-white transition-colors">Careers</Link></li>
                             <li><button @click="scrollToContact" class="hover:text-white transition-colors">Contact</button></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-4">Portals</h4>
+                        <ul class="space-y-2 text-sm text-gray-400">
                             <li><Link :href="route('login')" class="hover:text-white transition-colors">Admin Portal</Link></li>
                             <li><Link :href="route('companies.login')" class="hover:text-white transition-colors">Company Portal</Link></li>
                         </ul>
                     </div>
-                    <div>
-                        <h4 class="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Contact</h4>
-                        <ul class="space-y-1.5 sm:space-y-2 text-gray-400 text-sm sm:text-base break-words">
-                            <li>Email: support@qsm.com</li>
-                            <li>Phone: +1 (555) 123-4567</li>
-                            <li>Address: 123 Business St, Suite 100</li>
-                        </ul>
-                    </div>
                 </div>
-                <div class="border-t border-gray-800 pt-6 sm:pt-8 text-center text-gray-400 text-sm sm:text-base">
-                    <p>&copy; 2025 QSMCore. All rights reserved.</p>
+                <div class="border-t border-gray-800 pt-6 text-xs text-gray-600">
+                    &copy; {{ new Date().getFullYear() }} QSMCore. All rights reserved.
                 </div>
             </div>
         </footer>

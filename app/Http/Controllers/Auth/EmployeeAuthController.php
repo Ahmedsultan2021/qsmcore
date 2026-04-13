@@ -45,11 +45,21 @@ class EmployeeAuthController extends Controller
             ]);
         }
 
-        // Block deactivated accounts
-        if (!Auth::guard('employee')->user()->is_active) {
+        $employee = Auth::guard('employee')->user();
+
+        // Block deactivated employee accounts
+        if (!$employee->is_active) {
             Auth::guard('employee')->logout();
             throw ValidationException::withMessages([
                 'email' => 'Your account has been deactivated. Please contact your administrator.',
+            ]);
+        }
+
+        // Block employees of deactivated companies
+        if (!$employee->company?->is_active) {
+            Auth::guard('employee')->logout();
+            throw ValidationException::withMessages([
+                'email' => 'Your company account has been deactivated. Please contact your administrator.',
             ]);
         }
 

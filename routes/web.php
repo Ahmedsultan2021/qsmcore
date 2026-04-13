@@ -69,6 +69,7 @@ Route::middleware('auth')->group(function () {
     
     // Companies Management (Admin CRUD - no roles/permissions access)
     Route::post('companies/{company}/impersonate', [CompanyController::class, 'impersonate'])->name('companies.impersonate');
+    Route::post('companies/{company}/toggle-active', [CompanyController::class, 'toggleActive'])->name('companies.toggle-active');
     Route::resource('companies', CompanyController::class);
     
     // Employees Management (Admin CRUD - no roles/permissions access)

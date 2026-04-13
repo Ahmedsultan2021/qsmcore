@@ -19,6 +19,13 @@ const deleteCompany = (id) => {
     }
 };
 
+const toggleActive = (company) => {
+    const action = company.is_active ? 'deactivate' : 'activate';
+    if (confirm(`Are you sure you want to ${action} "${company.name}"? This will block all its employees from logging in.`)) {
+        router.post(route('companies.toggle-active', company.id));
+    }
+};
+
 const loginAsCompany = (id, name) => {
     if (confirm(`Login as "${name}"?`)) {
         router.post(route("companies.impersonate", id));
@@ -154,6 +161,9 @@ const filteredSectors = computed(() => {
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                             Employees
                         </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                            Status
+                        </th>
                         <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                             Actions
                         </th>
@@ -190,6 +200,16 @@ const filteredSectors = computed(() => {
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                             {{ company.employees ? company.employees.length : 0 }}
                         </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <span
+                                :class="company.is_active
+                                    ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                                    : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'"
+                                class="px-2 py-1 rounded-full text-xs font-medium"
+                            >
+                                {{ company.is_active ? 'Active' : 'Inactive' }}
+                            </span>
+                        </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <button
                                 @click="loginAsCompany(company.id, company.name)"
@@ -210,6 +230,15 @@ const filteredSectors = computed(() => {
                             >
                                 Edit
                             </Link>
+                            <button
+                                @click="toggleActive(company)"
+                                :class="company.is_active
+                                    ? 'text-yellow-600 hover:text-yellow-900 dark:text-yellow-400 dark:hover:text-yellow-300'
+                                    : 'text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300'"
+                                class="mr-3"
+                            >
+                                {{ company.is_active ? 'Deactivate' : 'Activate' }}
+                            </button>
                             <button
                                 @click="deleteCompany(company.id)"
                                 class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"

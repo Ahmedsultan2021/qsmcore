@@ -171,6 +171,18 @@ class CompanyController extends Controller
     }
 
     /**
+     * Toggle the active/inactive status of a company.
+     */
+    public function toggleActive(Company $company)
+    {
+        $company->update(['is_active' => !$company->is_active]);
+
+        $status = $company->is_active ? 'activated' : 'deactivated';
+
+        return back()->with('success', "Company {$status} successfully.");
+    }
+
+    /**
      * Remove the specified resource from storage.
      */
     public function destroy(Company $company)

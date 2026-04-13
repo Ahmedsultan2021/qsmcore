@@ -18,6 +18,11 @@ class Company extends Model
         'address',
         'description',
         'logo_path',
+        'is_active',
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
     ];
 
     protected $hidden = [

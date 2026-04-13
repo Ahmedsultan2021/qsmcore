@@ -46,6 +46,7 @@ class HandleInertiaRequests extends Middleware
                 'employee' => $employee,
             ],
             'impersonating' => $request->session()->get('impersonating', false),
+            'unreadInquiries' => fn () => $request->user() ? \App\Models\Inquiry::where('is_read', false)->count() : 0,
             'flash' => [
                 'success'         => $request->session()->get('success'),
                 'error'           => $request->session()->get('error'),

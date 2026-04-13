@@ -82,6 +82,12 @@ Route::middleware('auth')->group(function () {
     
     // Blog Posts Management (Admin CRUD)
     Route::resource('blog-posts', \App\Http\Controllers\Admin\BlogPostController::class);
+
+    // Inquiries (from public contact form)
+    Route::get('inquiries', [\App\Http\Controllers\Admin\InquiryController::class, 'index'])->name('inquiries.index');
+    Route::post('inquiries/{inquiry}/mark-read', [\App\Http\Controllers\Admin\InquiryController::class, 'markRead'])->name('inquiries.mark-read');
+    Route::post('inquiries/{inquiry}/mark-unread', [\App\Http\Controllers\Admin\InquiryController::class, 'markUnread'])->name('inquiries.mark-unread');
+    Route::delete('inquiries/{inquiry}', [\App\Http\Controllers\Admin\InquiryController::class, 'destroy'])->name('inquiries.destroy');
 });
 
 // Admin Authentication Routes (loaded from auth.php)

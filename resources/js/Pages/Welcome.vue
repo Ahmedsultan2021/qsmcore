@@ -846,22 +846,13 @@ onMounted(() => {
                     <div
                         v-for="partner in partners"
                         :key="partner.id"
-                        class="group flex flex-col items-center justify-center bg-white border border-gray-100 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 p-5 sm:p-6 w-40 sm:w-48"
+                        class="flex flex-col items-center justify-center bg-white border border-gray-100 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 p-5 sm:p-6 w-40 sm:w-48"
                     >
-                        <a v-if="partner.website" :href="partner.website" target="_blank" rel="noopener" class="flex flex-col items-center gap-3 w-full">
-                            <img v-if="partner.logo_url" :src="partner.logo_url" :alt="partner.name" class="h-14 w-full object-contain" />
-                            <div v-else class="h-14 w-full flex items-center justify-center bg-gradient-to-br from-brand-navy to-brand-blue rounded-xl">
-                                <span class="text-white font-bold text-lg">{{ partner.name.charAt(0) }}</span>
-                            </div>
-                            <span class="text-sm font-semibold text-gray-700 group-hover:text-brand-blue transition-colors text-center leading-tight">{{ partner.name }}</span>
-                        </a>
-                        <div v-else class="flex flex-col items-center gap-3 w-full">
-                            <img v-if="partner.logo_url" :src="partner.logo_url" :alt="partner.name" class="h-14 w-full object-contain" />
-                            <div v-else class="h-14 w-full flex items-center justify-center bg-gradient-to-br from-brand-navy to-brand-blue rounded-xl">
-                                <span class="text-white font-bold text-lg">{{ partner.name.charAt(0) }}</span>
-                            </div>
-                            <span class="text-sm font-semibold text-gray-700 text-center leading-tight">{{ partner.name }}</span>
+                        <img v-if="partner.logo_url" :src="partner.logo_url" :alt="partner.name" class="h-14 w-full object-contain mb-3" />
+                        <div v-else class="h-14 w-full flex items-center justify-center bg-gradient-to-br from-brand-navy to-brand-blue rounded-xl mb-3">
+                            <span class="text-white font-bold text-lg">{{ partner.name.charAt(0) }}</span>
                         </div>
+                        <span class="text-sm font-semibold text-gray-700 text-center leading-tight">{{ partner.name }}</span>
                     </div>
                 </div>
             </div>

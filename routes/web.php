@@ -5,6 +5,7 @@ use App\Http\Controllers\IndustryController;
 use App\Http\Controllers\SectorController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\ContactController;
 use App\Models\BlogPost;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -33,6 +34,9 @@ Route::get('/', function () {
         'industries' => $industries,
     ]);
 })->name('welcome');
+
+// Contact form submission
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
 // Blog Listing Page
 Route::get('/blog', function () {

@@ -1,5 +1,5 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3'
+import { Head, Link, useForm, usePage } from '@inertiajs/vue3'
 import { ref, onMounted, computed } from 'vue'
 
 const props = defineProps({
@@ -54,6 +54,28 @@ const activeFeature = ref(0)
 const activeTestimonial = ref(0)
 const isScrolled = ref(false)
 const mobileMenuOpen = ref(false)
+
+const page = usePage()
+const contactSuccess = computed(() => page.props.flash?.contact_success)
+
+const contactForm = useForm({
+    name: '',
+    email: '',
+    phone: '',
+    message: '',
+})
+
+const submitContact = () => {
+    contactForm.post(route('contact.store'), {
+        preserveScroll: true,
+        onSuccess: () => contactForm.reset(),
+    })
+}
+
+const scrollToContact = () => {
+    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
+    mobileMenuOpen.value = false
+}
 
 const features = [
     {
@@ -207,8 +229,14 @@ onMounted(() => {
                         >
                             Blog
                         </Link>
-                        <Link 
-                            :href="route('login')" 
+                        <button
+                            @click="scrollToContact"
+                            class="text-gray-700 hover:text-brand-blue font-medium transition-colors whitespace-nowrap"
+                        >
+                            Contact
+                        </button>
+                        <Link
+                            :href="route('login')"
                             class="text-gray-700 hover:text-brand-blue font-medium transition-colors whitespace-nowrap"
                         >
                             Admin Portal
@@ -247,6 +275,7 @@ onMounted(() => {
                     <div v-show="mobileMenuOpen" class="lg:hidden border-t border-gray-200 py-4 space-y-1">
                         <Link href="/" class="block py-2 px-3 text-gray-700 hover:text-brand-blue hover:bg-slate-50 rounded-lg font-medium" @click="mobileMenuOpen = false">Home</Link>
                         <Link :href="route('blog.index')" class="block py-2 px-3 text-gray-700 hover:text-brand-blue hover:bg-slate-50 rounded-lg font-medium" @click="mobileMenuOpen = false">Blog</Link>
+                        <button @click="scrollToContact" class="block w-full text-left py-2 px-3 text-gray-700 hover:text-brand-blue hover:bg-slate-50 rounded-lg font-medium">Contact</button>
                         <Link :href="route('login')" class="block py-2 px-3 text-gray-700 hover:text-brand-blue hover:bg-slate-50 rounded-lg font-medium" @click="mobileMenuOpen = false">Admin Portal</Link>
                         <Link :href="route('companies.login')" class="block py-3 px-3 bg-gradient-to-r from-brand-navy to-brand-blue text-white rounded-lg font-semibold text-center hover:from-brand-blue hover:to-brand-sky" @click="mobileMenuOpen = false">Company Portal</Link>
                     </div>
@@ -786,6 +815,122 @@ onMounted(() => {
             </div>
         </section>
 
+        <!-- Contact Section -->
+        <section id="contact" class="py-16 sm:py-24 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <span class="inline-block bg-blue-100 text-blue-700 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">Get In Touch</span>
+                    <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Add Your Inquiry</h2>
+                    <p class="text-gray-500 max-w-xl mx-auto">Have a question or want to learn more? Fill in the form and we'll get back to you.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                    <!-- Contact Info -->
+                    <div class="space-y-8">
+                        <div class="flex items-start gap-4">
+                            <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
+                                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900 mb-1">Email</h4>
+                                <a href="mailto:support@qsm.com" class="text-blue-600 hover:underline">support@qsm.com</a>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
+                                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900 mb-1">Response Time</h4>
+                                <p class="text-gray-500">We typically respond within 24 hours on business days.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
+                                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900 mb-1">Secure & Confidential</h4>
+                                <p class="text-gray-500">Your information is safe with us and never shared with third parties.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form -->
+                    <div class="bg-gray-50 rounded-2xl p-6 sm:p-8 shadow-sm border border-gray-100">
+                        <!-- Success message -->
+                        <div v-if="contactSuccess" class="mb-6 flex items-center gap-3 bg-green-50 border border-green-200 text-green-700 rounded-xl px-4 py-3">
+                            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                            </svg>
+                            <span class="font-medium">Your inquiry was sent successfully! We'll be in touch soon.</span>
+                        </div>
+
+                        <form @submit.prevent="submitContact" class="space-y-5">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1.5">Full Name <span class="text-red-500">*</span></label>
+                                <input
+                                    v-model="contactForm.name"
+                                    type="text"
+                                    placeholder="Your full name"
+                                    class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
+                                    :class="{ 'border-red-400': contactForm.errors.name }"
+                                />
+                                <p v-if="contactForm.errors.name" class="text-red-500 text-xs mt-1">{{ contactForm.errors.name }}</p>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Email <span class="text-red-500">*</span></label>
+                                    <input
+                                        v-model="contactForm.email"
+                                        type="email"
+                                        placeholder="your@email.com"
+                                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
+                                        :class="{ 'border-red-400': contactForm.errors.email }"
+                                    />
+                                    <p v-if="contactForm.errors.email" class="text-red-500 text-xs mt-1">{{ contactForm.errors.email }}</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Mobile Number</label>
+                                    <input
+                                        v-model="contactForm.phone"
+                                        type="tel"
+                                        placeholder="+1 234 567 8900"
+                                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1.5">Your Request <span class="text-red-500">*</span></label>
+                                <textarea
+                                    v-model="contactForm.message"
+                                    rows="5"
+                                    placeholder="Tell us how we can help you..."
+                                    class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900 resize-none"
+                                    :class="{ 'border-red-400': contactForm.errors.message }"
+                                ></textarea>
+                                <p v-if="contactForm.errors.message" class="text-red-500 text-xs mt-1">{{ contactForm.errors.message }}</p>
+                            </div>
+                            <button
+                                type="submit"
+                                :disabled="contactForm.processing"
+                                class="w-full bg-gradient-to-r from-brand-navy to-brand-blue text-white font-semibold py-3 px-6 rounded-xl hover:from-brand-blue hover:to-brand-sky transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-60 disabled:cursor-not-allowed"
+                            >
+                                <span v-if="contactForm.processing">Sending...</span>
+                                <span v-else>Send Inquiry</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Footer -->
         <footer class="bg-gray-900 text-white py-10 sm:py-12">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -806,6 +951,7 @@ onMounted(() => {
                         <ul class="space-y-1.5 sm:space-y-2 text-gray-400 text-sm sm:text-base">
                             <li><Link href="/" class="hover:text-white transition-colors">Home</Link></li>
                             <li><Link :href="route('blog.index')" class="hover:text-white transition-colors">Blog</Link></li>
+                            <li><button @click="scrollToContact" class="hover:text-white transition-colors">Contact</button></li>
                             <li><Link :href="route('login')" class="hover:text-white transition-colors">Admin Portal</Link></li>
                             <li><Link :href="route('companies.login')" class="hover:text-white transition-colors">Company Portal</Link></li>
                         </ul>

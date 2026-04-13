@@ -46,6 +46,11 @@ class HandleInertiaRequests extends Middleware
                 'employee' => $employee,
             ],
             'impersonating' => $request->session()->get('impersonating', false),
+            'flash' => [
+                'success'         => $request->session()->get('success'),
+                'error'           => $request->session()->get('error'),
+                'contact_success' => $request->session()->get('contact_success'),
+            ],
             'ziggy' => fn () => [
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),

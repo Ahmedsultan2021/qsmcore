@@ -10,6 +10,10 @@ const props = defineProps({
     industries: {
         type: Array,
         default: () => []
+    },
+    partners: {
+        type: Array,
+        default: () => []
     }
 })
 
@@ -822,6 +826,64 @@ onMounted(() => {
             </div>
         </section>
 
+        <!-- Partners Section -->
+        <section v-if="partners && partners.length > 0" class="py-16 sm:py-24 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12 sm:mb-16">
+                    <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4">
+                        Our
+                        <span class="bg-gradient-to-r from-brand-navy to-brand-blue bg-clip-text text-transparent">
+                            Partners
+                        </span>
+                    </h2>
+                    <p class="text-base sm:text-xl text-gray-600 max-w-2xl mx-auto">
+                        Trusted by leading organizations across industries
+                    </p>
+                </div>
+
+                <!-- Partners Grid -->
+                <div class="flex flex-wrap justify-center gap-6 sm:gap-8 mb-16">
+                    <div
+                        v-for="partner in partners"
+                        :key="partner.id"
+                        class="group flex flex-col items-center justify-center bg-white border border-gray-100 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 p-5 sm:p-6 w-40 sm:w-48"
+                    >
+                        <a v-if="partner.website" :href="partner.website" target="_blank" rel="noopener" class="flex flex-col items-center gap-3 w-full">
+                            <img v-if="partner.logo_url" :src="partner.logo_url" :alt="partner.name" class="h-14 w-full object-contain" />
+                            <div v-else class="h-14 w-full flex items-center justify-center bg-gradient-to-br from-brand-navy to-brand-blue rounded-xl">
+                                <span class="text-white font-bold text-lg">{{ partner.name.charAt(0) }}</span>
+                            </div>
+                            <span class="text-sm font-semibold text-gray-700 group-hover:text-brand-blue transition-colors text-center leading-tight">{{ partner.name }}</span>
+                        </a>
+                        <div v-else class="flex flex-col items-center gap-3 w-full">
+                            <img v-if="partner.logo_url" :src="partner.logo_url" :alt="partner.name" class="h-14 w-full object-contain" />
+                            <div v-else class="h-14 w-full flex items-center justify-center bg-gradient-to-br from-brand-navy to-brand-blue rounded-xl">
+                                <span class="text-white font-bold text-lg">{{ partner.name.charAt(0) }}</span>
+                            </div>
+                            <span class="text-sm font-semibold text-gray-700 text-center leading-tight">{{ partner.name }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scrolling Logo Marquee Bar -->
+            <div class="bg-gray-50 border-y border-gray-100 py-6 overflow-hidden">
+                <div class="marquee-track flex items-center gap-12">
+                    <!-- Render twice for seamless loop -->
+                    <template v-for="n in 2" :key="n">
+                        <div
+                            v-for="partner in partners"
+                            :key="`${n}-${partner.id}`"
+                            class="flex-shrink-0 flex items-center gap-3 px-2"
+                        >
+                            <img v-if="partner.logo_url" :src="partner.logo_url" :alt="partner.name" class="h-10 w-auto max-w-[120px] object-contain grayscale hover:grayscale-0 transition-all duration-300 opacity-60 hover:opacity-100" />
+                            <span v-else class="text-sm font-semibold text-gray-400 whitespace-nowrap">{{ partner.name }}</span>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </section>
+
         <!-- Contact Section -->
         <section id="contact" class="py-16 sm:py-24 bg-white">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1014,5 +1076,21 @@ onMounted(() => {
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+}
+
+/* Infinite scrolling marquee */
+@keyframes marquee {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+.marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 30s linear infinite;
+}
+
+.marquee-track:hover {
+    animation-play-state: paused;
 }
 </style>

@@ -72,6 +72,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('companies', CompanyController::class);
     
     // Employees Management (Admin CRUD - no roles/permissions access)
+    Route::post('employees/{employee}/toggle-active', [EmployeeController::class, 'toggleActive'])->name('employees.toggle-active');
     Route::resource('employees', EmployeeController::class);
     
     // Blog Posts Management (Admin CRUD)

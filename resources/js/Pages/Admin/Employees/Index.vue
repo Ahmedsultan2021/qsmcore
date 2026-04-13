@@ -20,6 +20,13 @@ const deleteEmployee = (id) => {
     }
 };
 
+const toggleActive = (employee) => {
+    const action = employee.is_active ? 'deactivate' : 'activate';
+    if (confirm(`Are you sure you want to ${action} this employee?`)) {
+        router.post(route('employees.toggle-active', employee.id));
+    }
+};
+
 const navs = computed(() => [
     { name: "Dashboard", linkName: "dashboard" },
     { name: "Employees", linkName: "employees.index" },
@@ -173,6 +180,9 @@ const filteredCompanies = computed(() => {
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                             Position
                         </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                            Status
+                        </th>
                         <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                             Actions
                         </th>
@@ -200,6 +210,16 @@ const filteredCompanies = computed(() => {
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                             {{ employee.position || "-" }}
                         </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <span
+                                :class="employee.is_active
+                                    ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                                    : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'"
+                                class="px-2 py-1 rounded-full text-xs font-medium"
+                            >
+                                {{ employee.is_active ? 'Active' : 'Inactive' }}
+                            </span>
+                        </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <Link
                                 :href="route('employees.show', employee.id)"
@@ -213,6 +233,15 @@ const filteredCompanies = computed(() => {
                             >
                                 Edit
                             </Link>
+                            <button
+                                @click="toggleActive(employee)"
+                                :class="employee.is_active
+                                    ? 'text-yellow-600 hover:text-yellow-900 dark:text-yellow-400 dark:hover:text-yellow-300'
+                                    : 'text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300'"
+                                class="mr-3"
+                            >
+                                {{ employee.is_active ? 'Deactivate' : 'Activate' }}
+                            </button>
                             <button
                                 @click="deleteEmployee(employee.id)"
                                 class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"

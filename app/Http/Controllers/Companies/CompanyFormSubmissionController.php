@@ -87,10 +87,36 @@ class CompanyFormSubmissionController extends Controller
     public function store(Request $request, Department $department, Report $report, Form $form)
     {
         $authEmployee = Auth::guard('employee')->user();
-        
+
+        // Session may have expired during a long form fill
+        if (! $authEmployee) {
+            Log::warning('[FillForm] store – no authenticated employee (session expired?)', [
+                'url'           => $request->fullUrl(),
+                'department_id' => $department->id,
+                'report_id'     => $report->id,
+                'form_id'       => $form->id,
+            ]);
+            return redirect()->route('companies.login')
+                ->with('error', 'Your session has expired. Please log in again and resubmit the form.');
+        }
+
+        Log::info('[FillForm] store called', [
+            'url'                   => $request->fullUrl(),
+            'department_id'         => $department->id,
+            'department_company_id' => $department->company_id,
+            'report_id'             => $report->id,
+            'form_id'               => $form->id,
+            'employee_id'           => $authEmployee->id,
+            'employee_company_id'   => $authEmployee->company_id,
+        ]);
+
         // Ensure department belongs to same company
         if ((int) $department->company_id !== (int) $authEmployee->company_id) {
-            abort(403);
+            Log::warning('[FillForm] store 403 – department company mismatch', [
+                'department_company_id' => $department->company_id,
+                'employee_company_id'   => $authEmployee->company_id,
+            ]);
+            return back()->with('error', 'Access denied: this form does not belong to your company. If you recently switched companies, please refresh the page and try again.');
         }
         
         // Ensure report belongs to department (normalize types: PDO / JSON can return strings)
@@ -177,7 +203,12 @@ class CompanyFormSubmissionController extends Controller
     public function show(Department $department, Report $report, Form $form)
     {
         $authEmployee = Auth::guard('employee')->user();
-        
+
+        if (! $authEmployee) {
+            return redirect()->route('companies.login')
+                ->with('error', 'Your session has expired. Please log in again.');
+        }
+
         // Ensure department belongs to same company
         if ((int) $department->company_id !== (int) $authEmployee->company_id) {
             abort(403);

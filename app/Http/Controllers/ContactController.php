@@ -34,7 +34,7 @@ class ContactController extends Controller
                     $validated['message'],
                 ]),
                 function ($mail) use ($validated) {
-                    $mail->to('support@qsm.com')
+                    $mail->to('eng.emira.dh@qsmcore.org')
                          ->replyTo($validated['email'], $validated['name'])
                          ->subject("New Inquiry from {$validated['name']}");
                 }

@@ -4,6 +4,8 @@ import BaseDashboardHeader from "@/Components/BaseDashboardHeader.vue";
 import { Head, Link, router } from "@inertiajs/vue3";
 import { computed, ref, watch } from "vue";
 
+let searchTimer = null;
+
 defineOptions({ layout: AuthenticatedLayout });
 
 const props = defineProps({
@@ -22,19 +24,26 @@ const navs = [
     { name: "Form templates", linkName: "form-templates.index" },
 ];
 
-const industryId = ref(props.filters.industry_id != null ? String(props.filters.industry_id) : "");
-const sectorId = ref(props.filters.sector_id != null ? String(props.filters.sector_id) : "");
+const industryId   = ref(props.filters.industry_id   != null ? String(props.filters.industry_id)   : "");
+const sectorId     = ref(props.filters.sector_id     != null ? String(props.filters.sector_id)     : "");
 const departmentId = ref(props.filters.department_id != null ? String(props.filters.department_id) : "");
+const search       = ref(props.filters.search ?? "");
 
 watch(
     () => props.filters,
     (f) => {
-        industryId.value = f.industry_id != null ? String(f.industry_id) : "";
-        sectorId.value = f.sector_id != null ? String(f.sector_id) : "";
+        industryId.value   = f.industry_id   != null ? String(f.industry_id)   : "";
+        sectorId.value     = f.sector_id     != null ? String(f.sector_id)     : "";
         departmentId.value = f.department_id != null ? String(f.department_id) : "";
+        search.value       = f.search ?? "";
     },
     { deep: true }
 );
+
+watch(search, () => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(applyFilters, 350);
+});
 
 const filteredSectors = computed(() => {
     if (!industryId.value) {
@@ -59,15 +68,10 @@ const filteredDepartments = computed(() => {
 
 function buildQuery() {
     const q = {};
-    if (industryId.value) {
-        q.industry_id = industryId.value;
-    }
-    if (sectorId.value) {
-        q.sector_id = sectorId.value;
-    }
-    if (departmentId.value) {
-        q.department_id = departmentId.value;
-    }
+    if (search.value)       q.search       = search.value;
+    if (industryId.value)   q.industry_id  = industryId.value;
+    if (sectorId.value)     q.sector_id    = sectorId.value;
+    if (departmentId.value) q.department_id = departmentId.value;
     return q;
 }
 
@@ -95,8 +99,9 @@ function onDepartmentChange() {
 }
 
 function clearFilters() {
-    industryId.value = "";
-    sectorId.value = "";
+    search.value       = "";
+    industryId.value   = "";
+    sectorId.value     = "";
     departmentId.value = "";
     router.get(route("form-templates.index"), {}, { replace: true, preserveScroll: true });
 }
@@ -124,6 +129,25 @@ function clearFilters() {
         <div
             class="mt-6 flex flex-col gap-4 rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-600 dark:bg-gray-800 sm:flex-row sm:flex-wrap sm:items-end"
         >
+            <!-- Search -->
+            <div class="w-full sm:max-w-sm">
+                <label for="filter-search" class="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400">
+                    Search
+                </label>
+                <div class="relative">
+                    <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 105 11a6 6 0 0012 0z" />
+                    </svg>
+                    <input
+                        id="filter-search"
+                        v-model="search"
+                        type="text"
+                        placeholder="Search by name, library, or description…"
+                        class="w-full rounded-md border border-gray-300 bg-white py-2 pl-9 pr-3 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                    />
+                </div>
+            </div>
+
             <div class="min-w-[10rem] flex-1 sm:max-w-xs">
                 <label for="filter-industry" class="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400">
                     Industry

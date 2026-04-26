@@ -2,7 +2,9 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import BaseDashboardHeader from "@/Components/BaseDashboardHeader.vue";
 import { Head, Link, router, useForm } from "@inertiajs/vue3";
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
+
+let searchTimer = null;
 
 defineOptions({ layout: AuthenticatedLayout });
 
@@ -49,6 +51,11 @@ const applyFilters = () => {
         preserveScroll: true,
     });
 };
+
+watch(() => filterForm.search, () => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(applyFilters, 350);
+});
 
 const clearFilters = () => {
     filterForm.industry_id = '';
@@ -115,9 +122,8 @@ const filteredSectors = computed(() => {
                     </label>
                     <input
                         v-model="filterForm.search"
-                        @keyup.enter="applyFilters()"
                         type="text"
-                        placeholder="Name, email, phone..."
+                        placeholder="Name, email, phone…"
                         class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                     />
                 </div>

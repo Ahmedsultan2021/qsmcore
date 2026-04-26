@@ -83,70 +83,95 @@ const scrollToContact = () => {
 
 const features = [
     {
-        icon: 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4',
-        title: 'Multi-Industry Support',
-        description: 'Manage multiple industries with organized sectors and companies. Scale your operations seamlessly across different business units.',
+        icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
+        title: 'Incident & Occurrence Reporting',
+        description: 'Capture, investigate, and close safety events in minutes. Automated workflows route reports to the right people and track corrective actions to closure.',
         color: 'from-blue-600 to-indigo-600',
         bgColor: 'from-blue-100 to-indigo-100'
     },
     {
-        icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
-        title: 'Incident Management',
-        description: 'Track and manage incidents with comprehensive reporting, real-time updates, and automated corrective action workflows.',
-        color: 'from-green-600 to-emerald-600',
-        bgColor: 'from-green-100 to-emerald-100'
-    },
-    {
-        icon: 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z',
-        title: 'Role-Based Access',
-        description: 'Flexible permissions system with granular role management. Control access and ensure security across all organizational levels.',
-        color: 'from-purple-600 to-pink-600',
-        bgColor: 'from-purple-100 to-pink-100'
-    },
-    {
-        icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z',
-        title: 'Analytics & Reporting',
-        description: 'Comprehensive dashboards with real-time analytics, customizable reports, and data-driven insights for informed decision-making.',
+        icon: 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z',
+        title: 'Risk Assessment & Hazard Register',
+        description: 'Identify hazards, evaluate risk using a configurable matrix, and track mitigations. Maintain a live hazard register across all departments.',
         color: 'from-orange-600 to-red-600',
         bgColor: 'from-orange-100 to-red-100'
     },
     {
-        icon: 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z',
-        title: 'Compliance Management',
-        description: 'Stay compliant with industry standards and regulations. Automated compliance tracking and audit trail management.',
+        icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4',
+        title: 'Audit Management',
+        description: 'Plan and execute internal and external audits. Record findings, assign corrective actions, and track closure — all in one structured workflow.',
+        color: 'from-green-600 to-emerald-600',
+        bgColor: 'from-green-100 to-emerald-100'
+    },
+    {
+        icon: 'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15',
+        title: 'CAPA Management',
+        description: 'Drive root-cause analysis and manage corrective & preventive actions from any source — audits, incidents, complaints, or risk reviews.',
+        color: 'from-purple-600 to-pink-600',
+        bgColor: 'from-purple-100 to-pink-100'
+    },
+    {
+        icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z',
+        title: 'Compliance & Regulation Tracking',
+        description: 'Map activities to ICAO, EASA, FAA, and ISO requirements. Automated audit trails and compliance dashboards keep you always audit-ready.',
         color: 'from-teal-600 to-cyan-600',
         bgColor: 'from-teal-100 to-cyan-100'
     },
     {
-        icon: 'M13 10V3L4 14h7v7l9-11h-7z',
-        title: 'Real-Time Notifications',
-        description: 'Instant alerts and notifications keep your team informed. Customizable notification preferences for critical updates.',
+        icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z',
+        title: 'Analytics & Safety Performance Indicators',
+        description: 'Real-time dashboards show SPIs and KPIs across all departments. Spot trends before they become incidents with data-driven safety intelligence.',
         color: 'from-yellow-600 to-amber-600',
         bgColor: 'from-yellow-100 to-amber-100'
     }
 ]
 
+const modules = [
+    { name: 'Incident Reporting',   desc: 'Log, investigate, and close safety events',       icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
+    { name: 'Risk Assessment',      desc: 'Hazard identification & risk matrix',              icon: 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z' },
+    { name: 'Audit Management',     desc: 'Plan, execute, and track internal/external audits', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4' },
+    { name: 'CAPA',                 desc: 'Corrective & preventive action workflows',         icon: 'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15' },
+    { name: 'Document Control',     desc: 'Version-controlled document management',           icon: 'M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2' },
+    { name: 'Training Records',     desc: 'Track competency and certifications',              icon: 'M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0112 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z' },
+    { name: 'Supplier Evaluation',  desc: 'Score and approve suppliers',                      icon: 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4' },
+    { name: 'Management Review',    desc: 'Structured review meetings and action outputs',    icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z' },
+]
+
+const complianceItems = [
+    { label: 'ICAO Doc. 9859', sub: 'Safety Management' },
+    { label: 'EASA',           sub: 'EU Aviation Safety' },
+    { label: 'FAA SMS',        sub: 'Federal Aviation Admin.' },
+    { label: 'ISO 9001:2015',  sub: 'Quality Management' },
+    { label: 'ISO 45001',      sub: 'Occupational Health & Safety' },
+]
+
+const vsRows = [
+    { aspect: 'Incident reporting',       qsm: 'Structured forms, auto-routing, real-time status', legacy: 'Email threads, shared spreadsheets' },
+    { aspect: 'CAPA tracking',            qsm: 'Root-cause workflows with due-date alerts',          legacy: 'Manual follow-ups, missed deadlines' },
+    { aspect: 'Audit management',         qsm: 'Scheduled plans, digital findings, auto closure',   legacy: 'Paper checklists, PDF reports' },
+    { aspect: 'Compliance evidence',      qsm: 'Automatic audit trail, always audit-ready',         legacy: 'Manual file gathering before each audit' },
+    { aspect: 'Safety performance data',  qsm: 'Live dashboards, SPI/KPI trends',                   legacy: 'Monthly Excel summaries, delayed insight' },
+    { aspect: 'Multi-department access',  qsm: 'Role-based access for all teams',                   legacy: 'Siloed files, version confusion' },
+]
+
 const testimonials = [
     {
-        name: 'Sarah Johnson',
+        name: 'Operations Director',
         role: 'Safety Director',
-        company: 'TechCorp Industries',
-        content: 'QSMCore has transformed how we manage safety incidents. The real-time tracking and automated workflows have reduced our response time by 60%.',
-        avatar: '👩‍💼'
+        company: 'Regional Airline',
+        content: 'Since moving to QSMCore our incident response time dropped by 60%. Automated workflows mean nothing falls through the cracks — every report reaches the right person instantly.',
     },
     {
-        name: 'Michael Chen',
+        name: 'Quality Manager',
         role: 'Quality Manager',
-        company: 'Global Manufacturing Co.',
-        content: 'The multi-industry support and comprehensive reporting features make QSMCore indispensable for our operations across 15 different sectors.',
-        avatar: '👨‍💼'
+        company: 'MRO Organization',
+        content: "Audit preparation used to take us two weeks. With QSMCore's live compliance dashboard and auto-generated audit trails, we're always ready. Our last external audit had zero major findings.",
     },
     {
-        name: 'Emily Rodriguez',
+        name: 'Compliance Officer',
         role: 'Compliance Officer',
-        company: 'Healthcare Solutions Inc.',
-        content: 'Compliance management has never been easier. The audit trail and automated compliance tracking save us countless hours every month.',
-        avatar: '👩‍⚕️'
+        company: 'Ground Handling Company',
+        content: 'We manage CAPA across four departments and 300+ employees. QSMCore gives every manager a clear view of their open actions and due dates. Closure rates went from 65% to 97%.',
     }
 ]
 
@@ -444,6 +469,26 @@ onMounted(() => {
             </div>
         </section>
 
+        <!-- Compliance Strip -->
+        <section class="bg-white border-t border-gray-100 py-5">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-wrap items-center gap-3 sm:gap-4">
+                    <span class="text-xs font-semibold tracking-widest text-gray-400 uppercase shrink-0">Aligned with</span>
+                    <div class="w-px h-4 bg-gray-200 hidden sm:block shrink-0"></div>
+                    <div class="flex flex-wrap gap-2">
+                        <div v-for="item in complianceItems" :key="item.label"
+                            class="inline-flex items-center gap-1.5 border border-gray-200 rounded px-3 py-1.5 bg-gray-50 hover:border-brand-blue/40 hover:bg-blue-50/30 transition-colors">
+                            <svg class="w-3 h-3 text-brand-blue flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span class="text-xs font-semibold text-gray-700">{{ item.label }}</span>
+                            <span class="hidden sm:inline text-xs text-gray-400">· {{ item.sub }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Industries Section -->
         <section class="py-20 bg-white border-t border-gray-100">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -471,13 +516,27 @@ onMounted(() => {
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
                     <div class="lg:col-span-4">
-                        <p class="text-xs font-semibold tracking-widest text-gray-400 uppercase mb-3">About</p>
-                        <h2 class="text-2xl sm:text-3xl font-semibold text-gray-900 leading-snug">What is QSMCore?</h2>
+                        <p class="text-xs font-semibold tracking-widest text-gray-400 uppercase mb-3">Why QSMCore</p>
+                        <h2 class="text-2xl sm:text-3xl font-semibold text-gray-900 leading-snug">Built for teams that can't afford errors</h2>
                     </div>
                     <div class="lg:col-span-8 space-y-5 text-gray-600 text-base leading-relaxed">
-                        <p>QSMCore is a digital platform designed to simplify and strengthen Safety and Quality Management Systems (SMS & QMS) across multiple industries.</p>
-                        <p>Built with operational environments in mind, QSMCore provides structured reporting tools, risk management features, audit tracking, and performance dashboards that help organizations monitor safety events, manage quality processes, and ensure regulatory compliance.</p>
-                        <p>From aviation operations and maintenance to energy and logistics sectors, QSMCore centralizes critical reporting and transforms operational data into actionable insights—helping organizations build a proactive safety culture and maintain high operational standards.</p>
+                        <p>In high-risk industries, a missed incident report or a lapsed audit trail isn't just a compliance failure — it's a safety risk. QSMCore replaces scattered spreadsheets and email threads with a single, structured platform where every safety and quality event is captured, investigated, and closed.</p>
+                        <p>Organizations using QSMCore reduce incident response time, pass audits without last-minute scrambles, and give every manager real-time visibility into open CAPAs, risk ratings, and compliance status — across every department and site.</p>
+                        <p>From aviation flight operations and MRO to energy, logistics, and ground services, QSMCore adapts to your industry's regulations and scales with your team.</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4 border-t border-gray-200">
+                            <div>
+                                <div class="text-2xl font-bold text-brand-navy">60%</div>
+                                <div class="text-sm text-gray-500 mt-1">Faster incident response with automated routing</div>
+                            </div>
+                            <div>
+                                <div class="text-2xl font-bold text-brand-navy">97%</div>
+                                <div class="text-sm text-gray-500 mt-1">Average CAPA closure rate across active clients</div>
+                            </div>
+                            <div>
+                                <div class="text-2xl font-bold text-brand-navy">Zero</div>
+                                <div class="text-sm text-gray-500 mt-1">Major findings at client audits using live compliance trails</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -503,6 +562,32 @@ onMounted(() => {
                         </div>
                         <h3 class="text-base font-semibold text-gray-900 mb-2">{{ feature.title }}</h3>
                         <p class="text-sm text-gray-500 leading-relaxed">{{ feature.description }}</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Modules Section -->
+        <section class="py-20 bg-gray-50 border-t border-gray-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="mb-12">
+                    <p class="text-xs font-semibold tracking-widest text-gray-400 uppercase mb-3">Modules</p>
+                    <h2 class="text-2xl sm:text-3xl font-semibold text-gray-900">Everything in one platform</h2>
+                    <p class="mt-3 text-sm text-gray-500 max-w-xl">Eight fully integrated modules — no switching between systems, no data silos.</p>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-px bg-gray-200">
+                    <div
+                        v-for="(mod, index) in modules"
+                        :key="index"
+                        class="bg-white p-6 hover:bg-gray-50 transition-colors group"
+                    >
+                        <div class="w-8 h-8 mb-4 text-brand-blue group-hover:text-brand-navy transition-colors">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" :d="mod.icon" />
+                            </svg>
+                        </div>
+                        <div class="text-sm font-semibold text-gray-900 mb-1">{{ mod.name }}</div>
+                        <div class="text-xs text-gray-500 leading-relaxed">{{ mod.desc }}</div>
                     </div>
                 </div>
             </div>
@@ -537,23 +622,75 @@ onMounted(() => {
         <!-- Stats Section -->
         <section class="py-16 bg-brand-navy border-t border-brand-navy">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-2 md:grid-cols-4 divide-x divide-white/10">
-                    <div class="px-8 py-4 text-center">
+                <div class="grid grid-cols-2 md:grid-cols-5 divide-x divide-white/10">
+                    <div class="px-6 py-4 text-center">
                         <div class="text-3xl sm:text-4xl font-semibold text-white mb-1">100+</div>
-                        <div class="text-xs font-medium tracking-widest text-white/50 uppercase">Companies</div>
+                        <div class="text-xs font-medium tracking-widest text-white/50 uppercase">Organizations</div>
                     </div>
-                    <div class="px-8 py-4 text-center">
-                        <div class="text-3xl sm:text-4xl font-semibold text-white mb-1">50+</div>
+                    <div class="px-6 py-4 text-center">
+                        <div class="text-3xl sm:text-4xl font-semibold text-white mb-1">10+</div>
                         <div class="text-xs font-medium tracking-widest text-white/50 uppercase">Industries</div>
                     </div>
-                    <div class="px-8 py-4 text-center">
+                    <div class="px-6 py-4 text-center">
                         <div class="text-3xl sm:text-4xl font-semibold text-white mb-1">1,000+</div>
                         <div class="text-xs font-medium tracking-widest text-white/50 uppercase">Active Users</div>
                     </div>
-                    <div class="px-8 py-4 text-center">
+                    <div class="px-6 py-4 text-center">
+                        <div class="text-3xl sm:text-4xl font-semibold text-white mb-1">8</div>
+                        <div class="text-xs font-medium tracking-widest text-white/50 uppercase">Integrated Modules</div>
+                    </div>
+                    <div class="px-6 py-4 text-center">
                         <div class="text-3xl sm:text-4xl font-semibold text-white mb-1">99.9%</div>
                         <div class="text-xs font-medium tracking-widest text-white/50 uppercase">Uptime</div>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- QSMCore vs Manual/Legacy Section -->
+        <section class="py-20 bg-white border-t border-gray-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="mb-12">
+                    <p class="text-xs font-semibold tracking-widest text-gray-400 uppercase mb-3">Comparison</p>
+                    <h2 class="text-2xl sm:text-3xl font-semibold text-gray-900">QSMCore vs. Spreadsheets & legacy systems</h2>
+                    <p class="mt-3 text-sm text-gray-500">See why organizations move off manual processes.</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm border-collapse">
+                        <thead>
+                            <tr class="border-b border-gray-200">
+                                <th class="text-left py-3 pr-8 text-xs font-semibold text-gray-400 uppercase tracking-widest w-1/3">Area</th>
+                                <th class="text-left py-3 pr-8 text-xs font-semibold text-brand-navy uppercase tracking-widest w-1/3">
+                                    <span class="inline-flex items-center gap-1.5">
+                                        <span class="inline-block w-2 h-2 rounded-full bg-brand-sky"></span>
+                                        QSMCore
+                                    </span>
+                                </th>
+                                <th class="text-left py-3 text-xs font-semibold text-gray-400 uppercase tracking-widest w-1/3">Spreadsheets / Legacy</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <tr v-for="(row, i) in vsRows" :key="i" class="hover:bg-gray-50 transition-colors">
+                                <td class="py-4 pr-8 font-medium text-gray-700">{{ row.aspect }}</td>
+                                <td class="py-4 pr-8 text-gray-700">
+                                    <span class="inline-flex items-start gap-2">
+                                        <svg class="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                        {{ row.qsm }}
+                                    </span>
+                                </td>
+                                <td class="py-4 text-gray-400">
+                                    <span class="inline-flex items-start gap-2">
+                                        <svg class="w-4 h-4 text-gray-300 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                        {{ row.legacy }}
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </section>

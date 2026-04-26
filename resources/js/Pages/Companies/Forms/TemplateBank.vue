@@ -1,8 +1,10 @@
-<script setup>
+﻿<script setup>
 import CompanyLayout from "@/Layouts/CompanyLayout.vue";
 import BaseDashboardHeader from "@/Components/BaseDashboardHeader.vue";
 import { Head, Link, useForm } from "@inertiajs/vue3";
 import { ref, computed } from "vue";
+
+
 
 defineOptions({ layout: CompanyLayout });
 
@@ -22,6 +24,31 @@ const props = defineProps({
 });
 
 const sectorName = computed(() => props.formTree?.sector?.name ?? null);
+
+const search = ref('');
+
+const filteredFormTree = computed(() => {
+    const q = search.value.trim().toLowerCase();
+    const departments = props.formTree?.departments ?? [];
+    if (!q) return departments;
+
+    return departments
+        .map((dept) => {
+            const filteredGroups = (dept.template_groups || [])
+                .map((group) => ({
+                    ...group,
+                    templates: (group.templates || []).filter(
+                        (t) =>
+                            t.name.toLowerCase().includes(q) ||
+                            (t.description || '').toLowerCase().includes(q)
+                    ),
+                }))
+                .filter((g) => g.templates.length > 0);
+
+            return { ...dept, template_groups: filteredGroups };
+        })
+        .filter((dept) => dept.template_groups.length > 0);
+});
 
 const selectedTemplate = ref(null);
 const previewTemplate = ref(null);
@@ -85,6 +112,10 @@ const hasAnyTemplates = computed(() =>
     (props.formTree?.departments || []).some((d) => hasDepartmentTemplates(d))
 );
 
+const noSearchResults = computed(() =>
+    search.value.trim() !== '' && filteredFormTree.value.length === 0
+);
+
 const navs = computed(() => [
     { name: "Dashboard", linkName: "companies.dashboard" },
     { name: "Forms", linkName: "companies.forms.index" },
@@ -122,15 +153,40 @@ const navs = computed(() => [
             <span>Form templates</span>
         </div>
 
-        <p class="text-gray-600 dark:text-gray-400 mb-6">
+        <p class="text-gray-600 dark:text-gray-400 mb-4">
             <template v-if="sectorName">
                 Templates are grouped under your departments. Each department only shows templates explicitly linked to it
                 (department ↔ template). Add or remove links when editing a department.
             </template>
             <template v-else>
-                Select a template and department to add it to your company’s form list.
+                Select a template and department to add it to your company's form list.
             </template>
         </p>
+
+        <!-- Search bar -->
+        <div class="mb-6">
+            <div class="relative max-w-md">
+                <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 105 11a6 6 0 0012 0z" />
+                </svg>
+                <input
+                    v-model="search"
+                    type="text"
+                    placeholder="Search templates by name or description…"
+                    class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 py-2.5 pl-9 pr-9 text-sm text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
+                <button
+                    v-if="search"
+                    type="button"
+                    class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                    @click="search = ''"
+                >
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
 
         <div
             v-if="!hasAnyTemplates"
@@ -141,8 +197,20 @@ const navs = computed(() => [
         </div>
 
         <div v-else class="space-y-10">
+            <!-- No search results -->
+            <div
+                v-if="noSearchResults"
+                class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-6 py-10 text-center"
+            >
+                <svg class="mx-auto mb-3 h-8 w-8 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-4.35-4.35M17 11A6 6 0 105 11a6 6 0 0012 0z" />
+                </svg>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">No templates match "<span class="text-gray-700 dark:text-gray-200">{{ search }}</span>"</p>
+                <button type="button" class="mt-3 text-sm text-blue-600 hover:underline dark:text-blue-400" @click="search = ''">Clear search</button>
+            </div>
+
             <section
-                v-for="dept in formTree.departments"
+                v-for="dept in filteredFormTree"
                 :key="dept.id ?? 'all'"
                 class="bg-white dark:bg-gray-800 shadow rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700"
             >

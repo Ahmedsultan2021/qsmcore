@@ -189,6 +189,13 @@ const logout = () => {
         </nav>
 
         <main class="max-w-7xl mx-auto">
+            <!-- Flash messages -->
+            <div v-if="$page.props.flash?.error" class="mx-6 mt-4 p-4 bg-red-50 border border-red-300 text-red-800 rounded-lg text-sm dark:bg-red-900/30 dark:border-red-700 dark:text-red-300">
+                <i class="fa-solid fa-triangle-exclamation mr-2"></i>{{ $page.props.flash.error }}
+            </div>
+            <div v-if="$page.props.flash?.success" class="mx-6 mt-4 p-4 bg-green-50 border border-green-300 text-green-800 rounded-lg text-sm dark:bg-green-900/30 dark:border-green-700 dark:text-green-300">
+                <i class="fa-solid fa-circle-check mr-2"></i>{{ $page.props.flash.success }}
+            </div>
             <slot />
         </main>
     </div>

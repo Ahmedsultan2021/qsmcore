@@ -1807,6 +1807,315 @@ class FormTemplateSeeder extends Seeder
                     ['field_type' => 'date', 'label' => 'Completion Date', 'name' => 'completion_date'],
                 ],
             ],
+
+            // ── GENERAL / UNIVERSAL TEMPLATES ────────────────────────────────────────
+
+            // G-01. Incident / Occurrence Report (IR-001)
+            [
+                'name'        => 'Incident / Occurrence Report',
+                'library_key' => 'General - Safety',
+                'description' => 'Universal report for recording incidents, near misses, accidents, and unsafe conditions. Form ID: IR-001.',
+                'fields'      => [
+                    // A. General Information
+                    ['field_type' => 'text',     'label' => 'Report ID',                  'name' => 'report_id',                  'required' => true],
+                    ['field_type' => 'date',     'label' => 'Date of Report',              'name' => 'date_of_report',             'required' => true],
+                    ['field_type' => 'date',     'label' => 'Date / Time of Occurrence',   'name' => 'date_time_of_occurrence',    'required' => true],
+                    ['field_type' => 'text',     'label' => 'Location',                   'name' => 'location',                   'required' => true],
+                    ['field_type' => 'text',     'label' => 'Department',                 'name' => 'department'],
+                    ['field_type' => 'text',     'label' => 'Reported By (Optional)',      'name' => 'reported_by'],
+                    // B. Event Classification
+                    ['field_type' => 'checkbox', 'label' => 'Event Classification',        'name' => 'event_classification',       'options' => ['Near Miss', 'Incident', 'Accident', 'Unsafe Condition', 'Other']],
+                    ['field_type' => 'text',     'label' => 'If Other, specify',           'name' => 'event_classification_other'],
+                    // C. Description of Occurrence
+                    ['field_type' => 'textarea', 'label' => 'Detailed Description',        'name' => 'detailed_description',       'required' => true],
+                    ['field_type' => 'textarea', 'label' => 'Sequence of Events',          'name' => 'sequence_of_events'],
+                    // D. Immediate Actions Taken
+                    ['field_type' => 'textarea', 'label' => 'Action Description',          'name' => 'action_description'],
+                    ['field_type' => 'text',     'label' => 'By Whom',                    'name' => 'by_whom'],
+                    ['field_type' => 'date',     'label' => 'Action Date',                'name' => 'action_date'],
+                    // E. Consequences
+                    ['field_type' => 'checkbox', 'label' => 'Consequences',               'name' => 'consequences',               'options' => ['No Injury', 'Injury', 'Damage', 'Environmental Impact']],
+                    ['field_type' => 'textarea', 'label' => 'Consequence Details',        'name' => 'consequence_details'],
+                    // F. Initial Risk Assessment
+                    ['field_type' => 'select',   'label' => 'Severity',                   'name' => 'severity',                   'options' => ['Low', 'Medium', 'High', 'Critical']],
+                    ['field_type' => 'select',   'label' => 'Likelihood',                 'name' => 'likelihood',                 'options' => ['Rare', 'Unlikely', 'Possible', 'Likely', 'Almost Certain']],
+                    ['field_type' => 'select',   'label' => 'Risk Level',                 'name' => 'risk_level',                 'options' => ['Low', 'Medium', 'High', 'Critical']],
+                    // G. Attachments
+                    ['field_type' => 'checkbox', 'label' => 'Attachments',               'name' => 'attachments',                'options' => ['Photos', 'Documents', 'Witness Statements']],
+                    ['field_type' => 'file',     'label' => 'Upload Attachments',         'name' => 'attachment_files'],
+                ],
+            ],
+
+            // G-02. Nonconformity Report (NCR-001)
+            [
+                'name'        => 'Nonconformity Report (NCR)',
+                'library_key' => 'General - Quality',
+                'description' => 'Universal form for reporting and tracking nonconformities against procedures or standards. Form ID: NCR-001.',
+                'fields'      => [
+                    // A. Identification
+                    ['field_type' => 'text',     'label' => 'NCR Number',                 'name' => 'ncr_number',                 'required' => true],
+                    ['field_type' => 'date',     'label' => 'Date',                       'name' => 'date',                       'required' => true],
+                    ['field_type' => 'text',     'label' => 'Department / Process',       'name' => 'department_process'],
+                    ['field_type' => 'text',     'label' => 'Detected By',               'name' => 'detected_by'],
+                    // B. Nonconformity Details
+                    ['field_type' => 'textarea', 'label' => 'Description',               'name' => 'description',                'required' => true],
+                    ['field_type' => 'text',     'label' => 'Requirement Violated (Procedure / Standard)', 'name' => 'requirement_violated'],
+                    ['field_type' => 'textarea', 'label' => 'Evidence',                  'name' => 'evidence'],
+                    // C. Immediate Correction
+                    ['field_type' => 'textarea', 'label' => 'Action Taken',              'name' => 'action_taken'],
+                    ['field_type' => 'text',     'label' => 'Responsible',               'name' => 'responsible'],
+                    ['field_type' => 'date',     'label' => 'Correction Date',           'name' => 'correction_date'],
+                    // D. Root Cause Analysis
+                    ['field_type' => 'select',   'label' => 'Method Used',               'name' => 'method_used',                'options' => ['5 Whys', 'Fishbone (Ishikawa)', 'Fault Tree Analysis', 'Other']],
+                    ['field_type' => 'textarea', 'label' => 'Root Cause',               'name' => 'root_cause'],
+                    // E. Corrective Action
+                    ['field_type' => 'textarea', 'label' => 'Action Plan',              'name' => 'action_plan'],
+                    ['field_type' => 'text',     'label' => 'Responsible (Corrective)',  'name' => 'corrective_responsible'],
+                    ['field_type' => 'date',     'label' => 'Target Date',              'name' => 'target_date'],
+                    // F. Verification
+                    ['field_type' => 'text',     'label' => 'Verified By',              'name' => 'verified_by'],
+                    ['field_type' => 'radio',    'label' => 'Effectiveness',             'name' => 'effectiveness',              'options' => ['Yes', 'No']],
+                    ['field_type' => 'date',     'label' => 'Closure Date',             'name' => 'closure_date'],
+                ],
+            ],
+
+            // G-03. CAPA – Corrective & Preventive Action (CAPA-001)
+            [
+                'name'        => 'CAPA – Corrective & Preventive Action',
+                'library_key' => 'General - Quality',
+                'description' => 'Universal form for managing corrective and preventive actions from any source. Form ID: CAPA-001.',
+                'fields'      => [
+                    // A. Source Information
+                    ['field_type' => 'checkbox', 'label' => 'Source',                    'name' => 'source',                     'options' => ['Audit', 'Incident', 'Complaint', 'Risk', 'Other']],
+                    ['field_type' => 'text',     'label' => 'Reference ID',              'name' => 'reference_id'],
+                    // B. Problem Description
+                    ['field_type' => 'textarea', 'label' => 'Problem Description',       'name' => 'problem_description',        'required' => true],
+                    // C. Root Cause
+                    ['field_type' => 'text',     'label' => 'Analysis Method',           'name' => 'analysis_method'],
+                    ['field_type' => 'textarea', 'label' => 'Root Cause',               'name' => 'root_cause'],
+                    // D. Actions – Corrective
+                    ['field_type' => 'textarea', 'label' => 'Corrective Action',        'name' => 'corrective_action'],
+                    ['field_type' => 'text',     'label' => 'Responsible (Corrective)', 'name' => 'corrective_responsible'],
+                    ['field_type' => 'date',     'label' => 'Due Date (Corrective)',    'name' => 'corrective_due_date'],
+                    // D. Actions – Preventive
+                    ['field_type' => 'textarea', 'label' => 'Preventive Action',        'name' => 'preventive_action'],
+                    ['field_type' => 'text',     'label' => 'Responsible (Preventive)', 'name' => 'preventive_responsible'],
+                    ['field_type' => 'date',     'label' => 'Due Date (Preventive)',    'name' => 'preventive_due_date'],
+                    // E. Effectiveness Review
+                    ['field_type' => 'text',     'label' => 'Reviewed By',              'name' => 'reviewed_by'],
+                    ['field_type' => 'radio',    'label' => 'Result',                   'name' => 'effectiveness_result',       'options' => ['Effective', 'Not Effective']],
+                    ['field_type' => 'date',     'label' => 'Review Date',              'name' => 'review_date'],
+                ],
+            ],
+
+            // G-04. Risk Assessment Form (RA-001)
+            [
+                'name'        => 'Risk Assessment Form',
+                'library_key' => 'General - Safety',
+                'description' => 'Universal form for identifying hazards, evaluating risks, and recording controls. Form ID: RA-001.',
+                'fields'      => [
+                    // A. Activity Information
+                    ['field_type' => 'text',      'label' => 'Activity / Process',        'name' => 'activity_process',           'required' => true],
+                    ['field_type' => 'text',      'label' => 'Location',                  'name' => 'location'],
+                    ['field_type' => 'text',      'label' => 'Assessed By',               'name' => 'assessed_by',                'required' => true],
+                    ['field_type' => 'date',      'label' => 'Date',                      'name' => 'assessment_date',            'required' => true],
+                    // B. Hazard Identification
+                    ['field_type' => 'textarea',  'label' => 'Hazard',                    'name' => 'hazard',                     'required' => true],
+                    ['field_type' => 'textarea',  'label' => 'Risk Description',          'name' => 'risk_description'],
+                    ['field_type' => 'textarea',  'label' => 'Existing Controls',         'name' => 'existing_controls'],
+                    // C. Risk Evaluation
+                    ['field_type' => 'select',    'label' => 'Likelihood',                'name' => 'likelihood',                 'options' => ['Rare', 'Unlikely', 'Possible', 'Likely', 'Almost Certain']],
+                    ['field_type' => 'select',    'label' => 'Severity',                  'name' => 'severity',                   'options' => ['Negligible', 'Minor', 'Moderate', 'Major', 'Catastrophic']],
+                    ['field_type' => 'select',    'label' => 'Risk Rating',               'name' => 'risk_rating',                'options' => ['Low', 'Medium', 'High', 'Critical']],
+                    // D. Additional Controls
+                    ['field_type' => 'textarea',  'label' => 'Mitigation Measures',       'name' => 'mitigation_measures'],
+                    // E. Residual Risk
+                    ['field_type' => 'select',    'label' => 'New Risk Rating (Residual)', 'name' => 'new_risk_rating',           'options' => ['Low', 'Medium', 'High', 'Critical']],
+                    // F. Approval
+                    ['field_type' => 'text',      'label' => 'Approver Name',             'name' => 'approver_name'],
+                    ['field_type' => 'signature', 'label' => 'Approver Signature',        'name' => 'approver_signature'],
+                    ['field_type' => 'date',      'label' => 'Approval Date',             'name' => 'approval_date'],
+                ],
+            ],
+
+            // G-05. Audit Report (AUD-001)
+            [
+                'name'        => 'Audit Report',
+                'library_key' => 'General - Quality',
+                'description' => 'Universal internal or external audit report covering findings, nonconformities, and action plans. Form ID: AUD-001.',
+                'fields'      => [
+                    // A. Audit Details
+                    ['field_type' => 'radio',    'label' => 'Audit Type',                'name' => 'audit_type',                 'options' => ['Internal', 'External']],
+                    ['field_type' => 'textarea', 'label' => 'Scope',                     'name' => 'scope'],
+                    ['field_type' => 'text',     'label' => 'Criteria (Standards)',      'name' => 'criteria'],
+                    ['field_type' => 'date',     'label' => 'Audit Date',               'name' => 'audit_date',                 'required' => true],
+                    ['field_type' => 'text',     'label' => 'Auditor(s)',               'name' => 'auditors',                   'required' => true],
+                    // B. Summary
+                    ['field_type' => 'textarea', 'label' => 'Overall Conclusion',       'name' => 'overall_conclusion',         'required' => true],
+                    // C. Findings
+                    ['field_type' => 'textarea', 'label' => 'Nonconformities (Ref / Description / Clause)', 'name' => 'nonconformities'],
+                    ['field_type' => 'textarea', 'label' => 'Observations',             'name' => 'observations'],
+                    ['field_type' => 'textarea', 'label' => 'Opportunities for Improvement', 'name' => 'opportunities_for_improvement'],
+                    // D. Action Plan
+                    ['field_type' => 'textarea', 'label' => 'Action Plan (Finding / Action / Responsible / Due Date)', 'name' => 'action_plan'],
+                ],
+            ],
+
+            // G-06. Hazard / Safety Report (HAZ-001)
+            [
+                'name'        => 'Hazard / Safety Report',
+                'library_key' => 'General - Safety',
+                'description' => 'Universal form for reporting workplace hazards and unsafe conditions or acts. Form ID: HAZ-001.',
+                'fields'      => [
+                    // A. General
+                    ['field_type' => 'text',     'label' => 'Report ID',                'name' => 'report_id',                  'required' => true],
+                    ['field_type' => 'date',     'label' => 'Date',                     'name' => 'report_date',                'required' => true],
+                    ['field_type' => 'text',     'label' => 'Location',                 'name' => 'location',                   'required' => true],
+                    // B. Hazard Description
+                    ['field_type' => 'textarea', 'label' => 'Description',              'name' => 'description',                'required' => true],
+                    ['field_type' => 'textarea', 'label' => 'Unsafe Condition / Act',   'name' => 'unsafe_condition_act'],
+                    // C. Risk Evaluation
+                    ['field_type' => 'textarea', 'label' => 'Potential Consequence',    'name' => 'potential_consequence'],
+                    ['field_type' => 'select',   'label' => 'Risk Level',               'name' => 'risk_level',                 'options' => ['Low', 'Medium', 'High', 'Critical']],
+                    // D. Recommended Action
+                    ['field_type' => 'textarea', 'label' => 'Suggested Mitigation',     'name' => 'suggested_mitigation'],
+                ],
+            ],
+
+            // G-07. Customer Complaint Report (CCR-001)
+            [
+                'name'        => 'Customer Complaint Report',
+                'library_key' => 'General',
+                'description' => 'Universal form for capturing, investigating, and resolving customer complaints. Form ID: CCR-001.',
+                'fields'      => [
+                    // A. Customer Details
+                    ['field_type' => 'text',     'label' => 'Customer Name',             'name' => 'customer_name',              'required' => true],
+                    ['field_type' => 'text',     'label' => 'Contact',                   'name' => 'customer_contact'],
+                    ['field_type' => 'text',     'label' => 'Company',                   'name' => 'customer_company'],
+                    // B. Complaint Details
+                    ['field_type' => 'text',     'label' => 'Product / Service',         'name' => 'product_service'],
+                    ['field_type' => 'textarea', 'label' => 'Complaint Description',     'name' => 'complaint_description',     'required' => true],
+                    ['field_type' => 'date',     'label' => 'Date Received',             'name' => 'date_received',              'required' => true],
+                    // C. Investigation
+                    ['field_type' => 'textarea', 'label' => 'Findings',                 'name' => 'findings'],
+                    ['field_type' => 'textarea', 'label' => 'Root Cause',               'name' => 'root_cause'],
+                    // D. Resolution
+                    ['field_type' => 'textarea', 'label' => 'Action Taken',             'name' => 'action_taken'],
+                    ['field_type' => 'date',     'label' => 'Date Closed',              'name' => 'date_closed'],
+                    // E. Feedback
+                    ['field_type' => 'radio',    'label' => 'Customer Satisfied?',       'name' => 'customer_satisfaction',     'options' => ['Yes', 'No']],
+                ],
+            ],
+
+            // G-08. Management of Change (MOC-001)
+            [
+                'name'        => 'Management of Change (MOC)',
+                'library_key' => 'General',
+                'description' => 'Universal form for assessing and approving changes to processes, systems, or equipment. Form ID: MOC-001.',
+                'fields'      => [
+                    // A. Change Details
+                    ['field_type' => 'textarea', 'label' => 'Description of Change',    'name' => 'description_of_change',     'required' => true],
+                    ['field_type' => 'textarea', 'label' => 'Reason for Change',        'name' => 'reason_for_change',         'required' => true],
+                    // B. Impact Analysis
+                    ['field_type' => 'checkbox', 'label' => 'Impact Areas',             'name' => 'impact_areas',               'options' => ['Safety', 'Quality', 'Operations']],
+                    ['field_type' => 'textarea', 'label' => 'Impact Details',           'name' => 'impact_details'],
+                    // C. Risk Assessment
+                    ['field_type' => 'select',   'label' => 'Risk Level',               'name' => 'risk_level',                 'options' => ['Low', 'Medium', 'High', 'Critical']],
+                    // D. Approval
+                    ['field_type' => 'text',     'label' => 'Name / Role',              'name' => 'approver_name_role'],
+                    ['field_type' => 'signature', 'label' => 'Approver Signature',      'name' => 'approver_signature'],
+                    // E. Implementation
+                    ['field_type' => 'textarea', 'label' => 'Implementation Plan',      'name' => 'implementation_plan'],
+                    ['field_type' => 'text',     'label' => 'Responsible',              'name' => 'responsible'],
+                    ['field_type' => 'date',     'label' => 'Implementation Date',      'name' => 'implementation_date'],
+                    // F. Review
+                    ['field_type' => 'textarea', 'label' => 'Post-Implementation Result', 'name' => 'post_implementation_result'],
+                ],
+            ],
+
+            // G-09. Training & Competency Record (TRN-001)
+            [
+                'name'        => 'Training & Competency Record',
+                'library_key' => 'General',
+                'description' => 'Universal record for documenting employee training, assessment results, and certification validity. Form ID: TRN-001.',
+                'fields'      => [
+                    // A. Employee Info
+                    ['field_type' => 'text',     'label' => 'Employee Name',            'name' => 'employee_name',              'required' => true],
+                    ['field_type' => 'text',     'label' => 'Position',                 'name' => 'position'],
+                    ['field_type' => 'text',     'label' => 'Department',               'name' => 'department'],
+                    // B. Training Details
+                    ['field_type' => 'text',     'label' => 'Course Name',              'name' => 'course_name',                'required' => true],
+                    ['field_type' => 'text',     'label' => 'Trainer',                  'name' => 'trainer'],
+                    ['field_type' => 'date',     'label' => 'Training Date',            'name' => 'training_date',              'required' => true],
+                    // C. Assessment
+                    ['field_type' => 'radio',    'label' => 'Result',                   'name' => 'result',                     'options' => ['Pass', 'Fail']],
+                    ['field_type' => 'text',     'label' => 'Score',                    'name' => 'score'],
+                    // D. Certification
+                    ['field_type' => 'date',     'label' => 'Valid Until',              'name' => 'valid_until'],
+                    ['field_type' => 'signature', 'label' => 'Trainee Signature',       'name' => 'trainee_signature'],
+                    ['field_type' => 'signature', 'label' => 'Trainer Signature',       'name' => 'trainer_signature'],
+                ],
+            ],
+
+            // G-10. Document Control Record (DOC-001)
+            [
+                'name'        => 'Document Control Record',
+                'library_key' => 'General',
+                'description' => 'Universal form for tracking document versions, revision history, and distribution. Form ID: DOC-001.',
+                'fields'      => [
+                    // A. Document Info
+                    ['field_type' => 'text',     'label' => 'Document Title',           'name' => 'document_title',             'required' => true],
+                    ['field_type' => 'text',     'label' => 'Document ID',              'name' => 'document_id',                'required' => true],
+                    ['field_type' => 'text',     'label' => 'Version',                  'name' => 'version',                    'required' => true],
+                    // B. Revision History
+                    ['field_type' => 'textarea', 'label' => 'Revision History (Version / Date / Change Description / Approved By)', 'name' => 'revision_history'],
+                    // C. Distribution
+                    ['field_type' => 'textarea', 'label' => 'Distribution – Departments', 'name' => 'distribution_departments'],
+                ],
+            ],
+
+            // G-11. Supplier Evaluation Report (SUP-001)
+            [
+                'name'        => 'Supplier Evaluation Report',
+                'library_key' => 'General - Quality',
+                'description' => 'Universal form for scoring and approving suppliers across quality, delivery, and safety criteria. Form ID: SUP-001.',
+                'fields'      => [
+                    // A. Supplier Info
+                    ['field_type' => 'text',     'label' => 'Supplier Name',            'name' => 'supplier_name',              'required' => true],
+                    ['field_type' => 'text',     'label' => 'Service / Product',        'name' => 'service_product'],
+                    // B. Evaluation Criteria
+                    ['field_type' => 'number',   'label' => 'Quality Score (0–10)',     'name' => 'quality_score'],
+                    ['field_type' => 'textarea', 'label' => 'Quality Comments',         'name' => 'quality_comments'],
+                    ['field_type' => 'number',   'label' => 'Delivery Score (0–10)',    'name' => 'delivery_score'],
+                    ['field_type' => 'textarea', 'label' => 'Delivery Comments',        'name' => 'delivery_comments'],
+                    ['field_type' => 'number',   'label' => 'Safety Score (0–10)',      'name' => 'safety_score'],
+                    ['field_type' => 'textarea', 'label' => 'Safety Comments',          'name' => 'safety_comments'],
+                    // C. Overall Rating
+                    ['field_type' => 'number',   'label' => 'Overall Score',            'name' => 'overall_score'],
+                    ['field_type' => 'radio',    'label' => 'Status',                   'name' => 'status',                     'options' => ['Approved', 'Conditional', 'Rejected']],
+                ],
+            ],
+
+            // G-12. Management Review Report (MRM-001)
+            [
+                'name'        => 'Management Review Report',
+                'library_key' => 'General',
+                'description' => 'Universal record for management review meetings covering inputs, outputs, decisions, and resource needs. Form ID: MRM-001.',
+                'fields'      => [
+                    // A. Meeting Details
+                    ['field_type' => 'date',     'label' => 'Meeting Date',             'name' => 'meeting_date',               'required' => true],
+                    ['field_type' => 'textarea', 'label' => 'Participants',             'name' => 'participants',               'required' => true],
+                    // B. Inputs
+                    ['field_type' => 'textarea', 'label' => 'Audit Results',            'name' => 'audit_results'],
+                    ['field_type' => 'textarea', 'label' => 'KPIs',                     'name' => 'kpis'],
+                    ['field_type' => 'textarea', 'label' => 'Nonconformities',          'name' => 'nonconformities_input'],
+                    ['field_type' => 'textarea', 'label' => 'Risks & Opportunities',    'name' => 'risks_opportunities'],
+                    // C. Outputs
+                    ['field_type' => 'textarea', 'label' => 'Decisions',               'name' => 'decisions'],
+                    ['field_type' => 'textarea', 'label' => 'Actions',                 'name' => 'actions'],
+                    ['field_type' => 'textarea', 'label' => 'Resource Needs',          'name' => 'resource_needs'],
+                ],
+            ],
         ];
 
         // ── Resolve sectors (keyed as "IndustryName::SectorName") ─────────────────

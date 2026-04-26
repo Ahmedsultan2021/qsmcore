@@ -4,7 +4,7 @@ import BaseDashboardHeader from "@/Components/BaseDashboardHeader.vue";
 import CompanyFormBranding from "@/Components/CompanyFormBranding.vue";
 import SignaturePad from "@/Components/SignaturePad.vue";
 import { Head, Link, useForm } from "@inertiajs/vue3";
-import { computed } from "vue";
+import { computed, onMounted, onBeforeUnmount } from "vue";
 
 defineOptions({ layout: CompanyLayout });
 
@@ -31,6 +31,15 @@ const getFieldValue = (fieldName) => {
 const setFieldValue = (fieldName, value) => {
     submissionForm.responses[fieldName] = value;
 };
+
+let pingInterval = null;
+onMounted(() => {
+    // Ping every 10 min to keep the session alive during long form fills
+    pingInterval = setInterval(() => {
+        fetch(route('companies.ping'), { credentials: 'same-origin' }).catch(() => {});
+    }, 10 * 60 * 1000);
+});
+onBeforeUnmount(() => clearInterval(pingInterval));
 
 const navs = computed(() => [
     { name: "Dashboard", linkName: "companies.dashboard" },

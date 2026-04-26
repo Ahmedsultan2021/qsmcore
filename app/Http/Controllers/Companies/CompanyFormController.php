@@ -210,7 +210,10 @@ class CompanyFormController extends Controller
         $sector   = $company?->sector;
         $industry = $sector?->industry;
 
-        if ($sector) {
+        $specialIndustries = ['Aviation', 'OGE', 'Logistics & Transportation'];
+        $isSpecialIndustry = $industry && in_array($industry->name, $specialIndustries);
+
+        if ($isSpecialIndustry && $sector) {
             $allTemplates = $sector->formTemplates()
                 ->with('formTemplateFields')
                 ->orderBy('library_key')
@@ -218,6 +221,7 @@ class CompanyFormController extends Controller
                 ->get();
         } else {
             $allTemplates = FormTemplate::with('formTemplateFields')
+                ->where('library_key', 'like', 'general%')
                 ->orderBy('library_key')
                 ->orderBy('name')
                 ->get();
@@ -242,23 +246,34 @@ class CompanyFormController extends Controller
             ->orderBy('name')
             ->get();
 
-        $treeDepartments = $departments->map(function (Department $dept) use ($groupScoped) {
-            $scoped = $dept->formTemplates;
+        if ($isSpecialIndustry) {
+            $treeDepartments = $departments->map(function (Department $dept) use ($groupScoped) {
+                $scoped = $dept->formTemplates;
 
-            return [
-                'id' => $dept->id,
-                'name' => $dept->name,
-                'description' => $dept->description,
-                'linked_template_count' => $scoped->count(),
-                'template_groups' => $groupScoped($scoped),
-            ];
-        });
+                return [
+                    'id' => $dept->id,
+                    'name' => $dept->name,
+                    'description' => $dept->description,
+                    'linked_template_count' => $scoped->count(),
+                    'template_groups' => $groupScoped($scoped),
+                ];
+            });
 
-        if ($treeDepartments->isEmpty()) {
+            if ($treeDepartments->isEmpty()) {
+                $treeDepartments = collect([[
+                    'id' => null,
+                    'name' => 'Form templates',
+                    'description' => 'Create departments to organise templates by area. Until then, all templates for your sector are listed below.',
+                    'linked_template_count' => $allTemplates->count(),
+                    'template_groups' => $groupScoped($allTemplates),
+                ]]);
+            }
+        } else {
+            // Non-special industry: show general templates as a flat list
             $treeDepartments = collect([[
                 'id' => null,
-                'name' => 'Form templates',
-                'description' => 'Create departments to organise templates by area. Until then, all templates for your sector are listed below.',
+                'name' => 'General Templates',
+                'description' => 'Universal templates available for all industries and operations.',
                 'linked_template_count' => $allTemplates->count(),
                 'template_groups' => $groupScoped($allTemplates),
             ]]);

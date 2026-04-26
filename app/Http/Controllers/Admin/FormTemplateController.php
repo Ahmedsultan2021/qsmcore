@@ -18,14 +18,19 @@ class FormTemplateController extends Controller
     public function index(Request $request)
     {
         $validated = $request->validate([
-            'industry_id' => 'nullable|integer|exists:industries,id',
-            'sector_id' => 'nullable|integer|exists:sectors,id',
-            'department_id' => 'nullable|integer|exists:departments,id',
+            'industry_id'  => 'nullable|integer|exists:industries,id',
+            'sector_id'    => 'nullable|integer|exists:sectors,id',
+            'department_id'=> 'nullable|integer|exists:departments,id',
+            'search'       => 'nullable|string|max:100',
         ]);
 
-        $industryId = $validated['industry_id'] ?? null;
-        $sectorId = $validated['sector_id'] ?? null;
+        $industryId   = $validated['industry_id'] ?? null;
+        $sectorId     = $validated['sector_id'] ?? null;
         $departmentId = $validated['department_id'] ?? null;
+        $search       = isset($validated['search']) ? trim($validated['search']) : null;
+        if ($search === '') {
+            $search = null;
+        }
 
         if ($sectorId) {
             $sector = Sector::query()->find($sectorId);
@@ -49,7 +54,12 @@ class FormTemplateController extends Controller
 
         $query = FormTemplate::query()
             ->with(['themes:id,slug,name'])
-            ->withCount(['formTemplateFields', 'industries', 'sectors']);
+            ->withCount(['formTemplateFields', 'industries', 'sectors'])
+            ->when($search, fn ($q) => $q->where(fn ($inner) => $inner
+                ->where('name', 'like', "%{$search}%")
+                ->orWhere('description', 'like', "%{$search}%")
+                ->orWhere('library_key', 'like', "%{$search}%")
+            ));
 
         if ($industryId) {
             $query->whereHas(
@@ -94,9 +104,10 @@ class FormTemplateController extends Controller
         return Inertia::render('Admin/FormTemplates/Index', [
             'formTemplates' => $formTemplates,
             'filters' => [
-                'industry_id' => $industryId,
-                'sector_id' => $sectorId,
+                'industry_id'   => $industryId,
+                'sector_id'     => $sectorId,
                 'department_id' => $departmentId,
+                'search'        => $search,
             ],
             'industries' => $industries,
             'sectors' => $sectors,

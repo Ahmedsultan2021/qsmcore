@@ -104,7 +104,9 @@ const submit = () => {
                         Attached Report Forms
                     </label>
                     <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                        Select which form templates (report forms) are applicable to this industry. Companies in this industry will see these as recommended when adding forms.
+                        Templates selected here will appear in the <strong class="text-gray-700 dark:text-gray-300">Form Template Bank</strong> for every company that belongs to this industry (via their sector).
+                        Only companies in <strong class="text-gray-700 dark:text-gray-300">Aviation, OGE, and Logistics &amp; Transportation</strong> use industry-linked templates.
+                        All other industries automatically show the <strong class="text-gray-700 dark:text-gray-300">General templates</strong> — no selection needed for them.
                     </p>
                     <div class="space-y-4 max-h-64 overflow-y-auto border border-gray-200 dark:border-gray-600 rounded-lg p-4">
                         <div

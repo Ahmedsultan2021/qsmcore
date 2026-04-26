@@ -142,14 +142,14 @@ class CompanyRiskController extends Controller
 
         // Verify department belongs to company
         $department = Department::find($validated['department_id']);
-        if ($department->company_id !== $employee->company_id) {
+        if ((int) $department->company_id !== (int) $employee->company_id) {
             return back()->withErrors(['department_id' => 'Invalid department selected.']);
         }
 
         // Verify risk owner belongs to company if provided
         if ($validated['risk_owner_id']) {
             $owner = Employee::find($validated['risk_owner_id']);
-            if ($owner->company_id !== $employee->company_id) {
+            if ((int) $owner->company_id !== (int) $employee->company_id) {
                 return back()->withErrors(['risk_owner_id' => 'Invalid risk owner selected.']);
             }
         }
@@ -168,7 +168,7 @@ class CompanyRiskController extends Controller
         $employee = Auth::guard('employee')->user();
         
         // Verify risk belongs to company
-        if ($risk->department->company_id !== $employee->company_id) {
+        if ((int) $risk->department->company_id !== (int) $employee->company_id) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -192,7 +192,7 @@ class CompanyRiskController extends Controller
         $employee = Auth::guard('employee')->user();
         
         // Verify risk belongs to company
-        if ($risk->department->company_id !== $employee->company_id) {
+        if ((int) $risk->department->company_id !== (int) $employee->company_id) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -234,7 +234,7 @@ class CompanyRiskController extends Controller
         $employee = Auth::guard('employee')->user();
         
         // Verify risk belongs to company
-        if ($risk->department->company_id !== $employee->company_id) {
+        if ((int) $risk->department->company_id !== (int) $employee->company_id) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -260,14 +260,14 @@ class CompanyRiskController extends Controller
 
         // Verify department belongs to company
         $department = Department::find($validated['department_id']);
-        if ($department->company_id !== $employee->company_id) {
+        if ((int) $department->company_id !== (int) $employee->company_id) {
             return back()->withErrors(['department_id' => 'Invalid department selected.']);
         }
 
         // Verify risk owner belongs to company if provided
         if ($validated['risk_owner_id']) {
             $owner = Employee::find($validated['risk_owner_id']);
-            if ($owner->company_id !== $employee->company_id) {
+            if ((int) $owner->company_id !== (int) $employee->company_id) {
                 return back()->withErrors(['risk_owner_id' => 'Invalid risk owner selected.']);
             }
         }
@@ -286,7 +286,7 @@ class CompanyRiskController extends Controller
         $employee = Auth::guard('employee')->user();
         
         // Verify risk belongs to company
-        if ($risk->department->company_id !== $employee->company_id) {
+        if ((int) $risk->department->company_id !== (int) $employee->company_id) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -304,7 +304,7 @@ class CompanyRiskController extends Controller
         $employee = Auth::guard('employee')->user();
         
         // Verify department belongs to company
-        if ($department->company_id !== $employee->company_id) {
+        if ((int) $department->company_id !== (int) $employee->company_id) {
             abort(403, 'Unauthorized action.');
         }
 

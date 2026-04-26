@@ -16,7 +16,7 @@ class CompanyReportFileController extends Controller
     private function authorizeDepartment(Department $department): void
     {
         $employee = Auth::guard('employee')->user();
-        if ($department->company_id !== $employee->company_id) {
+        if ((int) $department->company_id !== (int) $employee->company_id) {
             abort(403);
         }
     }

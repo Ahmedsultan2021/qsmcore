@@ -67,7 +67,7 @@ class CompanyFormController extends Controller
         // If department is specified, ensure it belongs to the employee's company
         if (!empty($validated['department_id'])) {
             $department = \App\Models\Department::find($validated['department_id']);
-            if (!$department || $department->company_id !== $employee->company_id) {
+            if (!$department || (int) $department->company_id !== (int) $employee->company_id) {
                 return back()->withErrors(['department_id' => 'Invalid department selected.']);
             }
         }
@@ -99,7 +99,7 @@ class CompanyFormController extends Controller
         $employee = Auth::guard('employee')->user();
         
         // Ensure the form belongs to the employee's company
-        if ($form->company_id !== $employee->company_id) {
+        if ((int) $form->company_id !== (int) $employee->company_id) {
             abort(403, 'Unauthorized action.');
         }
         
@@ -118,7 +118,7 @@ class CompanyFormController extends Controller
         $employee = Auth::guard('employee')->user();
         
         // Ensure the form belongs to the employee's company
-        if ($form->company_id !== $employee->company_id) {
+        if ((int) $form->company_id !== (int) $employee->company_id) {
             abort(403, 'Unauthorized action.');
         }
         
@@ -144,7 +144,7 @@ class CompanyFormController extends Controller
         $employee = Auth::guard('employee')->user();
         
         // Ensure the form belongs to the employee's company
-        if ($form->company_id !== $employee->company_id) {
+        if ((int) $form->company_id !== (int) $employee->company_id) {
             abort(403, 'Unauthorized action.');
         }
         
@@ -156,7 +156,7 @@ class CompanyFormController extends Controller
         // If department is specified, ensure it belongs to the employee's company
         if (!empty($validated['department_id'])) {
             $department = \App\Models\Department::find($validated['department_id']);
-            if (!$department || $department->company_id !== $employee->company_id) {
+            if (!$department || (int) $department->company_id !== (int) $employee->company_id) {
                 return back()->withErrors(['department_id' => 'Invalid department selected.']);
             }
         }
@@ -188,7 +188,7 @@ class CompanyFormController extends Controller
         $employee = Auth::guard('employee')->user();
         
         // Ensure the form belongs to the employee's company
-        if ($form->company_id !== $employee->company_id) {
+        if ((int) $form->company_id !== (int) $employee->company_id) {
             abort(403, 'Unauthorized action.');
         }
         
@@ -322,7 +322,7 @@ class CompanyFormController extends Controller
         // If department is specified, ensure it belongs to the employee's company; template allowed via department pivot
         if (!empty($validated['department_id'])) {
             $department = Department::find($validated['department_id']);
-            if (!$department || $department->company_id !== $employee->company_id) {
+            if (!$department || (int) $department->company_id !== (int) $employee->company_id) {
                 return back()->withErrors(['department_id' => 'Invalid department selected.']);
             }
             if (! $template->appliesToDepartment($department)) {
@@ -374,7 +374,7 @@ class CompanyFormController extends Controller
         $employee = Auth::guard('employee')->user();
         
         // Ensure the form belongs to the employee's company
-        if ($form->company_id !== $employee->company_id) {
+        if ((int) $form->company_id !== (int) $employee->company_id) {
             abort(403, 'Unauthorized action.');
         }
         

@@ -90,7 +90,7 @@ class CompanyEmployeeController extends Controller
         $authEmployee = Auth::guard('employee')->user();
         
         // Ensure employee belongs to same company
-        if ($employee->company_id !== $authEmployee->company_id) {
+        if ((int) $employee->company_id !== (int) $authEmployee->company_id) {
             abort(403);
         }
         
@@ -109,7 +109,7 @@ class CompanyEmployeeController extends Controller
         $authEmployee = Auth::guard('employee')->user();
         
         // Ensure employee belongs to same company
-        if ($employee->company_id !== $authEmployee->company_id) {
+        if ((int) $employee->company_id !== (int) $authEmployee->company_id) {
             abort(403);
         }
         
@@ -132,7 +132,7 @@ class CompanyEmployeeController extends Controller
         $authEmployee = Auth::guard('employee')->user();
         
         // Ensure employee belongs to same company
-        if ($employee->company_id !== $authEmployee->company_id) {
+        if ((int) $employee->company_id !== (int) $authEmployee->company_id) {
             abort(403);
         }
         
@@ -175,7 +175,7 @@ class CompanyEmployeeController extends Controller
         $authEmployee = Auth::guard('employee')->user();
         
         // Ensure employee belongs to same company
-        if ($employee->company_id !== $authEmployee->company_id) {
+        if ((int) $employee->company_id !== (int) $authEmployee->company_id) {
             abort(403);
         }
         

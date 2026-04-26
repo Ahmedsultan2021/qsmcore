@@ -53,7 +53,7 @@ class CompanyReportController extends Controller
         $authEmployee = Auth::guard('employee')->user();
         
         // Ensure department belongs to same company
-        if ($department->company_id !== $authEmployee->company_id) {
+        if ((int) $department->company_id !== (int) $authEmployee->company_id) {
             abort(403);
         }
         
@@ -78,7 +78,7 @@ class CompanyReportController extends Controller
     {
         $authEmployee = Auth::guard('employee')->user();
 
-        if ($department->company_id !== $authEmployee->company_id) {
+        if ((int) $department->company_id !== (int) $authEmployee->company_id) {
             abort(403);
         }
 
@@ -98,7 +98,7 @@ class CompanyReportController extends Controller
         $authEmployee = Auth::guard('employee')->user();
         
         // Ensure department belongs to same company
-        if ($department->company_id !== $authEmployee->company_id) {
+        if ((int) $department->company_id !== (int) $authEmployee->company_id) {
             abort(403);
         }
         
@@ -136,7 +136,7 @@ class CompanyReportController extends Controller
         $authEmployee = Auth::guard('employee')->user();
         
         // Ensure department belongs to same company
-        if ($department->company_id !== $authEmployee->company_id) {
+        if ((int) $department->company_id !== (int) $authEmployee->company_id) {
             abort(403);
         }
 
@@ -176,7 +176,7 @@ class CompanyReportController extends Controller
         $authEmployee = Auth::guard('employee')->user();
         
         // Ensure department belongs to same company
-        if ($department->company_id !== $authEmployee->company_id) {
+        if ((int) $department->company_id !== (int) $authEmployee->company_id) {
             abort(403);
         }
         
@@ -198,7 +198,7 @@ class CompanyReportController extends Controller
         $authEmployee = Auth::guard('employee')->user();
         
         // Ensure department belongs to same company
-        if ($department->company_id !== $authEmployee->company_id) {
+        if ((int) $department->company_id !== (int) $authEmployee->company_id) {
             abort(403);
         }
         
@@ -298,7 +298,7 @@ class CompanyReportController extends Controller
         $authEmployee = Auth::guard('employee')->user();
         
         // Ensure department belongs to same company
-        if ($department->company_id !== $authEmployee->company_id) {
+        if ((int) $department->company_id !== (int) $authEmployee->company_id) {
             abort(403);
         }
         

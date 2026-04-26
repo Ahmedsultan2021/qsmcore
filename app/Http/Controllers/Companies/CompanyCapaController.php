@@ -101,14 +101,14 @@ class CompanyCapaController extends Controller
 
         if (!empty($validated['department_id'])) {
             $department = Department::findOrFail($validated['department_id']);
-            if ($department->company_id !== $authEmployee->company_id) {
+            if ((int) $department->company_id !== (int) $authEmployee->company_id) {
                 abort(403);
             }
         }
 
         if (!empty($validated['assigned_to'])) {
             $assignee = Employee::findOrFail($validated['assigned_to']);
-            if ($assignee->company_id !== $authEmployee->company_id) {
+            if ((int) $assignee->company_id !== (int) $authEmployee->company_id) {
                 abort(403);
             }
         }
@@ -126,7 +126,7 @@ class CompanyCapaController extends Controller
     public function show(Capa $capa)
     {
         $authEmployee = Auth::guard('employee')->user();
-        if ($capa->company_id !== $authEmployee->company_id) {
+        if ((int) $capa->company_id !== (int) $authEmployee->company_id) {
             abort(403);
         }
 
@@ -140,7 +140,7 @@ class CompanyCapaController extends Controller
     public function edit(Capa $capa)
     {
         $authEmployee = Auth::guard('employee')->user();
-        if ($capa->company_id !== $authEmployee->company_id) {
+        if ((int) $capa->company_id !== (int) $authEmployee->company_id) {
             abort(403);
         }
 
@@ -167,7 +167,7 @@ class CompanyCapaController extends Controller
     public function update(Request $request, Capa $capa)
     {
         $authEmployee = Auth::guard('employee')->user();
-        if ($capa->company_id !== $authEmployee->company_id) {
+        if ((int) $capa->company_id !== (int) $authEmployee->company_id) {
             abort(403);
         }
 
@@ -187,14 +187,14 @@ class CompanyCapaController extends Controller
 
         if (!empty($validated['department_id'])) {
             $department = Department::findOrFail($validated['department_id']);
-            if ($department->company_id !== $authEmployee->company_id) {
+            if ((int) $department->company_id !== (int) $authEmployee->company_id) {
                 abort(403);
             }
         }
 
         if (!empty($validated['assigned_to'])) {
             $assignee = Employee::findOrFail($validated['assigned_to']);
-            if ($assignee->company_id !== $authEmployee->company_id) {
+            if ((int) $assignee->company_id !== (int) $authEmployee->company_id) {
                 abort(403);
             }
         }
@@ -214,7 +214,7 @@ class CompanyCapaController extends Controller
     public function destroy(Capa $capa)
     {
         $authEmployee = Auth::guard('employee')->user();
-        if ($capa->company_id !== $authEmployee->company_id) {
+        if ((int) $capa->company_id !== (int) $authEmployee->company_id) {
             abort(403);
         }
 

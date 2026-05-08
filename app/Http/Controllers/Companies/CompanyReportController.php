@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Companies;
 
+use App\Exports\CompanyReportsExport;
 use App\Http\Controllers\Controller;
 use App\Models\Report;
 use App\Models\Department;
@@ -12,6 +13,7 @@ use App\Models\FormTemplate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CompanyReportController extends Controller
 {
@@ -42,6 +44,62 @@ class CompanyReportController extends Controller
             'reports' => $reports,
             'departments' => $departments,
             'filters' => $request->only(['department_id']),
+        ]);
+    }
+
+    /**
+     * Download all company reports as an Excel spreadsheet.
+     */
+    public function exportExcel(Request $request)
+    {
+        $authEmployee = Auth::guard('employee')->user();
+        $companyId    = (int) $authEmployee->company_id;
+
+        $departmentId = null;
+        if ($request->filled('department_id')) {
+            $departmentId = (int) $request->department_id;
+            $owns = Department::where('id', $departmentId)
+                ->where('company_id', $companyId)
+                ->exists();
+            if (!$owns) {
+                abort(403);
+            }
+        }
+
+        $filename = 'reports-' . now()->format('Y-m-d_His') . '.xlsx';
+
+        return Excel::download(new CompanyReportsExport($companyId, $departmentId), $filename);
+    }
+
+    /**
+     * Render a printable HTML view of all company reports (browser → save as PDF).
+     */
+    public function exportPdf(Request $request)
+    {
+        $authEmployee = Auth::guard('employee')->user();
+        $companyId    = (int) $authEmployee->company_id;
+
+        $department = null;
+        if ($request->filled('department_id')) {
+            $department = Department::where('id', (int) $request->department_id)
+                ->where('company_id', $companyId)
+                ->firstOrFail();
+        }
+
+        $query = Report::query()
+            ->with(['department', 'creator'])
+            ->whereHas('department', fn ($q) => $q->where('company_id', $companyId))
+            ->latest();
+
+        if ($department) {
+            $query->where('department_id', $department->id);
+        }
+
+        return response()->view('exports.reports-pdf', [
+            'reports'     => $query->get(),
+            'company'     => $authEmployee->company,
+            'department'  => $department,
+            'generatedAt' => now()->format('Y-m-d H:i'),
         ]);
     }
 

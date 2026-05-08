@@ -15,6 +15,7 @@ const form = useForm({
     image: null,
     attached_file: null,
     audit_date: props.audit.audit_date ? new Date(props.audit.audit_date).toISOString().split("T")[0] : "",
+    status: props.audit.status || "pending",
     reports: props.audit.reports?.map((r) => r.id) || [],
     _method: "PUT",
 });
@@ -90,6 +91,22 @@ const removeFile = () => {
                         class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                     />
                     <div v-if="form.errors.audit_date" class="mt-1 text-sm text-red-600">{{ form.errors.audit_date }}</div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Status <span class="text-red-500">*</span>
+                    </label>
+                    <select
+                        id="status"
+                        v-model="form.status"
+                        required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                        <option value="pending">Pending</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                    <div v-if="form.errors.status" class="mt-1 text-sm text-red-600">{{ form.errors.status }}</div>
                 </div>
 
                 <div class="mb-4">

@@ -74,7 +74,7 @@ class CompanyAuditController extends Controller
             'reports' => 'nullable|array',
             'reports.*' => 'exists:reports,id',
         ]);
-        
+
         // Verify reports belong to the company
         if (!empty($validated['reports'])) {
             $reportIds = $validated['reports'];
@@ -83,29 +83,30 @@ class CompanyAuditController extends Controller
                 })
                 ->pluck('id')
                 ->toArray();
-            
+
             foreach ($reportIds as $reportId) {
                 if (!in_array($reportId, $companyReportIds)) {
                     return back()->withErrors(['reports' => 'One or more selected reports do not belong to your company.']);
                 }
             }
         }
-        
+
         $validated['company_id'] = $authEmployee->company_id;
-        
+        $validated['status']     = 'pending';
+
         // Handle image upload
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('audits/images', 'public');
         }
-        
+
         // Handle attached file upload
         if ($request->hasFile('attached_file')) {
             $validated['attached_file'] = $request->file('attached_file')->store('audits/files', 'public');
         }
-        
+
         $reports = $validated['reports'] ?? [];
         unset($validated['reports']);
-        
+
         $audit = Audit::create($validated);
         
         if (!empty($reports)) {
@@ -182,10 +183,11 @@ class CompanyAuditController extends Controller
             'image' => 'nullable|image|max:2048',
             'attached_file' => 'nullable|file|max:10240',
             'audit_date' => 'required|date',
+            'status' => 'required|in:pending,completed',
             'reports' => 'nullable|array',
             'reports.*' => 'exists:reports,id',
         ]);
-        
+
         // Verify reports belong to the company
         if (!empty($validated['reports'])) {
             $reportIds = $validated['reports'];
@@ -194,14 +196,14 @@ class CompanyAuditController extends Controller
                 })
                 ->pluck('id')
                 ->toArray();
-            
+
             foreach ($reportIds as $reportId) {
                 if (!in_array($reportId, $companyReportIds)) {
                     return back()->withErrors(['reports' => 'One or more selected reports do not belong to your company.']);
                 }
             }
         }
-        
+
         // Handle image upload
         if ($request->hasFile('image')) {
             // Delete old image if exists

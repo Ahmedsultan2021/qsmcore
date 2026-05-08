@@ -22,10 +22,15 @@ class Audit extends Model
         'image',
         'attached_file',
         'audit_date',
+        'status',
     ];
 
     protected $casts = [
         'audit_date' => 'date',
+    ];
+
+    protected $attributes = [
+        'status' => 'pending',
     ];
 
     public function company()
@@ -39,25 +44,13 @@ class Audit extends Model
     }
 
     /**
-     * Get the audit completion status.
-     * Returns 'complete' if all attached reports are complete, otherwise 'pending'.
-     * External audits (no reports) are considered complete.
+     * Audit status is set explicitly by the user (defaults to pending on create,
+     * editable from the edit form). The reports' own completion is shown
+     * separately on the Show page.
      */
     public function getCompletionStatusAttribute()
     {
-        $reports = $this->reports;
-        
-        // External audit (no reports attached) - considered complete
-        if ($reports->isEmpty()) {
-            return 'complete';
-        }
-        
-        // Internal audit - check if all reports are complete
-        $allReportsComplete = $reports->every(function ($report) {
-            return $report->general_report_status === 'complete';
-        });
-        
-        return $allReportsComplete ? 'complete' : 'pending';
+        return $this->status ?? 'pending';
     }
 
     /**

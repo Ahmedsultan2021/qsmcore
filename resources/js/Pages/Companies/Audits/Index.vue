@@ -25,9 +25,8 @@ const calendarOptions = ref({
     },
     events: computed(() => {
         return props.audits.map((audit) => {
-            const isComplete = audit.reports?.length === 0 || 
-                audit.reports?.every((report) => report.general_report_status === "complete");
-            
+            const isComplete = audit.status === "completed";
+
             return {
                 id: audit.id,
                 title: audit.name,
@@ -36,7 +35,7 @@ const calendarOptions = ref({
                 borderColor: isComplete ? "#059669" : "#d97706",
                 extendedProps: {
                     audit: audit,
-                    completionStatus: isComplete ? "complete" : "pending",
+                    completionStatus: isComplete ? "completed" : "pending",
                 },
             };
         });
@@ -61,7 +60,7 @@ const deleteAudit = (id) => {
 
 const getCompletionStatusColor = (status) => {
     const colors = {
-        complete: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
+        completed: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
         pending: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
     };
     return colors[status] || colors.pending;
@@ -97,7 +96,7 @@ const navs = computed(() => [
             <div class="flex flex-wrap gap-4">
                 <div class="flex items-center gap-2">
                     <div class="w-4 h-4 bg-green-500 rounded"></div>
-                    <span class="text-sm text-gray-700 dark:text-gray-300">Complete</span>
+                    <span class="text-sm text-gray-700 dark:text-gray-300">Completed</span>
                 </div>
                 <div class="flex items-center gap-2">
                     <div class="w-4 h-4 bg-yellow-500 rounded"></div>
@@ -156,19 +155,9 @@ const navs = computed(() => [
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span :class="[
                                 'px-2 py-1 text-xs font-semibold rounded-full',
-                                getCompletionStatusColor(
-                                    audit.reports?.length === 0 || 
-                                    audit.reports?.every((r) => r.general_report_status === 'complete')
-                                        ? 'complete'
-                                        : 'pending'
-                                )
+                                getCompletionStatusColor(audit.status || 'pending')
                             ]">
-                                {{
-                                    audit.reports?.length === 0 || 
-                                    audit.reports?.every((r) => r.general_report_status === 'complete')
-                                        ? 'Complete'
-                                        : 'Pending'
-                                }}
+                                {{ (audit.status || 'pending') === 'completed' ? 'Completed' : 'Pending' }}
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">

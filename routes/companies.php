@@ -91,6 +91,21 @@ Route::middleware('auth:employee')->prefix('companies')->name('companies.')->gro
                 'url'    => route('companies.departments.reports.show', [$r->department_id, $r->id]),
             ]);
 
+        // Open safety reports (matches openSafety KPI logic) — used by the "Open Safety Reports" sidebar
+        $openSafetyAlerts = Report::whereIn('department_id', $deptIds)
+            ->whereNotIn('status', ['approved', 'rejected'])
+            ->whereHas('department.formTemplates.themes', fn ($q) => $q->where('form_themes.slug', 'safety'))
+            ->with('department')
+            ->latest()
+            ->limit(3)
+            ->get()
+            ->map(fn ($r) => [
+                'id'     => $r->id,
+                'title'  => $r->title,
+                'status' => $r->status,
+                'url'    => route('companies.departments.reports.show', [$r->department_id, $r->id]),
+            ]);
+
         // Top 5 departments by report volume (with percentage)
         $rawVolume = Report::whereIn('department_id', $deptIds)
             ->selectRaw('department_id, COUNT(*) as cnt')
@@ -114,9 +129,10 @@ Route::middleware('auth:employee')->prefix('companies')->name('companies.')->gro
                 'closedReports' => $closedReports,
                 'overdueCAPAs'  => $overdueCAPAs,
             ],
-            'statusCounts'  => $statusCounts,
-            'recentReports' => $recentReports,
-            'volumeByDept'  => $volumeByDept,
+            'statusCounts'     => $statusCounts,
+            'recentReports'    => $recentReports,
+            'openSafetyAlerts' => $openSafetyAlerts,
+            'volumeByDept'     => $volumeByDept,
         ]);
     })->name('dashboard');
 
@@ -141,6 +157,8 @@ Route::middleware('auth:employee')->prefix('companies')->name('companies.')->gro
     // Reports routes (nested under departments) - scoped so report must belong to department
     Route::resource('departments.reports', CompanyReportController::class)->scoped();
     Route::get('reports', [CompanyReportController::class, 'allReports'])->name('reports.index');
+    Route::get('reports/export/excel', [CompanyReportController::class, 'exportExcel'])->name('reports.export.excel');
+    Route::get('reports/export/pdf',   [CompanyReportController::class, 'exportPdf'])->name('reports.export.pdf');
     
     // Audits routes (audit tracker)
     Route::resource('audits', CompanyAuditController::class);

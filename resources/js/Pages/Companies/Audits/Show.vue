@@ -18,7 +18,7 @@ const deleteAudit = () => {
 
 const getCompletionStatusColor = (status) => {
     const colors = {
-        complete: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
+        completed: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
         pending: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
     };
     return colors[status] || colors.pending;
@@ -185,7 +185,7 @@ const isInternal = computed(() => {
                     <div>
                         <p class="text-sm font-medium text-purple-800 dark:text-purple-300">External Audit</p>
                         <p class="text-sm text-purple-700 dark:text-purple-400 mt-1">
-                            This is an external audit with no attached reports. External audits are automatically marked as complete.
+                            This is an external audit with no attached reports. The status is set manually from the edit screen.
                         </p>
                     </div>
                 </div>

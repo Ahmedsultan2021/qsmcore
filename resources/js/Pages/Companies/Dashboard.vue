@@ -8,11 +8,12 @@ import { useDark } from "@vueuse/core";
 defineOptions({ layout: CompanyLayout });
 
 const props = defineProps({
-    departments:   { type: Array,  default: () => [] },
-    stats:         { type: Object, default: () => ({ openSafety: 0, openQuality: 0, closedReports: 0, overdueCAPAs: 0 }) },
-    statusCounts:  { type: Object, default: () => ({}) },
-    recentReports: { type: Array,  default: () => [] },
-    volumeByDept:  { type: Array,  default: () => [] },
+    departments:      { type: Array,  default: () => [] },
+    stats:            { type: Object, default: () => ({ openSafety: 0, openQuality: 0, closedReports: 0, overdueCAPAs: 0 }) },
+    statusCounts:     { type: Object, default: () => ({}) },
+    recentReports:    { type: Array,  default: () => [] },
+    openSafetyAlerts: { type: Array,  default: () => [] },
+    volumeByDept:     { type: Array,  default: () => [] },
 });
 
 const page = usePage();
@@ -102,17 +103,20 @@ const STATUS_BADGE = {
 };
 const badgeClass = (status) => STATUS_BADGE[status] ?? "bg-slate-100 text-slate-700";
 
-// Safety alerts: open reports from safety departments
-const safetyAlerts = computed(() =>
-    props.recentReports
-        .filter(r => !["approved", "rejected"].includes(r.status))
-        .slice(0, 3)
-);
+// Safety alerts: open reports under departments with at least one safety-themed template (from backend)
+const safetyAlerts = computed(() => props.openSafetyAlerts ?? []);
 
 const alertDotClass = (status) => {
     if (status === "submitted") return "bg-rose-500";
     if (status === "reviewed")  return "bg-amber-500";
     return "bg-blue-400";
+};
+
+const exportExcel = () => {
+    window.location.href = "/companies/reports/export/excel";
+};
+const exportPdf = () => {
+    window.open("/companies/reports/export/pdf", "_blank", "noopener");
 };
 </script>
 
@@ -327,10 +331,10 @@ const alertDotClass = (status) => {
                         <div class="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm p-4">
                             <div class="text-sm font-extrabold text-gray-900 dark:text-white">Export Reports</div>
                             <div class="mt-3 grid grid-cols-2 gap-2">
-                                <button type="button" class="px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-semibold hover:bg-gray-50 dark:hover:bg-gray-800 transition disabled:opacity-40 disabled:cursor-not-allowed" disabled>
+                                <button type="button" class="px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-semibold hover:bg-gray-50 dark:hover:bg-gray-800 transition" @click="exportExcel">
                                     Excel
                                 </button>
-                                <button type="button" class="px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-semibold hover:bg-gray-50 dark:hover:bg-gray-800 transition disabled:opacity-40 disabled:cursor-not-allowed" disabled>
+                                <button type="button" class="px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-semibold hover:bg-gray-50 dark:hover:bg-gray-800 transition" @click="exportPdf">
                                     PDF
                                 </button>
                             </div>

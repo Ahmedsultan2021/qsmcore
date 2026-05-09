@@ -13,6 +13,7 @@ use App\Http\Controllers\Companies\CompanyCapaController;
 use App\Http\Controllers\Auth\EmployeeAuthController;
 use App\Models\Capa;
 use App\Models\Department;
+use App\Models\HelpDocument;
 use App\Models\Report;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -142,6 +143,18 @@ Route::middleware('auth:employee')->prefix('companies')->name('companies.')->gro
     Route::get('/settings', function () {
         return Inertia::render('Companies/Settings');
     })->name('settings');
+
+    // Help — list active help documents for the company portal user
+    Route::get('/help', function () {
+        $documents = HelpDocument::active()
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->get();
+
+        return Inertia::render('Companies/Help', [
+            'documents' => $documents,
+        ]);
+    })->name('help');
     
     // Employees routes (for companies portal - with roles & permissions)
     Route::resource('employees', CompanyEmployeeController::class);

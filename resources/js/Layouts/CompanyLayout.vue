@@ -83,6 +83,13 @@ const logout = () => {
                         <Link :href="route('companies.settings')" class="px-3 py-2 rounded-lg text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-200 dark:hover:bg-gray-700">
                             Settings
                         </Link>
+                        <Link
+                            :href="route('companies.help')"
+                            class="ml-1 inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 dark:text-blue-300 dark:bg-blue-900/30 dark:hover:bg-blue-900/50"
+                        >
+                            <i class="fa-solid fa-circle-question"></i>
+                            Help
+                        </Link>
                     </div>
 
                     <div class="flex items-center gap-2">
@@ -165,6 +172,11 @@ const logout = () => {
                                 <li class="md:hidden">
                                     <Link :href="route('companies.settings')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600" role="menuitem">
                                         Settings
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link :href="route('companies.help')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600" role="menuitem">
+                                        Help
                                     </Link>
                                 </li>
                                 <li>

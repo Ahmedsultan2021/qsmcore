@@ -349,6 +349,24 @@ const showingNavigationDropdown = ref(false);
               <span class="ms-3">Blog Posts</span>
             </Link>
           </li>
+          <li>
+            <Link
+              :href="route('help-documents.index')"
+              class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+            >
+              <svg
+                class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.5M12 18h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span class="ms-3">Help Documents</span>
+            </Link>
+          </li>
           <li class="pt-6 mt-4 border-t border-gray-200 dark:border-gray-700">
             <Link
               :href="route('logout')"

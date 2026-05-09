@@ -102,6 +102,10 @@ Route::middleware('auth')->group(function () {
     Route::post('inquiries/{inquiry}/mark-read', [\App\Http\Controllers\Admin\InquiryController::class, 'markRead'])->name('inquiries.mark-read');
     Route::post('inquiries/{inquiry}/mark-unread', [\App\Http\Controllers\Admin\InquiryController::class, 'markUnread'])->name('inquiries.mark-unread');
     Route::delete('inquiries/{inquiry}', [\App\Http\Controllers\Admin\InquiryController::class, 'destroy'])->name('inquiries.destroy');
+
+    // Help Documents (Admin CRUD - shown to companies portal users on Help page)
+    Route::resource('help-documents', \App\Http\Controllers\Admin\HelpDocumentController::class)
+        ->except(['show']);
 });
 
 // Admin Authentication Routes (loaded from auth.php)

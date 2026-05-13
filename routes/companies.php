@@ -10,6 +10,7 @@ use App\Http\Controllers\Companies\CompanyReportFileController;
 use App\Http\Controllers\Companies\CompanyRiskController;
 use App\Http\Controllers\Companies\CompanyAuditController;
 use App\Http\Controllers\Companies\CompanyCapaController;
+use App\Http\Controllers\Companies\CompanyLibraryController;
 use App\Http\Controllers\Auth\EmployeeAuthController;
 use App\Models\Capa;
 use App\Models\Department;
@@ -39,7 +40,7 @@ Route::middleware('auth:employee')->prefix('companies')->name('companies.')->gro
     Route::post('/leave-impersonation', [EmployeeAuthController::class, 'leaveImpersonation'])->name('leave-impersonation');
     Route::get('/ping', fn () => response()->json(['ok' => true]))->name('ping');
     
-    Route::get('/dashboard', function () {
+    Route::get('/dashboard', function (\Illuminate\Http\Request $request) {
         $authEmployee = Auth::guard('employee')->user();
         $companyId    = $authEmployee->company_id;
 
@@ -50,18 +51,33 @@ Route::middleware('auth:employee')->prefix('companies')->name('companies.')->gro
 
         $deptIds = $departments->pluck('id');
 
-        // KPI counts — reports tied to departments that have at least one template with Safety / Quality theme
-        $openSafety = Report::whereIn('department_id', $deptIds)
+        // Apply department filter if provided
+        if ($request->filled('department')) {
+            $filteredDeptIds = $deptIds->intersect([(int) $request->input('department')]);
+        } else {
+            $filteredDeptIds = $deptIds;
+        }
+
+        // Base query scope: optionally filter by report theme (safety / quality)
+        $themeSlug = $request->input('report_type'); // 'safety', 'quality', or null
+        $reportScope = fn ($q) => $q->whereIn('department_id', $filteredDeptIds)
+            ->when($themeSlug, fn ($q2) => $q2->whereHas(
+                'department.formTemplates.themes',
+                fn ($q3) => $q3->where('form_themes.slug', $themeSlug)
+            ));
+
+        // KPI counts
+        $openSafety = Report::whereIn('department_id', $filteredDeptIds)
             ->whereNotIn('status', ['approved', 'rejected'])
             ->whereHas('department.formTemplates.themes', fn ($q) => $q->where('form_themes.slug', 'safety'))
             ->count();
 
-        $openQuality = Report::whereIn('department_id', $deptIds)
+        $openQuality = Report::whereIn('department_id', $filteredDeptIds)
             ->whereNotIn('status', ['approved', 'rejected'])
             ->whereHas('department.formTemplates.themes', fn ($q) => $q->where('form_themes.slug', 'quality'))
             ->count();
 
-        $closedReports = Report::whereIn('department_id', $deptIds)
+        $closedReports = Report::where($reportScope)
             ->whereIn('status', ['approved', 'rejected'])
             ->count();
 
@@ -71,14 +87,15 @@ Route::middleware('auth:employee')->prefix('companies')->name('companies.')->gro
             ->whereDate('due_date', '<', now())
             ->count();
 
-        // Report status breakdown (draft / submitted / reviewed / approved / rejected)
-        $statusCounts = Report::whereIn('department_id', $deptIds)
+        // Report status breakdown — cast counts to int to avoid JS string concatenation
+        $statusCounts = Report::where($reportScope)
             ->selectRaw('status, COUNT(*) as cnt')
             ->groupBy('status')
-            ->pluck('cnt', 'status');
+            ->pluck('cnt', 'status')
+            ->map(fn ($v) => (int) $v);
 
         // Recent 5 reports
-        $recentReports = Report::whereIn('department_id', $deptIds)
+        $recentReports = Report::where($reportScope)
             ->with('department')
             ->latest()
             ->limit(5)
@@ -92,8 +109,8 @@ Route::middleware('auth:employee')->prefix('companies')->name('companies.')->gro
                 'url'    => route('companies.departments.reports.show', [$r->department_id, $r->id]),
             ]);
 
-        // Open safety reports (matches openSafety KPI logic) — used by the "Open Safety Reports" sidebar
-        $openSafetyAlerts = Report::whereIn('department_id', $deptIds)
+        // Open safety reports sidebar
+        $openSafetyAlerts = Report::whereIn('department_id', $filteredDeptIds)
             ->whereNotIn('status', ['approved', 'rejected'])
             ->whereHas('department.formTemplates.themes', fn ($q) => $q->where('form_themes.slug', 'safety'))
             ->with('department')
@@ -108,7 +125,7 @@ Route::middleware('auth:employee')->prefix('companies')->name('companies.')->gro
             ]);
 
         // Top 5 departments by report volume (with percentage)
-        $rawVolume = Report::whereIn('department_id', $deptIds)
+        $rawVolume = Report::where($reportScope)
             ->selectRaw('department_id, COUNT(*) as cnt')
             ->groupBy('department_id')
             ->orderByDesc('cnt')
@@ -118,7 +135,7 @@ Route::middleware('auth:employee')->prefix('companies')->name('companies.')->gro
         $totalVol = $rawVolume->sum('cnt') ?: 1;
         $volumeByDept = $rawVolume->map(fn ($r) => [
             'name'    => $departments->firstWhere('id', $r->department_id)?->name ?? 'Unknown',
-            'count'   => $r->cnt,
+            'count'   => (int) $r->cnt,
             'percent' => (int) round($r->cnt / $totalVol * 100),
         ]);
 
@@ -139,6 +156,9 @@ Route::middleware('auth:employee')->prefix('companies')->name('companies.')->gro
 
     // CAPA Management
     Route::resource('capa', CompanyCapaController::class);
+
+    // Company Library (file sharing within the company)
+    Route::resource('library', CompanyLibraryController::class)->except(['show']);
 
     Route::get('/settings', function () {
         return Inertia::render('Companies/Settings');
@@ -189,6 +209,9 @@ Route::middleware('auth:employee')->prefix('companies')->name('companies.')->gro
     Route::delete('forms/{form}/fields/{formField}', [CompanyFormFieldController::class, 'destroy'])->name('forms.fields.destroy');
     Route::post('forms/{form}/fields/update-order', [CompanyFormFieldController::class, 'updateOrder'])->name('forms.fields.update-order');
     
+    // Single report download (PDF / Word)
+    Route::get('departments/{department}/reports/{report}/download', [CompanyReportController::class, 'downloadReport'])->name('departments.reports.download')->scopeBindings();
+
     // Report file uploads (treat report as a folder for attachments)
     Route::post('departments/{department}/reports/{report}/files', [CompanyReportFileController::class, 'store'])->name('departments.reports.files.store')->scopeBindings();
     Route::get('departments/{department}/reports/{report}/files/{reportFile}/download', [CompanyReportFileController::class, 'download'])->name('departments.reports.files.download')->scopeBindings();

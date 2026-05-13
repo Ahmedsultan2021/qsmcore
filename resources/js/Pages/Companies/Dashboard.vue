@@ -26,10 +26,18 @@ const companyIndustry = computed(() =>
 );
 const companyEntity = computed(() => employee.value?.company?.name || "-");
 
+const urlParams = new URLSearchParams(window.location.search);
 const filters = ref({
-    department: props.departments[0]?.id ?? "",
-    reportType: "Safety Reports",
+    department: urlParams.get('department') || "",
+    reportType: urlParams.get('report_type') || "",
 });
+
+const applyFilters = () => {
+    router.get(route("companies.dashboard"), {
+        department: filters.value.department || undefined,
+        report_type: filters.value.reportType || undefined,
+    }, { preserveState: true, preserveScroll: true });
+};
 
 const showDepartmentPicker = ref(false);
 const selectedDepartmentId = ref("");
@@ -65,7 +73,7 @@ const STATUS_CONFIG = {
 const reportStatus = computed(() =>
     Object.entries(STATUS_CONFIG).map(([key, cfg]) => ({
         ...cfg,
-        value: props.statusCounts[key] ?? 0,
+        value: Number(props.statusCounts[key] ?? 0),
     }))
 );
 
@@ -151,7 +159,7 @@ const exportPdf = () => {
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-2">Department</label>
-                        <select v-model="filters.department" class="w-full rounded-xl border-gray-200 dark:border-gray-700 dark:bg-gray-900 dark:text-white focus:ring-2 focus:ring-brand-sky">
+                        <select v-model="filters.department" class="w-full rounded-xl border-gray-200 dark:border-gray-700 dark:bg-gray-900 dark:text-white focus:ring-2 focus:ring-brand-sky" @change="applyFilters">
                             <option value="">All Departments</option>
                             <option v-for="d in departments" :key="d.id" :value="d.id">
                                 {{ d.name }}
@@ -164,16 +172,16 @@ const exportPdf = () => {
                             <button
                                 type="button"
                                 class="w-full text-left px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-semibold hover:bg-gray-50 dark:hover:bg-gray-800 transition"
-                                :class="filters.reportType === 'Safety Reports' ? 'ring-2 ring-brand-sky' : ''"
-                                @click="filters.reportType = 'Safety Reports'"
+                                :class="filters.reportType === 'safety' ? 'ring-2 ring-brand-sky' : ''"
+                                @click="filters.reportType = filters.reportType === 'safety' ? '' : 'safety'; applyFilters()"
                             >
                                 Safety Reports
                             </button>
                             <button
                                 type="button"
                                 class="w-full text-left px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-semibold hover:bg-gray-50 dark:hover:bg-gray-800 transition"
-                                :class="filters.reportType === 'Quality Reports' ? 'ring-2 ring-brand-sky' : ''"
-                                @click="filters.reportType = 'Quality Reports'"
+                                :class="filters.reportType === 'quality' ? 'ring-2 ring-brand-sky' : ''"
+                                @click="filters.reportType = filters.reportType === 'quality' ? '' : 'quality'; applyFilters()"
                             >
                                 Quality Reports
                             </button>
@@ -263,7 +271,7 @@ const exportPdf = () => {
                         <div class="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm p-4">
                             <div class="text-sm font-extrabold text-gray-900 dark:text-white">Total Reports</div>
                             <div class="mt-3 text-3xl font-extrabold text-gray-900 dark:text-white">
-                                {{ Object.values(statusCounts).reduce((a, b) => a + b, 0) }}
+                                {{ Object.values(statusCounts).reduce((a, b) => a + Number(b), 0) }}
                             </div>
                             <div class="mt-1 text-xs text-gray-500 dark:text-gray-400">across all departments</div>
                         </div>

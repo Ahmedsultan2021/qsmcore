@@ -2,7 +2,7 @@
 import CompanyLayout from "@/Layouts/CompanyLayout.vue";
 import BaseDashboardHeader from "@/Components/BaseDashboardHeader.vue";
 import { Head, Link, router, useForm } from "@inertiajs/vue3";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 
 defineOptions({ layout: CompanyLayout });
 
@@ -48,6 +48,37 @@ const applyFilters = () => {
 const clearFilters = () => {
     filterForm.department_id = '';
     applyFilters();
+};
+
+// Download modal
+const showDownloadModal = ref(false);
+const downloadReport = ref(null);
+const downloadFormat = ref("pdf");
+const downloadMode = ref("full");
+const downloading = ref(false);
+
+const openDownload = (report) => {
+    downloadReport.value = report;
+    downloadFormat.value = "pdf";
+    downloadMode.value = "full";
+    showDownloadModal.value = true;
+};
+
+const startDownload = () => {
+    const r = downloadReport.value;
+    if (!r) return;
+    downloading.value = true;
+    const url = `/companies/departments/${r.department.id}/reports/${r.id}/download?format=${downloadFormat.value}&mode=${downloadMode.value}`;
+    const link = document.createElement("a");
+    link.href = url;
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setTimeout(() => {
+        downloading.value = false;
+        showDownloadModal.value = false;
+    }, 2000);
 };
 </script>
 
@@ -162,6 +193,12 @@ const clearFilters = () => {
                                 Edit
                             </Link>
                             <button
+                                @click="openDownload(report)"
+                                class="text-emerald-600 hover:text-emerald-900 dark:text-emerald-400 dark:hover:text-emerald-300 mr-3"
+                            >
+                                Download
+                            </button>
+                            <button
                                 @click="deleteReport(report)"
                                 class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
                             >
@@ -232,6 +269,88 @@ const clearFilters = () => {
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Download modal -->
+    <div v-if="showDownloadModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <button type="button" class="absolute inset-0 bg-black/40" @click="showDownloadModal = false" aria-label="Close"></button>
+        <div class="relative w-full max-w-md rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-xl p-6">
+            <div class="flex items-start justify-between gap-4 mb-5">
+                <div>
+                    <h3 class="text-base font-bold text-gray-900 dark:text-white">Download Report</h3>
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400 truncate max-w-[320px]">{{ downloadReport?.title }}</p>
+                </div>
+                <button type="button" class="rounded-lg px-2 py-1 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700" @click="showDownloadModal = false">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+
+            <div class="mb-5">
+                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">File Format</label>
+                <div class="grid grid-cols-2 gap-3">
+                    <button type="button"
+                        class="flex items-center gap-3 px-4 py-3 rounded-xl border-2 transition"
+                        :class="downloadFormat === 'pdf' ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20' : 'border-gray-200 dark:border-gray-600 hover:border-gray-300'"
+                        @click="downloadFormat = 'pdf'"
+                    >
+                        <div class="text-left">
+                            <div class="text-sm font-bold text-gray-900 dark:text-white">PDF</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400">Best for sharing</div>
+                        </div>
+                    </button>
+                    <button type="button"
+                        class="flex items-center gap-3 px-4 py-3 rounded-xl border-2 transition"
+                        :class="downloadFormat === 'word' ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20' : 'border-gray-200 dark:border-gray-600 hover:border-gray-300'"
+                        @click="downloadFormat = 'word'"
+                    >
+                        <div class="text-left">
+                            <div class="text-sm font-bold text-gray-900 dark:text-white">Word</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400">Editable document</div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Content</label>
+                <div class="space-y-2">
+                    <label class="flex items-start gap-3 px-4 py-3 rounded-xl border-2 cursor-pointer transition"
+                        :class="downloadMode === 'full' ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20' : 'border-gray-200 dark:border-gray-600 hover:border-gray-300'"
+                    >
+                        <input type="radio" v-model="downloadMode" value="full" class="mt-0.5 text-emerald-600 focus:ring-emerald-500" />
+                        <div>
+                            <div class="text-sm font-bold text-gray-900 dark:text-white">Full Report</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400">Forms with all submitted answers</div>
+                        </div>
+                    </label>
+                    <label class="flex items-start gap-3 px-4 py-3 rounded-xl border-2 cursor-pointer transition"
+                        :class="downloadMode === 'content' ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20' : 'border-gray-200 dark:border-gray-600 hover:border-gray-300'"
+                    >
+                        <input type="radio" v-model="downloadMode" value="content" class="mt-0.5 text-emerald-600 focus:ring-emerald-500" />
+                        <div>
+                            <div class="text-sm font-bold text-gray-900 dark:text-white">Content Only</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400">Form structure and fields without answers</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-3">
+                <button type="button"
+                    class="px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 transition"
+                    @click="showDownloadModal = false"
+                >Cancel</button>
+                <button type="button"
+                    class="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-emerald-600 text-white font-bold hover:bg-emerald-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                    :disabled="downloading"
+                    @click="startDownload"
+                >
+                    <svg v-if="downloading" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" /><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" /></svg>
+                    <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17v3a2 2 0 002 2h14a2 2 0 002-2v-3" /></svg>
+                    {{ downloading ? 'Downloading...' : 'Download' }}
+                </button>
             </div>
         </div>
     </div>

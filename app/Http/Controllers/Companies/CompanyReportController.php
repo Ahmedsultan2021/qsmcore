@@ -10,10 +10,15 @@ use App\Models\Form;
 use App\Models\FormField;
 use App\Models\FormResponse;
 use App\Models\FormTemplate;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpWord\PhpWord;
+use PhpOffice\PhpWord\IOFactory;
+use PhpOffice\PhpWord\SimpleType\Jc;
+use PhpOffice\PhpWord\Style\Font;
 
 class CompanyReportController extends Controller
 {
@@ -279,6 +284,265 @@ class CompanyReportController extends Controller
 
         return redirect()->route('companies.departments.reports.index', $department->id)
             ->with('success', 'Report updated successfully');
+    }
+
+    /**
+     * Download a single report as PDF or Word document.
+     */
+    public function downloadReport(Request $request, Department $department, Report $report)
+    {
+        $authEmployee = Auth::guard('employee')->user();
+
+        if ((int) $department->company_id !== (int) $authEmployee->company_id) {
+            abort(403);
+        }
+
+        $request->validate([
+            'format' => 'required|in:pdf,word',
+            'mode'   => 'required|in:full,content',
+        ]);
+
+        $format = $request->input('format');
+        $mode   = $request->input('mode');
+
+        $report->load([
+            'department.company',
+            'creator',
+            'forms.formFields',
+        ]);
+
+        $company    = $department->company ?? $report->department?->company;
+        $creator    = $report->creator ? trim($report->creator->fname . ' ' . $report->creator->lname) : null;
+        $formsData  = $this->buildFormsData($report, $mode);
+
+        if ($format === 'pdf') {
+            return $this->generatePdf($report, $company, $department, $creator, $formsData, $mode);
+        }
+
+        return $this->generateWord($report, $company, $department, $creator, $formsData, $mode);
+    }
+
+    private function buildFormsData(Report $report, string $mode): array
+    {
+        $forms = [];
+
+        foreach ($report->forms as $form) {
+            $formData = [
+                'name'         => $form->name,
+                'fields'       => [],
+                'submitted_at' => null,
+                'submitter'    => null,
+            ];
+
+            $response = null;
+            if ($mode === 'full') {
+                $response = FormResponse::where('report_id', $report->id)
+                    ->where('form_id', $form->id)
+                    ->with('submitter')
+                    ->latest()
+                    ->first();
+
+                if ($response) {
+                    $formData['submitted_at'] = $response->created_at?->format('d-M-Y H:i');
+                    $sub = $response->submitter;
+                    $formData['submitter'] = $sub ? trim($sub->fname . ' ' . $sub->lname) : null;
+                }
+            }
+
+            $fields = $form->formFields()->orderBy('order')->get();
+
+            foreach ($fields as $field) {
+                $fieldData = [
+                    'label'      => $field->label,
+                    'type'       => $field->field_type,
+                    'required'   => (bool) $field->required,
+                    'options'    => $field->options ?? [],
+                    'answer'     => null,
+                ];
+
+                if ($mode === 'full' && $response) {
+                    $fieldData['answer'] = $response->responses[$field->name] ?? null;
+                }
+
+                $formData['fields'][] = $fieldData;
+            }
+
+            $forms[] = $formData;
+        }
+
+        return $forms;
+    }
+
+    private function generatePdf(Report $report, $company, $department, $creator, array $forms, string $mode)
+    {
+        $pdf = Pdf::loadView('exports.report-download', [
+            'report'      => $report,
+            'company'     => $company,
+            'department'  => $department,
+            'creator'     => $creator,
+            'forms'       => $forms,
+            'mode'        => $mode,
+            'generatedAt' => now()->format('d-M-Y H:i'),
+        ]);
+
+        $pdf->setPaper('a4');
+
+        $slug = str()->slug($report->title);
+        $filename = "report-{$report->id}-{$slug}.pdf";
+
+        return $pdf->download($filename);
+    }
+
+    private function sanitize(?string $text): string
+    {
+        if ($text === null || $text === '') {
+            return '-';
+        }
+        $text = mb_convert_encoding($text, 'UTF-8', 'UTF-8');
+        $text = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F]/', '', $text);
+        return str_replace(
+            ["\xC2\xA0", "\xE2\x80\x94", "\xE2\x80\x93", "\xE2\x80\x98", "\xE2\x80\x99", "\xE2\x80\x9C", "\xE2\x80\x9D"],
+            [' ', '-', '-', "'", "'", '"', '"'],
+            $text
+        );
+    }
+
+    private function generateWord(Report $report, $company, $department, $creator, array $forms, string $mode)
+    {
+        $phpWord = new PhpWord();
+        \PhpOffice\PhpWord\Settings::setOutputEscapingEnabled(true);
+
+        $phpWord->setDefaultFontName('Calibri');
+        $phpWord->setDefaultFontSize(11);
+
+        $phpWord->addTitleStyle(1, ['size' => 22, 'bold' => true, 'color' => '059669'], ['spaceAfter' => 80]);
+        $phpWord->addTitleStyle(2, ['size' => 15, 'bold' => true, 'color' => '059669'], ['spaceBefore' => 200, 'spaceAfter' => 80]);
+
+        $section = $phpWord->addSection(['marginTop' => 600, 'marginBottom' => 600, 'marginLeft' => 800, 'marginRight' => 800]);
+
+        $section->addTitle($this->sanitize($report->title), 1);
+
+        $subtitle = $this->sanitize($company?->name) . ' - ' . $this->sanitize($department?->name);
+        $section->addText($subtitle, ['size' => 11, 'color' => '6b7280'], ['spaceAfter' => 120]);
+
+        // Metadata table
+        $metaTable = $section->addTable([
+            'borderSize' => 4, 'borderColor' => 'e5e7eb',
+            'cellMargin' => 60,
+        ]);
+
+        $metaCellStyle = ['valign' => 'top'];
+        $labelStyle = ['size' => 8, 'bold' => true, 'color' => '6b7280'];
+        $valueStyle = ['size' => 11, 'bold' => true, 'color' => '111827'];
+
+        $metaTable->addRow();
+        $cell = $metaTable->addCell(4800, $metaCellStyle);
+        $cell->addText('REPORT DATE', $labelStyle);
+        $cell->addText($this->sanitize(optional($report->report_date)->format('d-M-Y')), $valueStyle);
+
+        $cell = $metaTable->addCell(4800, $metaCellStyle);
+        $cell->addText('STATUS', $labelStyle);
+        $cell->addText(ucfirst($report->status), $valueStyle);
+
+        $metaTable->addRow();
+        $cell = $metaTable->addCell(4800, $metaCellStyle);
+        $cell->addText('CREATED BY', $labelStyle);
+        $cell->addText($this->sanitize($creator), $valueStyle);
+
+        $cell = $metaTable->addCell(4800, $metaCellStyle);
+        $cell->addText('DEPARTMENT', $labelStyle);
+        $cell->addText($this->sanitize($department?->name), $valueStyle);
+
+        if ($report->description) {
+            $metaTable->addRow();
+            $cell = $metaTable->addCell(9600, array_merge($metaCellStyle, ['gridSpan' => 2]));
+            $cell->addText('DESCRIPTION', $labelStyle);
+            $cell->addText($this->sanitize($report->description), ['size' => 11, 'color' => '374151']);
+        }
+
+        $section->addTextBreak(1);
+
+        // Forms
+        if (empty($forms)) {
+            $section->addText('No forms attached to this report.', ['size' => 11, 'color' => '9ca3af', 'italic' => true], ['alignment' => Jc::CENTER]);
+        }
+
+        foreach ($forms as $form) {
+            $section->addTitle($this->sanitize($form['name']), 2);
+
+            if ($mode === 'full' && !empty($form['submitted_at'])) {
+                $subInfo = 'Submitted ' . $form['submitted_at'];
+                if (!empty($form['submitter'])) {
+                    $subInfo .= ' by ' . $this->sanitize($form['submitter']);
+                }
+                $section->addText($subInfo, ['size' => 9, 'color' => '6b7280', 'italic' => true], ['spaceAfter' => 80]);
+            }
+
+            $fieldTable = $section->addTable([
+                'borderSize' => 4, 'borderColor' => 'e5e7eb',
+                'cellMargin' => 60,
+            ]);
+
+            foreach ($form['fields'] as $field) {
+                $fieldTable->addRow();
+
+                $lCell = $fieldTable->addCell(3200, ['valign' => 'top', 'bgColor' => 'f9fafb']);
+                $labelText = $this->sanitize($field['label']);
+                if ($field['required']) {
+                    $labelText .= ' *';
+                }
+                $lCell->addText($labelText, ['size' => 10, 'bold' => true, 'color' => '374151']);
+
+                $vCell = $fieldTable->addCell(6400, ['valign' => 'top']);
+
+                if ($mode === 'full') {
+                    $answer = $field['answer'];
+                    if ($field['type'] === 'signature' && !empty($answer) && is_string($answer) && str_starts_with($answer, 'data:image')) {
+                        $vCell->addText('[Signature on file]', ['size' => 10, 'italic' => true, 'color' => '6b7280']);
+                    } elseif (!empty($answer)) {
+                        $text = is_array($answer) ? implode(', ', $answer) : (string) $answer;
+                        $vCell->addText($this->sanitize($text), ['size' => 11, 'color' => '111827']);
+                    } else {
+                        $vCell->addText('No response provided', ['size' => 10, 'italic' => true, 'color' => '9ca3af']);
+                    }
+                } else {
+                    if (!empty($field['options'])) {
+                        $opts = is_array($field['options']) ? implode(', ', $field['options']) : (string) $field['options'];
+                        $vCell->addText('Options: ' . $this->sanitize($opts), ['size' => 9, 'color' => '6b7280']);
+                    }
+                    $vCell->addText(' ', ['size' => 11]);
+                }
+            }
+
+            $section->addTextBreak(1);
+        }
+
+        // Footer
+        $section->addText(
+            'QSMCore - Report #' . $report->id . '  |  Generated ' . now()->format('d-M-Y H:i'),
+            ['size' => 8, 'color' => '9ca3af'],
+            ['alignment' => Jc::CENTER, 'spaceBefore' => 200]
+        );
+
+        $slug     = str()->slug($report->title);
+        $filename = "report-{$report->id}-{$slug}.docx";
+        $tempPath = storage_path('app' . DIRECTORY_SEPARATOR . 'temp' . DIRECTORY_SEPARATOR . $filename);
+
+        if (!is_dir(dirname($tempPath))) {
+            mkdir(dirname($tempPath), 0755, true);
+        }
+
+        $writer = IOFactory::createWriter($phpWord, 'Word2007');
+
+        if (ob_get_level()) {
+            ob_end_clean();
+        }
+
+        $writer->save($tempPath);
+
+        return response()->download($tempPath, $filename, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        ])->deleteFileAfterSend(true);
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────

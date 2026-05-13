@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { Link, router, usePage } from "@inertiajs/vue3";
 import { onMounted } from "vue";
 import { initFlowbite } from "flowbite";
@@ -10,6 +10,7 @@ const toggleDark = useToggle(isDark);
 const page = usePage();
 const employee = computed(() => page.props.authEmployee?.employee);
 const impersonating = computed(() => page.props.impersonating);
+const mobileOpen = ref(false);
 
 const leaveImpersonation = () => {
     router.post(route("companies.leave-impersonation"));
@@ -21,6 +22,25 @@ onMounted(() => {
 
 const logout = () => {
     router.post(route("companies.logout"));
+};
+
+const navLinks = [
+    { label: "Dashboard",       href: route("companies.dashboard"),          match: "dashboard" },
+    { label: "Reports",         href: route("companies.reports.index"),      match: "reports" },
+    { label: "Risk Register",   href: route("companies.risks.index"),        match: "risks" },
+    { label: "Audit Tracker",   href: route("companies.audits.index"),       match: "audits" },
+    { label: "Forms",           href: route("companies.forms.index"),        match: "forms" },
+    { label: "CAPA",            href: route("companies.capa.index"),         match: "capa" },
+    { label: "Departments",     href: route("companies.departments.index"),  match: "departments" },
+    { label: "Settings",        href: route("companies.settings"),           match: "settings" },
+    { label: "Library",         href: "/companies/library",                  match: "library" },
+    { label: "Help",            href: route("companies.help"),               match: "help" },
+];
+
+const isActive = (match) => {
+    const url = page.url || "";
+    if (match === "dashboard") return url === "/companies/dashboard" || url === "/companies/dashboard/";
+    return url.includes(`/companies/${match}`);
 };
 </script>
 
@@ -43,142 +63,82 @@ const logout = () => {
             </button>
         </div>
 
-        <nav class="sticky top-0 z-50 w-full bg-white/90 backdrop-blur border-b border-gray-200 dark:bg-gray-800/90 dark:border-gray-700">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="h-16 flex items-center justify-between gap-4">
-                    <div class="flex items-center gap-3 min-w-0">
-                        <img src="/logos/lo.png" class="h-10 w-auto" alt="QSMCore Logo" />
-                        <div class="min-w-0">
-                            <div class="text-sm font-semibold text-gray-900 dark:text-white leading-tight">
-                                QSMCore
-                            </div>
-                            <div class="text-xs text-gray-500 dark:text-gray-400 truncate">
-                                {{ employee?.company?.name }}
-                            </div>
-                        </div>
+        <nav class="sticky top-0 z-50 w-full bg-white/95 backdrop-blur border-b border-gray-200 dark:bg-gray-800/95 dark:border-gray-700">
+            <div class="mx-auto px-3 xl:px-5">
+                <div class="h-12 flex items-center justify-between gap-2">
+                    <!-- Brand + user -->
+                    <div class="flex items-center gap-2 shrink-0">
+                        <img src="/logos/lo.png" class="h-7 w-auto" alt="QSMCore Logo" />
+                        <span class="text-xs font-bold text-gray-900 dark:text-white leading-none">QSMCore</span>
+                        <span class="hidden sm:inline text-[10px] text-gray-400 dark:text-gray-500">|</span>
+                        <span class="hidden sm:inline text-[11px] font-semibold text-gray-600 dark:text-gray-300 truncate max-w-[120px]">
+                            {{ employee?.fname }} {{ employee?.lname }}
+                        </span>
                     </div>
 
-                    <div class="hidden md:flex items-center gap-1">
-                        <Link :href="route('companies.dashboard')" class="px-3 py-2 rounded-lg text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-200 dark:hover:bg-gray-700">
-                            Dashboard
-                        </Link>
-                        <Link :href="route('companies.reports.index')" class="px-3 py-2 rounded-lg text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-200 dark:hover:bg-gray-700">
-                            Reports
-                        </Link>
-                        <Link :href="route('companies.risks.index')" class="px-3 py-2 rounded-lg text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-200 dark:hover:bg-gray-700">
-                            Risk Register
-                        </Link>
-                        <Link :href="route('companies.audits.index')" class="px-3 py-2 rounded-lg text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-200 dark:hover:bg-gray-700">
-                            Audit Tracker
-                        </Link>
-                        <Link :href="route('companies.forms.index')" class="px-3 py-2 rounded-lg text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-200 dark:hover:bg-gray-700">
-                            Forms
-                        </Link>
-                        <Link :href="route('companies.capa.index')" class="px-3 py-2 rounded-lg text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-200 dark:hover:bg-gray-700">
-                            CAPA Management
-                        </Link>
-                        <Link :href="route('companies.departments.index')" class="px-3 py-2 rounded-lg text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-200 dark:hover:bg-gray-700">
-                            Departments
-                        </Link>
-                        <Link :href="route('companies.settings')" class="px-3 py-2 rounded-lg text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-200 dark:hover:bg-gray-700">
-                            Settings
-                        </Link>
+                    <!-- Nav links -->
+                    <div class="hidden lg:flex items-center gap-0.5">
                         <Link
-                            :href="route('companies.help')"
-                            class="ml-1 inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 dark:text-blue-300 dark:bg-blue-900/30 dark:hover:bg-blue-900/50"
+                            v-for="nav in navLinks" :key="nav.label"
+                            :href="nav.href"
+                            class="px-2.5 py-1.5 rounded text-[13px] font-semibold whitespace-nowrap transition-colors"
+                            :class="isActive(nav.match)
+                                ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300'
+                                : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'"
                         >
-                            <i class="fa-solid fa-circle-question"></i>
-                            Help
+                            {{ nav.label }}
                         </Link>
                     </div>
 
-                    <div class="flex items-center gap-2">
+                    <!-- Right: theme toggle + user dropdown -->
+                    <div class="flex items-center gap-1 shrink-0">
                         <button
                             @click="toggleDark()"
                             type="button"
-                            class="text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5"
+                            class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded p-1.5"
                             aria-label="Toggle theme"
                         >
-                            <i class="fa-solid fa-sun fa-lg"></i>
+                            <svg v-if="isDark" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"/></svg>
+                            <svg v-else class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/></svg>
                         </button>
 
                         <button
                             type="button"
-                            class="flex items-center gap-2 text-sm bg-white dark:bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 px-2 py-1"
+                            class="flex items-center gap-1.5 rounded-full px-1.5 py-1 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-600"
                             aria-expanded="false"
                             data-dropdown-toggle="dropdown-user"
                         >
-                            <img
-                                class="w-8 h-8 rounded-full"
-                                src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-                                alt="user photo"
-                            />
-                            <span class="hidden sm:block font-semibold text-gray-700 dark:text-gray-200">
-                                {{ employee?.fname }}
-                            </span>
+                            <img class="w-7 h-7 rounded-full" src="https://flowbite.com/docs/images/people/profile-picture-5.jpg" alt="user photo" />
+                            <svg class="w-3 h-3 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
                         </button>
 
+                        <!-- Hamburger for mobile -->
+                        <button
+                            type="button"
+                            class="lg:hidden p-1.5 rounded text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
+                            @click="mobileOpen = !mobileOpen"
+                            aria-label="Open menu"
+                        >
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                        </button>
+
+                        <!-- User dropdown -->
                         <div
-                            class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"
+                            class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow-lg border border-gray-200 dark:bg-gray-700 dark:divide-gray-600 dark:border-gray-600"
                             id="dropdown-user"
                         >
                             <div class="px-4 py-3" role="none">
-                                <p class="text-sm text-gray-900 dark:text-white" role="none">
+                                <p class="text-sm font-semibold text-gray-900 dark:text-white">
                                     {{ employee?.fname }} {{ employee?.lname }}
                                 </p>
-                                <p class="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
+                                <p class="text-xs text-gray-500 truncate dark:text-gray-400">
                                     {{ employee?.email }}
                                 </p>
-                                <p class="text-sm text-gray-500 dark:text-gray-400" role="none">
+                                <p class="text-xs text-gray-400 dark:text-gray-500">
                                     {{ employee?.company?.name }}
                                 </p>
                             </div>
                             <ul class="py-1" role="none">
-                                <li class="md:hidden">
-                                    <Link :href="route('companies.dashboard')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600" role="menuitem">
-                                        Dashboard
-                                    </Link>
-                                </li>
-                                <li class="md:hidden">
-                                    <Link :href="route('companies.reports.index')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600" role="menuitem">
-                                        Reports
-                                    </Link>
-                                </li>
-                                <li class="md:hidden">
-                                    <Link :href="route('companies.risks.index')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600" role="menuitem">
-                                        Risk Register
-                                    </Link>
-                                </li>
-                                <li class="md:hidden">
-                                    <Link :href="route('companies.audits.index')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600" role="menuitem">
-                                        Audit Tracker
-                                    </Link>
-                                </li>
-                                <li class="md:hidden">
-                                    <Link :href="route('companies.forms.index')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600" role="menuitem">
-                                        Forms
-                                    </Link>
-                                </li>
-                                <li class="md:hidden">
-                                    <Link :href="route('companies.capa.index')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600" role="menuitem">
-                                        CAPA Management
-                                    </Link>
-                                </li>
-                                <li class="md:hidden">
-                                    <Link :href="route('companies.departments.index')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600" role="menuitem">
-                                        Departments
-                                    </Link>
-                                </li>
-                                <li class="md:hidden">
-                                    <Link :href="route('companies.settings')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600" role="menuitem">
-                                        Settings
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link :href="route('companies.help')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600" role="menuitem">
-                                        Help
-                                    </Link>
-                                </li>
                                 <li>
                                     <Link :href="route('companies.employees.index')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600" role="menuitem">
                                         Employees
@@ -197,6 +157,21 @@ const logout = () => {
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- Mobile nav drawer -->
+            <div v-if="mobileOpen" class="lg:hidden border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 pb-3 pt-2">
+                <Link
+                    v-for="nav in navLinks" :key="'m-' + nav.label"
+                    :href="nav.href"
+                    class="block px-3 py-2 rounded-lg text-sm font-medium transition-colors"
+                    :class="isActive(nav.match)
+                        ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300'
+                        : 'text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700'"
+                    @click="mobileOpen = false"
+                >
+                    {{ nav.label }}
+                </Link>
             </div>
         </nav>
 

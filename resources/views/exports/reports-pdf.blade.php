@@ -130,7 +130,7 @@
     </table>
 
     <footer>
-        <span>QSM — Reports export</span>
+        <span>QSMCore — Reports export</span>
         <span>{{ $generatedAt }}</span>
     </footer>
 </body>

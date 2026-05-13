@@ -191,7 +191,7 @@
         @endif
     </table>
 
-    @if($forms->isEmpty())
+    @if(empty($forms))
         <p style="text-align:center; color:#9ca3af; padding:24px;">No forms attached to this report.</p>
     @endif
 

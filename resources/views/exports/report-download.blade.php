@@ -14,6 +14,37 @@
             font-size: 11px;
             line-height: 1.5;
         }
+        .company-banner {
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .company-banner table {
+            width: 100%;
+        }
+        .company-banner td {
+            vertical-align: middle;
+            padding: 0;
+        }
+        .company-banner .logo-cell {
+            width: 60px;
+            padding-right: 12px;
+        }
+        .company-banner .logo-cell img {
+            max-height: 50px;
+            max-width: 56px;
+        }
+        .company-banner .name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #111827;
+            margin: 0;
+        }
+        .company-banner .dept {
+            font-size: 10px;
+            color: #6b7280;
+            margin: 2px 0 0;
+        }
         .header {
             border-bottom: 3px solid #059669;
             padding-bottom: 14px;
@@ -155,9 +186,28 @@
     </style>
 </head>
 <body>
+    @if($company)
+    <div class="company-banner">
+        <table>
+            <tr>
+                @if(!empty($logoBase64))
+                <td class="logo-cell">
+                    <img src="{{ $logoBase64 }}" alt="Logo" />
+                </td>
+                @endif
+                <td>
+                    <p class="name">{{ $company->name }}</p>
+                    @if($department)
+                        <p class="dept">{{ $department->name }}</p>
+                    @endif
+                </td>
+            </tr>
+        </table>
+    </div>
+    @endif
+
     <div class="header">
         <h1>{{ $report->title }}</h1>
-        <p class="subtitle">{{ $company?->name ?? '' }} — {{ $department?->name ?? '' }}</p>
     </div>
 
     <table class="meta-grid">

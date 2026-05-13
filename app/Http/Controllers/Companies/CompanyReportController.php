@@ -373,6 +373,19 @@ class CompanyReportController extends Controller
         return $forms;
     }
 
+    private function getLogoBase64($company): ?string
+    {
+        if (!$company || !$company->logo_path) {
+            return null;
+        }
+        $path = storage_path('app/public/' . $company->logo_path);
+        if (!file_exists($path)) {
+            return null;
+        }
+        $mime = mime_content_type($path) ?: 'image/png';
+        return 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($path));
+    }
+
     private function generatePdf(Report $report, $company, $department, $creator, array $forms, string $mode)
     {
         $pdf = Pdf::loadView('exports.report-download', [
@@ -383,6 +396,7 @@ class CompanyReportController extends Controller
             'forms'       => $forms,
             'mode'        => $mode,
             'generatedAt' => now()->format('d-M-Y H:i'),
+            'logoBase64'  => $this->getLogoBase64($company),
         ]);
 
         $pdf->setPaper('a4');
@@ -420,10 +434,31 @@ class CompanyReportController extends Controller
 
         $section = $phpWord->addSection(['marginTop' => 600, 'marginBottom' => 600, 'marginLeft' => 800, 'marginRight' => 800]);
 
-        $section->addTitle($this->sanitize($report->title), 1);
+        // Company branding
+        $logoPath = $company && $company->logo_path
+            ? storage_path('app/public/' . $company->logo_path)
+            : null;
 
-        $subtitle = $this->sanitize($company?->name) . ' - ' . $this->sanitize($department?->name);
-        $section->addText($subtitle, ['size' => 11, 'color' => '6b7280'], ['spaceAfter' => 120]);
+        if ($logoPath && file_exists($logoPath)) {
+            $brandTable = $section->addTable();
+            $brandTable->addRow();
+            $logoCell = $brandTable->addCell(1200, ['valign' => 'center']);
+            $logoCell->addImage($logoPath, ['width' => 50, 'height' => 50, 'wrappingStyle' => 'inline']);
+            $nameCell = $brandTable->addCell(8400, ['valign' => 'center']);
+            $nameCell->addText($this->sanitize($company->name), ['size' => 16, 'bold' => true, 'color' => '111827']);
+            if ($department) {
+                $nameCell->addText($this->sanitize($department->name), ['size' => 10, 'color' => '6b7280']);
+            }
+            $section->addTextBreak(1);
+        } elseif ($company) {
+            $section->addText($this->sanitize($company->name), ['size' => 16, 'bold' => true, 'color' => '111827']);
+            if ($department) {
+                $section->addText($this->sanitize($department->name), ['size' => 10, 'color' => '6b7280']);
+            }
+            $section->addTextBreak(1);
+        }
+
+        $section->addTitle($this->sanitize($report->title), 1);
 
         // Metadata table
         $metaTable = $section->addTable([

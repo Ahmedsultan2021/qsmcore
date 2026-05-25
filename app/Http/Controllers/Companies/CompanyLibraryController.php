@@ -39,12 +39,11 @@ class CompanyLibraryController extends Controller
         }
     }
 
-    private function canEdit(LibraryDocument $library): bool
+    private function authorizeCompanyDocument(LibraryDocument $library): void
     {
-        $employeeId = $this->employeeId();
-
-        return (int) $library->uploaded_by === $employeeId
-            || (int) $library->owner_employee_id === $employeeId;
+        if ((int) $library->company_id !== $this->companyId()) {
+            abort(403);
+        }
     }
 
     private function baseQuery()
@@ -253,11 +252,7 @@ class CompanyLibraryController extends Controller
 
     public function edit(LibraryDocument $library)
     {
-        $this->authorizeDocument($library);
-
-        if (! $this->canEdit($library)) {
-            abort(403, 'You can only edit documents you uploaded or own.');
-        }
+        $this->authorizeCompanyDocument($library);
 
         LibraryCategory::ensureDefaultsForCompany($this->companyId());
 
@@ -273,11 +268,7 @@ class CompanyLibraryController extends Controller
 
     public function update(Request $request, LibraryDocument $library)
     {
-        $this->authorizeDocument($library);
-
-        if (! $this->canEdit($library)) {
-            abort(403, 'You can only edit documents you uploaded or own.');
-        }
+        $this->authorizeCompanyDocument($library);
 
         $authEmployee = Auth::guard('employee')->user();
 
@@ -314,11 +305,7 @@ class CompanyLibraryController extends Controller
 
     public function destroy(LibraryDocument $library)
     {
-        $this->authorizeDocument($library);
-
-        if (! $this->canEdit($library)) {
-            abort(403, 'You can only delete documents you uploaded or own.');
-        }
+        $this->authorizeCompanyDocument($library);
 
         if ($library->file_path && Storage::disk('public')->exists($library->file_path)) {
             Storage::disk('public')->delete($library->file_path);

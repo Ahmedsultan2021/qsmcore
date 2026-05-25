@@ -1,6 +1,6 @@
 <script setup>
 import CompanyLayout from "@/Layouts/CompanyLayout.vue";
-import { Head, Link, router, useForm, usePage } from "@inertiajs/vue3";
+import { Head, Link, router, useForm } from "@inertiajs/vue3";
 import { computed, ref, watch } from "vue";
 
 defineOptions({ layout: CompanyLayout });
@@ -13,9 +13,6 @@ const props = defineProps({
     filters: Object,
     statuses: Array,
 });
-
-const page = usePage();
-const authEmployeeId = page.props.authEmployee?.employee?.id;
 
 const search = ref(props.filters?.search || "");
 const selectedCategory = ref(props.filters?.category_id ?? "");
@@ -96,9 +93,6 @@ const ownerName = (doc) => {
     if (doc.uploader) return `${doc.uploader.fname} ${doc.uploader.lname}`;
     return "—";
 };
-
-const canEdit = (doc) =>
-    doc.uploaded_by === authEmployeeId || doc.owner_employee_id === authEmployeeId;
 
 const confirmDelete = (doc) => {
     if (confirm(`Delete "${doc.title}"? This cannot be undone.`)) {
@@ -400,7 +394,7 @@ const confirmDelete = (doc) => {
                         </a>
                     </div>
 
-                    <div v-if="canEdit(selectedDoc)" class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 flex gap-2">
+                    <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 flex gap-2">
                         <Link
                             :href="route('companies.library.edit', selectedDoc.id)"
                             class="flex-1 text-center px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 text-sm font-semibold hover:bg-gray-50 dark:hover:bg-gray-700"

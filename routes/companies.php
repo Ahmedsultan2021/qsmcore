@@ -157,7 +157,11 @@ Route::middleware('auth:employee')->prefix('companies')->name('companies.')->gro
     // CAPA Management
     Route::resource('capa', CompanyCapaController::class);
 
-    // Company Library (file sharing within the company)
+    // Company Library (manuals & documents)
+    Route::post('library/categories', [CompanyLibraryController::class, 'storeCategory'])->name('library.categories.store');
+    Route::get('library/{library}/download', [CompanyLibraryController::class, 'download'])->name('library.download');
+    Route::get('library/{library}/view', [CompanyLibraryController::class, 'view'])->name('library.view');
+    Route::post('library/{library}/favorite', [CompanyLibraryController::class, 'toggleFavorite'])->name('library.favorite');
     Route::resource('library', CompanyLibraryController::class)->except(['show']);
 
     Route::get('/settings', function () {

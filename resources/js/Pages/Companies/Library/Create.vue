@@ -4,14 +4,26 @@ import { Head, Link, useForm } from "@inertiajs/vue3";
 
 defineOptions({ layout: CompanyLayout });
 
+const props = defineProps({
+    categories: Array,
+    employees: Array,
+    statuses: Array,
+});
+
 const form = useForm({
     title: "",
+    document_code: "",
+    version_label: "",
     description: "",
+    library_category_id: "",
+    owner_employee_id: "",
+    effective_date: "",
+    status: "effective",
     file: null,
 });
 
 const submit = () => {
-    form.post("/companies/library", { forceFormData: true });
+    form.post(route("companies.library.store"), { forceFormData: true });
 };
 </script>
 
@@ -21,7 +33,7 @@ const submit = () => {
     <div class="px-4 sm:px-6 lg:px-8 py-8">
         <div class="max-w-2xl mx-auto">
             <div class="mb-6">
-                <Link href="/companies/library" class="text-sm text-gray-500 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 inline-flex items-center gap-1">
+                <Link :href="route('companies.library.index')" class="text-sm text-gray-500 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 inline-flex items-center gap-1">
                     <i class="fa-solid fa-arrow-left"></i> Back to Library
                 </Link>
             </div>
@@ -32,7 +44,7 @@ const submit = () => {
                         <i class="fa-solid fa-upload text-indigo-600"></i>
                         Upload Document
                     </h1>
-                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Share a file with your company team.</p>
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Add a manual or document to your company library.</p>
                 </div>
 
                 <form @submit.prevent="submit" class="p-6 space-y-5">
@@ -42,9 +54,79 @@ const submit = () => {
                             v-model="form.title"
                             type="text"
                             class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                            placeholder="Document title"
+                            placeholder="e.g. OM-B - Flight Operations"
                         />
                         <p v-if="form.errors.title" class="mt-1 text-sm text-red-600">{{ form.errors.title }}</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Document code</label>
+                            <input
+                                v-model="form.document_code"
+                                type="text"
+                                class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                placeholder="e.g. OM-B"
+                            />
+                            <p v-if="form.errors.document_code" class="mt-1 text-sm text-red-600">{{ form.errors.document_code }}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Version</label>
+                            <input
+                                v-model="form.version_label"
+                                type="text"
+                                class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                placeholder="e.g. Rev. 12"
+                            />
+                            <p v-if="form.errors.version_label" class="mt-1 text-sm text-red-600">{{ form.errors.version_label }}</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Category</label>
+                            <select
+                                v-model="form.library_category_id"
+                                class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                            >
+                                <option value="">— None —</option>
+                                <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
+                            </select>
+                            <p v-if="form.errors.library_category_id" class="mt-1 text-sm text-red-600">{{ form.errors.library_category_id }}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status <span class="text-red-500">*</span></label>
+                            <select
+                                v-model="form.status"
+                                class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                            >
+                                <option v-for="s in statuses" :key="s.value" :value="s.value">{{ s.label }}</option>
+                            </select>
+                            <p v-if="form.errors.status" class="mt-1 text-sm text-red-600">{{ form.errors.status }}</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Owner</label>
+                            <select
+                                v-model="form.owner_employee_id"
+                                class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                            >
+                                <option value="">— Default (you) —</option>
+                                <option v-for="emp in employees" :key="emp.id" :value="emp.id">{{ emp.name }}</option>
+                            </select>
+                            <p v-if="form.errors.owner_employee_id" class="mt-1 text-sm text-red-600">{{ form.errors.owner_employee_id }}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Effective date</label>
+                            <input
+                                v-model="form.effective_date"
+                                type="date"
+                                class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                            />
+                            <p v-if="form.errors.effective_date" class="mt-1 text-sm text-red-600">{{ form.errors.effective_date }}</p>
+                        </div>
                     </div>
 
                     <div>
@@ -71,7 +153,7 @@ const submit = () => {
                     </div>
 
                     <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
-                        <Link href="/companies/library" class="px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+                        <Link :href="route('companies.library.index')" class="px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
                             Cancel
                         </Link>
                         <button
@@ -80,7 +162,7 @@ const submit = () => {
                             class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition shadow-sm disabled:opacity-50"
                         >
                             <i class="fa-solid fa-upload"></i>
-                            {{ form.processing ? 'Uploading...' : 'Upload' }}
+                            {{ form.processing ? "Uploading..." : "Upload" }}
                         </button>
                     </div>
                 </form>

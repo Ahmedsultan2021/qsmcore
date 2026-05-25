@@ -79,13 +79,13 @@ const navs = computed(() => [
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <Link
-                                :href="route('companies.forms.show', form.id)"
+                                :href="route('companies.forms.show', { form: form.id })"
                                 class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mr-3"
                             >
                                 View
                             </Link>
                             <Link
-                                :href="route('companies.forms.edit', form.id)"
+                                :href="route('companies.forms.edit', { form: form.id })"
                                 class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-3"
                             >
                                 Edit

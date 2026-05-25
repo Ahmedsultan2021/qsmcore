@@ -31,13 +31,19 @@ class RouteServiceProvider extends ServiceProvider
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
 
-        // Scope form binding when in report context (departments.reports.forms routes)
+        // Scope form binding only on report-nested routes (departments.reports.forms.*).
+        // Company forms routes (companies/forms/{form}) must resolve Form directly.
         Route::bind('form', function ($value, $route) {
+            $formId = is_numeric($value) ? (int) $value : $value;
             $report = $route->parameter('report');
+
+            if ($report === null) {
+                return Form::query()->findOrFail($formId);
+            }
+
             if (! $report instanceof Report) {
                 $report = Report::query()->findOrFail($report);
             }
-            $formId = is_numeric($value) ? (int) $value : $value;
 
             return $report->forms()->where('forms.id', $formId)->firstOrFail();
         });

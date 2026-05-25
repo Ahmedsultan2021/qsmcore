@@ -203,8 +203,8 @@ Route::middleware('auth:employee')->prefix('companies')->name('companies.')->gro
     // Forms routes (for companies portal)
     Route::get('forms/templates/bank', [CompanyFormController::class, 'templateBank'])->name('forms.templates.bank');
     Route::post('forms/from-template', [CompanyFormController::class, 'addFromTemplate'])->name('forms.from-template');
-    Route::resource('forms', CompanyFormController::class);
     Route::get('forms/template/download', [CompanyFormController::class, 'downloadTemplate'])->name('forms.template.download');
+    Route::resource('forms', CompanyFormController::class);
     Route::post('forms/{form}/import', [CompanyFormController::class, 'importFields'])->name('forms.import');
     
     // Form Fields routes (nested under forms)

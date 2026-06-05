@@ -30,6 +30,7 @@ jobs:
             composer install --no-dev --optimize-autoloader
             npm install
             npm run build
+            chmod -R 755 public/build
 
             # Run migrations safely
             php artisan migrate --force

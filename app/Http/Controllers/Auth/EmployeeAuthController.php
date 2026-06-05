@@ -88,9 +88,20 @@ class EmployeeAuthController extends Controller
      */
     public function leaveImpersonation(Request $request)
     {
+        if (! $request->session()->get('impersonating')) {
+            return redirect()->route('companies.dashboard');
+        }
+
+        $returnUrl = $request->session()->pull('impersonation_return_url', route('companies.index'));
+
         Auth::guard('employee')->logout();
         $request->session()->forget('impersonating');
 
-        return redirect()->route('companies.index');
+        if (! Auth::guard('web')->check()) {
+            return redirect()->route('login')
+                ->with('error', 'Your admin session has expired. Please log in again.');
+        }
+
+        return redirect($returnUrl);
     }
 }

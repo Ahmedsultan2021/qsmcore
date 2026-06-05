@@ -13,6 +13,13 @@ const deleteEmployee = () => {
         router.delete(route("employees.destroy", props.employee.id));
     }
 };
+
+const loginAsEmployee = () => {
+    const name = `${props.employee.fname} ${props.employee.lname}`;
+    if (confirm(`Login as "${name}"?`)) {
+        router.post(route("employees.impersonate", props.employee.id));
+    }
+};
 </script>
 
 <template>
@@ -50,6 +57,12 @@ const deleteEmployee = () => {
                     </div>
                 </div>
                 <div class="flex space-x-3">
+                    <button
+                        @click="loginAsEmployee"
+                        class="px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700"
+                    >
+                        <i class="fa-solid fa-arrow-right-to-bracket mr-1"></i>Login as Employee
+                    </button>
                     <Link
                         :href="route('employees.edit', employee.id)"
                         class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"

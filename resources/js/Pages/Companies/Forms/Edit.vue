@@ -20,7 +20,7 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.put(route("companies.forms.update", props.form.id));
+    form.put(route("companies.forms.update", { form: props.form.id }));
 };
 
 const navs = computed(() => [

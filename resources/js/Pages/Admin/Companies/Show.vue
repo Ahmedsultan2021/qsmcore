@@ -13,6 +13,19 @@ const deleteCompany = () => {
         router.delete(route("companies.destroy", props.company.id));
     }
 };
+
+const loginAsEmployee = (employee) => {
+    const name = `${employee.fname} ${employee.lname}`;
+    if (confirm(`Login as "${name}"?`)) {
+        router.post(route("employees.impersonate", employee.id));
+    }
+};
+
+const loginAsCompany = () => {
+    if (confirm(`Login as first employee of "${props.company.name}"?`)) {
+        router.post(route("companies.impersonate", props.company.id));
+    }
+};
 </script>
 
 <template>
@@ -57,6 +70,12 @@ const deleteCompany = () => {
                     </div>
                 </div>
                 <div class="flex space-x-3 shrink-0">
+                    <button
+                        @click="loginAsCompany"
+                        class="px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700"
+                    >
+                        <i class="fa-solid fa-arrow-right-to-bracket mr-1"></i>Login as Company
+                    </button>
                     <Link
                         :href="route('companies.edit', company.id)"
                         class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
@@ -100,9 +119,15 @@ const deleteCompany = () => {
                         <p v-if="employee.phone" class="text-sm text-gray-600 dark:text-gray-400 mb-1">
                             Phone: {{ employee.phone }}
                         </p>
-                        <p v-if="employee.position" class="text-sm text-gray-600 dark:text-gray-400">
+                        <p v-if="employee.position" class="text-sm text-gray-600 dark:text-gray-400 mb-3">
                             Position: {{ employee.position }}
                         </p>
+                        <button
+                            @click="loginAsEmployee(employee)"
+                            class="text-sm text-emerald-600 hover:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-300 font-medium"
+                        >
+                            <i class="fa-solid fa-arrow-right-to-bracket mr-1"></i>Login as
+                        </button>
                     </div>
                 </div>
                 <p v-else class="text-gray-500 dark:text-gray-400">No employees found.</p>

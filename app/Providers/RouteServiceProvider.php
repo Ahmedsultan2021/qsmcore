@@ -35,11 +35,12 @@ class RouteServiceProvider extends ServiceProvider
         // Company forms routes (companies/forms/{form}) must resolve Form directly.
         Route::bind('form', function ($value, $route) {
             $formId = is_numeric($value) ? (int) $value : $value;
-            $report = $route->parameter('report');
 
-            if ($report === null) {
+            if (! $route->hasParameter('report')) {
                 return Form::query()->findOrFail($formId);
             }
+
+            $report = $route->parameter('report');
 
             if (! $report instanceof Report) {
                 $report = Report::query()->findOrFail($report);

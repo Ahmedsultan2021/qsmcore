@@ -27,6 +27,13 @@ const toggleActive = (employee) => {
     }
 };
 
+const loginAsEmployee = (employee) => {
+    const name = `${employee.fname} ${employee.lname}`;
+    if (confirm(`Login as "${name}" at ${employee.company.name}?`)) {
+        router.post(route('employees.impersonate', employee.id));
+    }
+};
+
 const navs = computed(() => [
     { name: "Dashboard", linkName: "dashboard" },
     { name: "Employees", linkName: "employees.index" },
@@ -221,6 +228,13 @@ const filteredCompanies = computed(() => {
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <button
+                                @click="loginAsEmployee(employee)"
+                                class="text-emerald-600 hover:text-emerald-900 dark:text-emerald-400 dark:hover:text-emerald-300 mr-3"
+                                title="Login as this employee"
+                            >
+                                <i class="fa-solid fa-arrow-right-to-bracket mr-1"></i>Login as
+                            </button>
                             <Link
                                 :href="route('employees.show', employee.id)"
                                 class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mr-3"

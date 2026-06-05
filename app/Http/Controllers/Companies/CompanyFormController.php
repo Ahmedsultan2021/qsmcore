@@ -177,7 +177,9 @@ class CompanyFormController extends Controller
         ]);
         $form->load(['reports', 'formFields', 'department']);
 
-        return back()->with('success', 'Form updated successfully');
+        return redirect()
+            ->route('companies.forms.show', ['form' => $form->id])
+            ->with('success', 'Form updated successfully');
     }
 
     /**

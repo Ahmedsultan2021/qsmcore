@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\ImpersonatesEmployees;
 use App\Models\Company;
 use App\Models\Sector;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class CompanyController extends Controller
 {
+    use ImpersonatesEmployees;
     /**
      * Display a listing of the resource.
      */
@@ -157,17 +158,14 @@ class CompanyController extends Controller
      */
     public function impersonate(Company $company)
     {
-        $employee = $company->employees()->first();
+        $employee = $company->employees()->orderBy('id')->first();
 
         if (! $employee) {
             return redirect()->route('companies.index')
                 ->with('error', "No employees found for \"{$company->name}\". Add an employee first.");
         }
 
-        Auth::guard('employee')->login($employee);
-        session(['impersonating' => true]);
-
-        return redirect()->route('companies.dashboard');
+        return $this->loginAsEmployee($employee, route('companies.index'));
     }
 
     /**

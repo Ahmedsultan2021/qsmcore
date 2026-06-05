@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\ImpersonatesEmployees;
 use App\Models\Employee;
 use App\Models\Company;
 use Illuminate\Http\Request;
@@ -10,6 +11,7 @@ use Inertia\Inertia;
 
 class EmployeeController extends Controller
 {
+    use ImpersonatesEmployees;
     /**
      * Display a listing of the resource.
      */
@@ -149,6 +151,17 @@ class EmployeeController extends Controller
 
         return redirect()->route('employees.index', ['company_id' => $employee->company_id])
             ->with('success', 'Employee updated successfully');
+    }
+
+    /**
+     * Log in as the given employee (admin impersonation).
+     */
+    public function impersonate(Employee $employee)
+    {
+        return $this->loginAsEmployee(
+            $employee,
+            route('employees.index', ['company_id' => $employee->company_id])
+        );
     }
 
     /**

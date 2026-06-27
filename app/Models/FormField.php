@@ -21,6 +21,7 @@ class FormField extends Model
     ];
 
     protected $casts = [
+        'form_id' => 'integer',
         'required' => 'boolean',
         'options' => 'array',
         'order' => 'integer',

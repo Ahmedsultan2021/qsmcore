@@ -107,6 +107,10 @@ Route::middleware('auth')->group(function () {
     // Help Documents (Admin CRUD - shown to companies portal users on Help page)
     Route::resource('help-documents', \App\Http\Controllers\Admin\HelpDocumentController::class)
         ->except(['show']);
+
+    // Public site contact details
+    Route::get('site-settings', [\App\Http\Controllers\Admin\SiteSettingController::class, 'edit'])->name('site-settings.edit');
+    Route::put('site-settings', [\App\Http\Controllers\Admin\SiteSettingController::class, 'update'])->name('site-settings.update');
 });
 
 // Admin Authentication Routes (loaded from auth.php)

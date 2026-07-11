@@ -1,6 +1,7 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3'
 import { ref } from 'vue'
+import SiteContactInfo from '@/Components/SiteContactInfo.vue'
 
 const props = defineProps({
     blogPosts: Object,
@@ -228,9 +229,7 @@ const getPaginationLabel = (label) => {
                     <div>
                         <h4 class="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Contact</h4>
                         <ul class="space-y-1.5 sm:space-y-2 text-gray-400 text-sm sm:text-base break-words">
-                            <li>Email: support@qsm.com</li>
-                            <li>Phone: +1 (555) 123-4567</li>
-                            <li>Address: 123 Business St, Suite 100</li>
+                            <SiteContactInfo variant="footer" />
                         </ul>
                     </div>
                 </div>

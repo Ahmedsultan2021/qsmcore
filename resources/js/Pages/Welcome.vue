@@ -1,6 +1,7 @@
 <script setup>
 import { Head, Link, useForm, usePage } from '@inertiajs/vue3'
 import { ref, onMounted, computed } from 'vue'
+import SiteContactInfo from '@/Components/SiteContactInfo.vue'
 
 const props = defineProps({
     blogPosts: {
@@ -804,10 +805,7 @@ onMounted(() => {
                         <h2 class="text-2xl sm:text-3xl font-semibold text-gray-900 mb-6">Get in Touch</h2>
                         <p class="text-gray-500 text-sm leading-relaxed mb-10">Have a question or want to learn more? Fill in the form and we'll get back to you within one business day.</p>
                         <div class="space-y-6">
-                            <div>
-                                <div class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1">Email</div>
-                                <a href="mailto:support@qsm.com" class="text-sm text-gray-700 hover:text-brand-navy transition-colors">support@qsm.com</a>
-                            </div>
+                            <SiteContactInfo variant="sidebar" />
                             <div>
                                 <div class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1">Response Time</div>
                                 <p class="text-sm text-gray-500">Within 24 hours on business days</p>

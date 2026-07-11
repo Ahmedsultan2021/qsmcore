@@ -20,7 +20,7 @@ class CompanyFormFieldController extends Controller
             'field_type' => 'required|string|in:text,textarea,select,checkbox,radio,date,number,email,file,signature',
             'label' => 'required|string|max:255',
             'name' => 'required|string|max:255|regex:/^[a-z_][a-z0-9_]*$/',
-            'placeholder' => 'nullable|string|max:255',
+            'placeholder' => 'nullable|string|max:5000',
             'required' => 'boolean',
             'options' => 'nullable|array',
             'options.*' => 'string|max:255',
@@ -64,7 +64,7 @@ class CompanyFormFieldController extends Controller
             'field_type' => 'required|string|in:text,textarea,select,checkbox,radio,date,number,email,file,signature',
             'label' => 'required|string|max:255',
             'name' => 'required|string|max:255|regex:/^[a-z_][a-z0-9_]*$/',
-            'placeholder' => 'nullable|string|max:255',
+            'placeholder' => 'nullable|string|max:5000',
             'required' => 'boolean',
             'options' => 'nullable|array',
             'options.*' => 'string|max:255',
@@ -122,7 +122,7 @@ class CompanyFormFieldController extends Controller
             }
         });
 
-        return response()->json(['success' => true]);
+        return back();
     }
 }
 

@@ -78,7 +78,17 @@ Route::middleware('auth')->group(function () {
 
     // Global form template library
     Route::get('form-templates', [\App\Http\Controllers\Admin\FormTemplateController::class, 'index'])->name('form-templates.index');
-    Route::patch('form-templates/{formTemplate}', [\App\Http\Controllers\Admin\FormTemplateController::class, 'update'])->name('form-templates.update');
+    Route::get('form-templates/create', [\App\Http\Controllers\Admin\FormTemplateController::class, 'create'])->name('form-templates.create');
+    Route::post('form-templates', [\App\Http\Controllers\Admin\FormTemplateController::class, 'store'])->name('form-templates.store');
+    Route::get('form-templates/template/download', [\App\Http\Controllers\Admin\FormTemplateController::class, 'downloadTemplate'])->name('form-templates.template.download');
+    Route::get('form-templates/{formTemplate}', [\App\Http\Controllers\Admin\FormTemplateController::class, 'show'])->name('form-templates.show');
+    Route::match(['put', 'patch'], 'form-templates/{formTemplate}', [\App\Http\Controllers\Admin\FormTemplateController::class, 'update'])->name('form-templates.update');
+    Route::delete('form-templates/{formTemplate}', [\App\Http\Controllers\Admin\FormTemplateController::class, 'destroy'])->name('form-templates.destroy');
+    Route::post('form-templates/{formTemplate}/import', [\App\Http\Controllers\Admin\FormTemplateController::class, 'importFields'])->name('form-templates.import');
+    Route::post('form-templates/{formTemplate}/fields/update-order', [\App\Http\Controllers\Admin\FormTemplateFieldController::class, 'updateOrder'])->name('form-templates.fields.update-order');
+    Route::post('form-templates/{formTemplate}/fields', [\App\Http\Controllers\Admin\FormTemplateFieldController::class, 'store'])->name('form-templates.fields.store');
+    Route::put('form-templates/{formTemplate}/fields/{formTemplateField}', [\App\Http\Controllers\Admin\FormTemplateFieldController::class, 'update'])->name('form-templates.fields.update');
+    Route::delete('form-templates/{formTemplate}/fields/{formTemplateField}', [\App\Http\Controllers\Admin\FormTemplateFieldController::class, 'destroy'])->name('form-templates.fields.destroy');
     
     // Companies Management (Admin CRUD - no roles/permissions access)
     Route::post('companies/{company}/impersonate', [CompanyController::class, 'impersonate'])->name('companies.impersonate');

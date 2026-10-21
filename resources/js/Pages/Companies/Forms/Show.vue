@@ -1,13 +1,38 @@
 <script setup>
 import CompanyLayout from "@/Layouts/CompanyLayout.vue";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, Link, router, useForm } from "@inertiajs/vue3";
 import { ref, computed } from "vue";
 
-defineOptions({ layout: CompanyLayout });
-
 const props = defineProps({
     form: Object,
+    shell: {
+        type: String,
+        default: "company",
+    },
+    routes: {
+        type: Object,
+        default: () => ({}),
+    },
 });
+
+const pageLayout = computed(() => (props.shell === "admin" ? AuthenticatedLayout : CompanyLayout));
+
+const endpoints = computed(() => ({
+    index: "companies.forms.index",
+    update: "companies.forms.update",
+    fieldsStore: "companies.forms.fields.store",
+    fieldsUpdate: "companies.forms.fields.update",
+    fieldsDestroy: "companies.forms.fields.destroy",
+    fieldsOrder: "companies.forms.fields.update-order",
+    destroy: "companies.forms.destroy",
+    templateDownload: "companies.forms.template.download",
+    import: "companies.forms.import",
+    backLabel: "Forms",
+    ...props.routes,
+}));
+
+const to = (key, params) => route(endpoints.value[key], params);
 
 // Form title editing
 const isEditingTitle = ref(false);
@@ -66,7 +91,7 @@ const startEditingTitle = () => {
 
 const saveTitle = () => {
     titleForm.name = editingTitle.value;
-    titleForm.put(route("companies.forms.update", props.form.id), {
+    titleForm.put(to("update", props.form.id), {
         preserveScroll: true,
         onSuccess: () => {
             isEditingTitle.value = false;
@@ -116,14 +141,14 @@ const closeModal = () => {
 
 const submitField = () => {
     if (editingFieldId.value) {
-        fieldForm.put(route('companies.forms.fields.update', [props.form.id, editingFieldId.value]), {
+        fieldForm.put(to('fieldsUpdate', [props.form.id, editingFieldId.value]), {
             preserveScroll: true,
             onSuccess: () => {
                 closeModal();
             },
         });
     } else {
-        fieldForm.post(route('companies.forms.fields.store', props.form.id), {
+        fieldForm.post(to('fieldsStore', props.form.id), {
             preserveScroll: true,
             onSuccess: () => {
                 closeModal();
@@ -134,7 +159,7 @@ const submitField = () => {
 
 const deleteField = (fieldId) => {
     if (confirm('Are you sure you want to delete this field?')) {
-        router.delete(route('companies.forms.fields.destroy', [props.form.id, fieldId]), {
+        router.delete(to('fieldsDestroy', [props.form.id, fieldId]), {
             preserveScroll: true,
         });
     }
@@ -159,7 +184,7 @@ const duplicateField = (field) => {
     fieldForm.options = newField.options;
     fieldForm.order = newField.order;
     
-    fieldForm.post(route('companies.forms.fields.store', props.form.id), {
+    fieldForm.post(to('fieldsStore', props.form.id), {
         preserveScroll: true,
     });
 };
@@ -234,7 +259,7 @@ const onDrop = (event, targetField) => {
         order: index,
     }));
 
-    router.post(route('companies.forms.fields.update-order', props.form.id), {
+    router.post(to('fieldsOrder', props.form.id), {
         fields: updatedFields,
     }, {
         preserveScroll: true,
@@ -246,7 +271,7 @@ const onDrop = (event, targetField) => {
 
 const deleteForm = () => {
     if (confirm("Are you sure you want to delete this form?")) {
-        router.delete(route("companies.forms.destroy", props.form.id));
+        router.delete(to("destroy", props.form.id));
     }
 };
 
@@ -284,7 +309,7 @@ const submitImport = () => {
 
     importForm.file = importFile.value;
     
-    importForm.post(route('companies.forms.import', props.form.id), {
+    importForm.post(to('import', props.form.id), {
         preserveScroll: true,
         forceFormData: true,
         onSuccess: () => {
@@ -299,25 +324,29 @@ const submitImport = () => {
 </script>
 
 <template>
+    <component :is="pageLayout">
     <Head :title="form.name" />
 
     <div class="min-h-screen bg-gray-50 dark:bg-gray-900 pb-20">
         <!-- Top Toolbar -->
-        <div class="sticky top-0 z-40 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
+        <div
+            class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm"
+            :class="shell === 'admin' ? 'sticky top-24 z-30' : 'sticky top-0 z-40'"
+        >
             <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
                 <div class="flex items-center gap-3">
                     <Link
-                        :href="route('companies.forms.index')"
+                        :href="to('index')"
                         class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
                     >
                         <i class="fa-solid fa-arrow-left text-gray-600 dark:text-gray-400"></i>
                     </Link>
-                    <span class="text-sm text-gray-500 dark:text-gray-400">Forms</span>
+                    <span class="text-sm text-gray-500 dark:text-gray-400">{{ endpoints.backLabel }}</span>
                 </div>
                 <div class="flex items-center gap-2">
                     <template v-if="!showPreviewMode">
                         <a
-                            :href="route('companies.forms.template.download')"
+                            :href="to('templateDownload')"
                             class="px-4 py-2 text-sm text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors inline-flex items-center"
                             title="Download Excel Template"
                             download
@@ -353,7 +382,7 @@ const submitImport = () => {
                         <i class="fa-solid fa-trash mr-2"></i>Delete
                     </button>
                     <button
-                        v-if="!showPreviewMode"
+                        v-if="!showPreviewMode && shell !== 'admin'"
                         class="px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 transition-colors"
                     >
                         <i class="fa-solid fa-paper-plane mr-2"></i>Send
@@ -655,7 +684,7 @@ const submitImport = () => {
                             <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
                                 Upload an Excel file (.xlsx, .xls, or .csv) with your form fields. 
                                 <Link
-                                    :href="route('companies.forms.template.download')"
+                                    :href="to('templateDownload')"
                                     class="text-blue-600 dark:text-blue-400 hover:underline"
                                 >
                                     Download the template
@@ -904,4 +933,5 @@ const submitImport = () => {
             </div>
         </div>
     </div>
+    </component>
 </template>

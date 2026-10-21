@@ -4,6 +4,9 @@ namespace App\Imports;
 
 use App\Models\FormField;
 use App\Models\Form;
+use App\Models\FormTemplate;
+use App\Models\FormTemplateField;
+use Illuminate\Database\Eloquent\Model;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
@@ -12,13 +15,22 @@ use Illuminate\Support\Str;
 
 class FormFieldsImport implements ToModel, WithHeadingRow, WithValidation, SkipsEmptyRows
 {
-    protected $form;
+    protected Model $owner;
+    protected string $ownerKey;
+    protected string $fieldClass;
     protected $maxOrder;
 
-    public function __construct(Form $form)
+    public function __construct(Form|FormTemplate $owner)
     {
-        $this->form = $form;
-        $this->maxOrder = FormField::where('form_id', $form->id)->max('order') ?? -1;
+        $this->owner = $owner;
+        if ($owner instanceof FormTemplate) {
+            $this->ownerKey = 'form_template_id';
+            $this->fieldClass = FormTemplateField::class;
+        } else {
+            $this->ownerKey = 'form_id';
+            $this->fieldClass = FormField::class;
+        }
+        $this->maxOrder = $this->fieldClass::where($this->ownerKey, $owner->id)->max('order') ?? -1;
     }
 
     public function model(array $row)
@@ -52,7 +64,7 @@ class FormFieldsImport implements ToModel, WithHeadingRow, WithValidation, Skips
         $fieldName = preg_replace('/^_+|_+$/', '', $fieldName);
 
         // Check if field name already exists
-        $existingField = FormField::where('form_id', $this->form->id)
+        $existingField = $this->fieldClass::where($this->ownerKey, $this->owner->id)
             ->where('name', $fieldName)
             ->first();
 
@@ -60,7 +72,7 @@ class FormFieldsImport implements ToModel, WithHeadingRow, WithValidation, Skips
             // Append number to make it unique
             $counter = 1;
             $originalName = $fieldName;
-            while (FormField::where('form_id', $this->form->id)
+            while ($this->fieldClass::where($this->ownerKey, $this->owner->id)
                 ->where('name', $fieldName)
                 ->exists()) {
                 $fieldName = $originalName . '_' . $counter;
@@ -84,8 +96,10 @@ class FormFieldsImport implements ToModel, WithHeadingRow, WithValidation, Skips
 
         $this->maxOrder++;
 
-        return new FormField([
-            'form_id' => $this->form->id,
+        $fieldClass = $this->fieldClass;
+
+        return new $fieldClass([
+            $this->ownerKey => $this->owner->id,
             'field_type' => $fieldType,
             'label' => $label,
             'name' => $fieldName,

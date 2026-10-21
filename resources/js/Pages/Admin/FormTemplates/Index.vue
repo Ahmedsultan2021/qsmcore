@@ -152,7 +152,9 @@ function saveName(row) {
         <BaseDashboardHeader
             :navs="navs"
             title="Form templates"
-            :showButton="false"
+            navLinkName="form-templates.create"
+            NavLinkText="Add form"
+            :showButton="true"
             :addSearchInput="false"
         />
 
@@ -320,14 +322,20 @@ function saveName(row) {
                                     </div>
                                     <p v-if="nameError" class="text-xs font-normal text-red-600">{{ nameError }}</p>
                                 </div>
-                                <div v-else class="flex items-center gap-3">
+                                <div v-else class="flex flex-wrap items-center gap-2">
                                     <span>{{ row.name }}</span>
+                                    <Link
+                                        :href="route('form-templates.show', row.id)"
+                                        class="rounded-md bg-blue-600 px-2 py-1 text-xs font-semibold text-white hover:bg-blue-700"
+                                    >
+                                        Edit questions
+                                    </Link>
                                     <button
                                         type="button"
                                         class="rounded-md border border-gray-300 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700"
                                         @click="startEdit(row)"
                                     >
-                                        Edit
+                                        Rename
                                     </button>
                                 </div>
                             </td>

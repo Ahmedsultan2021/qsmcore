@@ -154,7 +154,7 @@ const getPaginationLabel = (label) => {
                                 {{ post.content.substring(0, 150) }}{{ post.content.length > 150 ? '...' : '' }}
                             </p>
                             <Link
-                                href="#"
+                                :href="route('blog.show', post.slug)"
                                 class="inline-flex items-center text-blue-600 font-semibold hover:text-blue-700 group-hover:translate-x-1 transition-transform"
                             >
                                 Read More

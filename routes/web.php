@@ -58,6 +58,20 @@ Route::get('/blog', function () {
     ]);
 })->name('blog.index');
 
+Route::get('/blog/{blogPost:slug}', function (BlogPost $blogPost) {
+    $publishedAt = $blogPost->published_at;
+    $isVisible = $blogPost->is_published
+        && ($publishedAt === null || $publishedAt->lte(now()));
+
+    abort_unless($isVisible, 404);
+
+    $blogPost->load('user:id,fname,lname');
+
+    return Inertia::render('BlogShow', [
+        'blogPost' => $blogPost,
+    ]);
+})->name('blog.show');
+
 // Admin Dashboard
 Route::get('/dashboard', \App\Http\Controllers\Admin\DashboardController::class)
     ->middleware(['auth', 'verified'])

@@ -738,10 +738,11 @@ onMounted(() => {
                     </Link>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div
+                    <Link
                         v-for="post in blogPosts"
                         :key="post.id"
-                        class="group"
+                        :href="route('blog.show', post.slug)"
+                        class="group block"
                     >
                         <div v-if="post.featured_image" class="h-44 overflow-hidden bg-gray-100 mb-5">
                             <img :src="post.featured_image" :alt="post.title" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -760,7 +761,7 @@ onMounted(() => {
                         <p class="text-sm text-gray-500 line-clamp-3 leading-relaxed">
                             {{ post.excerpt || post.content.substring(0, 130) }}{{ (!post.excerpt && post.content.length > 130) ? '…' : '' }}
                         </p>
-                    </div>
+                    </Link>
                 </div>
             </div>
         </section>

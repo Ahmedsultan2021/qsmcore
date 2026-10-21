@@ -9,6 +9,12 @@ const props = defineProps({
 
 const mobileMenuOpen = ref(false)
 
+const authorName = (post) => {
+    const user = post.user || {}
+    const full = [user.fname, user.lname].filter(Boolean).join(' ').trim()
+    return full || user.name || 'Admin'
+}
+
 const formatDate = (dateString) => {
     if (!dateString) return ''
     return new Date(dateString).toLocaleDateString('en-US', { 
@@ -136,7 +142,7 @@ const getPaginationLabel = (label) => {
                             <div class="flex items-center text-sm text-gray-500 mb-3">
                                 <span>{{ formatDate(post.published_at) }}</span>
                                 <span class="mx-2">•</span>
-                                <span>{{ post.user?.name || 'Admin' }}</span>
+                                <span>By {{ authorName(post) }}</span>
                             </div>
                             <h2 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors line-clamp-2">
                                 {{ post.title }}

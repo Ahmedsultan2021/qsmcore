@@ -43,6 +43,22 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    protected $appends = [
+        'name',
+    ];
+
+    public function getNameAttribute(): string
+    {
+        if (!empty($this->attributes['name'])) {
+            return $this->attributes['name'];
+        }
+
+        return trim(implode(' ', array_filter([
+            $this->attributes['fname'] ?? null,
+            $this->attributes['lname'] ?? null,
+        ])));
+    }
+
 
     public function courses()
     {

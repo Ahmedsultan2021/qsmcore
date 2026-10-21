@@ -28,6 +28,10 @@ const industryId   = ref(props.filters.industry_id   != null ? String(props.filt
 const sectorId     = ref(props.filters.sector_id     != null ? String(props.filters.sector_id)     : "");
 const departmentId = ref(props.filters.department_id != null ? String(props.filters.department_id) : "");
 const search       = ref(props.filters.search ?? "");
+const editingId    = ref(null);
+const editingName  = ref("");
+const saving       = ref(false);
+const nameError    = ref("");
 
 watch(
     () => props.filters,
@@ -104,6 +108,40 @@ function clearFilters() {
     sectorId.value     = "";
     departmentId.value = "";
     router.get(route("form-templates.index"), {}, { replace: true, preserveScroll: true });
+}
+
+function startEdit(row) {
+    editingId.value = row.id;
+    editingName.value = row.name;
+    nameError.value = "";
+}
+
+function cancelEdit() {
+    editingId.value = null;
+    editingName.value = "";
+    nameError.value = "";
+}
+
+function saveName(row) {
+    const name = editingName.value.trim();
+    if (!name) {
+        nameError.value = "Enter a form name.";
+        return;
+    }
+
+    saving.value = true;
+    nameError.value = "";
+    router.patch(route("form-templates.update", row.id), { name }, {
+        preserveScroll: true,
+        preserveState: true,
+        onSuccess: () => cancelEdit(),
+        onError: (errors) => {
+            nameError.value = errors.name || "Could not save the name.";
+        },
+        onFinish: () => {
+            saving.value = false;
+        },
+    });
 }
 </script>
 
@@ -253,7 +291,45 @@ function clearFilters() {
                             class="hover:bg-gray-50 dark:hover:bg-gray-700/80"
                         >
                             <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
-                                {{ row.name }}
+                                <div v-if="editingId === row.id" class="flex flex-col gap-1 min-w-[16rem]">
+                                    <div class="flex items-center gap-2">
+                                        <input
+                                            v-model="editingName"
+                                            type="text"
+                                            maxlength="255"
+                                            class="w-full rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                                            @keyup.enter="saveName(row)"
+                                            @keyup.escape="cancelEdit"
+                                        />
+                                        <button
+                                            type="button"
+                                            class="shrink-0 rounded-md bg-blue-600 px-2.5 py-1.5 text-xs font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
+                                            :disabled="saving"
+                                            @click="saveName(row)"
+                                        >
+                                            Save
+                                        </button>
+                                        <button
+                                            type="button"
+                                            class="shrink-0 rounded-md border border-gray-300 px-2.5 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700"
+                                            :disabled="saving"
+                                            @click="cancelEdit"
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                    <p v-if="nameError" class="text-xs font-normal text-red-600">{{ nameError }}</p>
+                                </div>
+                                <div v-else class="flex items-center gap-3">
+                                    <span>{{ row.name }}</span>
+                                    <button
+                                        type="button"
+                                        class="rounded-md border border-gray-300 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700"
+                                        @click="startEdit(row)"
+                                    >
+                                        Edit
+                                    </button>
+                                </div>
                             </td>
                             <td class="px-6 py-4 text-xs font-mono text-gray-600 dark:text-gray-300">
                                 {{ row.library_key || "—" }}

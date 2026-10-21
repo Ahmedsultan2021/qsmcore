@@ -291,7 +291,8 @@ const exportPdf = () => {
                             <table class="w-full text-sm">
                                 <thead class="bg-gray-50 dark:bg-gray-900/40 text-gray-600 dark:text-gray-300">
                                     <tr>
-                                        <th class="text-left font-semibold px-4 py-3">#</th>
+                                        <th class="text-left font-semibold px-4 py-3 w-12">#</th>
+                                        <th class="text-left font-semibold px-4 py-3">ID</th>
                                         <th class="text-left font-semibold px-4 py-3">Title</th>
                                         <th class="text-left font-semibold px-4 py-3">Dept.</th>
                                         <th class="text-left font-semibold px-4 py-3">Status</th>
@@ -300,14 +301,15 @@ const exportPdf = () => {
                                 </thead>
                                 <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                                     <tr v-if="!recentReports.length">
-                                        <td colspan="5" class="px-4 py-6 text-center text-sm text-gray-400">No reports yet</td>
+                                        <td colspan="6" class="px-4 py-6 text-center text-sm text-gray-400">No reports yet</td>
                                     </tr>
                                     <tr
-                                        v-for="r in recentReports"
+                                        v-for="(r, index) in recentReports"
                                         :key="r.id"
                                         class="hover:bg-gray-50 dark:hover:bg-gray-900/30 cursor-pointer"
                                         @click="router.visit(r.url)"
                                     >
+                                        <td class="px-4 py-3 font-semibold text-gray-500 dark:text-gray-400">{{ index + 1 }}</td>
                                         <td class="px-4 py-3 font-semibold text-blue-600 dark:text-blue-400">#{{ r.id }}</td>
                                         <td class="px-4 py-3 text-gray-900 dark:text-white">{{ r.title }}</td>
                                         <td class="px-4 py-3 text-gray-700 dark:text-gray-200">{{ r.dept }}</td>

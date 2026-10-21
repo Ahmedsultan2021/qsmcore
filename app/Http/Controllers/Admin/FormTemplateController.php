@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Department;
+use App\Models\Form;
 use App\Models\FormTemplate;
 use App\Models\Industry;
 use App\Models\Sector;
@@ -113,5 +114,31 @@ class FormTemplateController extends Controller
             'sectors' => $sectors,
             'departments' => $departments,
         ]);
+    }
+
+    public function update(Request $request, FormTemplate $formTemplate)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $name = trim($validated['name']);
+        if ($name === '') {
+            return back()->withErrors([
+                'name' => 'The form name is required.',
+            ]);
+        }
+
+        $previous = $formTemplate->name;
+        $formTemplate->update(['name' => $name]);
+
+        if ($previous !== $name) {
+            Form::query()
+                ->where('form_template_id', $formTemplate->id)
+                ->where('name', $previous)
+                ->update(['name' => $name]);
+        }
+
+        return back()->with('success', 'Form name updated.');
     }
 }

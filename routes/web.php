@@ -23,7 +23,7 @@ use Inertia\Inertia;
 // Public Routes
 Route::get('/', function () {
     $blogPosts = BlogPost::published()
-        ->with('user')
+        ->with('user:id,fname,lname')
         ->latest('published_at')
         ->take(6)
         ->get();
@@ -49,7 +49,7 @@ Route::post('/careers/{vacancy}/apply', [CareerController::class, 'apply'])->nam
 // Blog Listing Page
 Route::get('/blog', function () {
     $blogPosts = BlogPost::published()
-        ->with('user')
+        ->with('user:id,fname,lname')
         ->latest('published_at')
         ->paginate(9);
     
@@ -76,8 +76,9 @@ Route::middleware('auth')->group(function () {
     // Sectors Management (Admin CRUD)
     Route::resource('sectors', SectorController::class);
 
-    // Global form template library (read-only index)
+    // Global form template library
     Route::get('form-templates', [\App\Http\Controllers\Admin\FormTemplateController::class, 'index'])->name('form-templates.index');
+    Route::patch('form-templates/{formTemplate}', [\App\Http\Controllers\Admin\FormTemplateController::class, 'update'])->name('form-templates.update');
     
     // Companies Management (Admin CRUD - no roles/permissions access)
     Route::post('companies/{company}/impersonate', [CompanyController::class, 'impersonate'])->name('companies.impersonate');

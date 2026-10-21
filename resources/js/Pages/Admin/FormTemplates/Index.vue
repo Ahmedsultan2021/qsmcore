@@ -164,6 +164,8 @@ function saveName(row) {
             <Link :href="route('industries.index')" class="text-blue-600 hover:underline dark:text-blue-400">Industries</Link>
             and sector attachments under
             <Link :href="route('sectors.index')" class="text-blue-600 hover:underline dark:text-blue-400">Sectors</Link>.
+            Default departments that companies seed are managed in
+            <Link :href="route('settings.index')" class="text-blue-600 hover:underline dark:text-blue-400">Settings</Link>.
         </p>
 
         <div

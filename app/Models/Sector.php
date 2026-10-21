@@ -29,4 +29,9 @@ class Sector extends Model
     {
         return $this->belongsToMany(FormTemplate::class, 'sector_form_template');
     }
+
+    public function defaultDepartments()
+    {
+        return $this->hasMany(DefaultDepartment::class)->orderBy('sort_order')->orderBy('id');
+    }
 }

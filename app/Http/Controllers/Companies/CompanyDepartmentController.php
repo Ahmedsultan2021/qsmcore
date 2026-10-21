@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Companies;
 
 use App\Http\Controllers\Controller;
 use App\Models\Department;
+use App\Models\DefaultDepartment;
 use App\Models\Employee;
 use App\Models\Audit;
 use App\Models\Form;
 use App\Models\FormResponse;
+use App\Models\FormTemplate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -330,60 +332,29 @@ class CompanyDepartmentController extends Controller
                 ->with('error', 'Your company has no sector assigned.');
         }
 
-        $sectorMap = [
-            'Airlines' => [
-                ['name' => 'Flight Operations', 'template_category' => 'Aviation - Flight Ops',         'description' => 'Crew scheduling, flight dispatch, and airborne safety management'],
-                ['name' => 'Ground Operations', 'template_category' => 'Aviation - Ground Safety',      'description' => 'Ramp services, turnaround coordination, and ground safety'],
-                ['name' => 'OCC',               'template_category' => 'Aviation - OCC',                'description' => 'Operations Control Center — disruption management and crew coordination'],
-                ['name' => 'Maintenance',       'template_category' => 'Aviation - Maintenance',        'description' => 'Line and base aircraft maintenance and MEL control'],
-                ['name' => 'Training',          'template_category' => 'Aviation - Training',           'description' => 'Crew training, simulator sessions, and competency management'],
-                ['name' => 'Safety',            'template_category' => 'Aviation - Safety',             'description' => 'Safety Management System, hazard reporting, and investigations'],
-                ['name' => 'Quality',           'template_category' => 'Aviation - Quality',            'description' => 'Quality audits, NCR management, and compliance monitoring'],
-            ],
-            'MRO' => [
-                ['name' => 'Safety Reports',      'template_category' => 'Aviation - MRO Safety',       'description' => 'MRO workplace safety, incident reporting, and risk assessment'],
-                ['name' => 'Quality Reports',     'template_category' => 'Aviation - MRO Quality',      'description' => 'MRO audits, NCR/CAR/PAR, calibration, and supplier evaluation'],
-                ['name' => 'Operational Reports', 'template_category' => 'Aviation - MRO',              'description' => 'Technical defects, MEL control, scheduled maintenance, and manpower utilization'],
-            ],
-            'Airport' => [
-                ['name' => 'Safety Reports',     'template_category' => 'Aviation - Airport Safety',    'description' => 'Airside incidents, ground vehicle incidents, wildlife strikes, and runway hazards'],
-                ['name' => 'Quality Reports',    'template_category' => 'Aviation - Airport Quality',   'description' => 'Internal audits, terminal inspections, compliance audits, NCR/CAR/PAR, and contractor evaluation'],
-                ['name' => 'Operations Reports', 'template_category' => 'Aviation - Airport Operations','description' => 'Turnaround oversight, fuel handling, GSE checks, and lost & found audits'],
-            ],
-            'OGE Sector' => [
-                ['name' => 'Safety',  'template_category' => 'OGE Safety',  'description' => 'Incident/accident, near miss, hazard, personal injury, spill, fire, equipment failure, process safety, unsafe act, risk assessment'],
-                ['name' => 'Quality', 'template_category' => 'OGE Quality', 'description' => 'Internal audits, NCR, CAR, PAR, inspection, material defect, supplier, change management, calibration, quality improvement'],
-            ],
-            'Maritime' => [
-                ['name' => 'Safety',  'template_category' => 'Logistics & Transportation - Safety',  'description' => 'Maritime incident, near miss, safety observations, man overboard, pollution/spill'],
-                ['name' => 'Quality', 'template_category' => 'Logistics & Transportation - Quality', 'description' => 'NCR, audit checklists, and CAPA forms'],
-            ],
-            'Rail' => [
-                ['name' => 'Safety',  'template_category' => 'Logistics & Transportation - Safety',  'description' => 'Track incidents, near miss, safety observations, level crossing incidents'],
-                ['name' => 'Quality', 'template_category' => 'Logistics & Transportation - Quality', 'description' => 'NCR, audit checklists, and CAPA forms'],
-            ],
-            'Road Transport' => [
-                ['name' => 'Safety',  'template_category' => 'Logistics & Transportation - Safety',  'description' => 'Road incidents, near miss, driver behavior, load/vehicle inspections'],
-                ['name' => 'Quality', 'template_category' => 'Logistics & Transportation - Quality', 'description' => 'NCR, audit checklists, and CAPA forms'],
-            ],
-        ];
+        $deptSpecs = DefaultDepartment::query()
+            ->where('sector_id', $sector->id)
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->get();
 
-        $deptSpecs = $sectorMap[$sector->name] ?? null;
-
-        if (! $deptSpecs) {
+        if ($deptSpecs->isEmpty()) {
             return redirect()->route('companies.departments.index')
                 ->with('error', 'No default departments are defined for your sector.');
         }
 
         foreach ($deptSpecs as $spec) {
             $department = Department::updateOrCreate(
-                ['company_id' => $company->id, 'name' => $spec['name']],
-                ['description' => $spec['description']]
+                ['company_id' => $company->id, 'name' => $spec->name],
+                ['description' => $spec->description]
             );
 
-            $libraryKey  = Str::slug($spec['template_category']);
-            $templateIds = \App\Models\FormTemplate::query()
-                ->where('library_key', $libraryKey)
+            if (! $spec->library_key) {
+                continue;
+            }
+
+            $templateIds = FormTemplate::query()
+                ->where('library_key', $spec->library_key)
                 ->whereHas('sectors', fn ($q) => $q->where('sectors.id', $sector->id))
                 ->pluck('id')
                 ->all();

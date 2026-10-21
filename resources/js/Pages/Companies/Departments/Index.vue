@@ -20,7 +20,7 @@ const deleteDepartment = (id) => {
 };
 
 const seedDefaults = () => {
-    if (confirm("This will create default departments for your sector (existing ones won't be duplicated). Continue?")) {
+    if (confirm("This will create the default departments configured for your sector. A department that already exists with the same name is kept, and its forms are refreshed. Continue?")) {
         router.post(route("companies.departments.seed-defaults"));
     }
 };
@@ -45,13 +45,14 @@ const navs = computed(() => [
         />
 
         <!-- Seed Defaults Button -->
-        <div class="flex justify-end mt-6">
+        <div class="flex flex-col items-end mt-6 gap-1">
             <button
                 @click="seedDefaults"
                 class="inline-flex items-center px-4 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 transition-colors"
             >
                 <i class="fa-solid fa-wand-magic-sparkles mr-2"></i>Seed Default Departments
             </button>
+            <p class="text-xs text-gray-500 dark:text-gray-400">Uses the default departments set for your sector in the admin portal.</p>
         </div>
 
         <!-- View Mode Toggle -->

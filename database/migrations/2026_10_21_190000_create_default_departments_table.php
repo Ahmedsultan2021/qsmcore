@@ -1,0 +1,31 @@
+<?php
+
+use App\Support\DefaultDepartmentCatalog;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('default_departments', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('sector_id')->constrained()->cascadeOnDelete();
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->string('library_key')->nullable();
+            $table->unsignedInteger('sort_order')->default(0);
+            $table->timestamps();
+
+            $table->unique(['sector_id', 'name']);
+        });
+
+        DefaultDepartmentCatalog::seedMissingSectors();
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('default_departments');
+    }
+};

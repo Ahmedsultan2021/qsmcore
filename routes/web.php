@@ -103,6 +103,13 @@ Route::middleware('auth')->group(function () {
     Route::post('form-templates/{formTemplate}/fields', [\App\Http\Controllers\Admin\FormTemplateFieldController::class, 'store'])->name('form-templates.fields.store');
     Route::put('form-templates/{formTemplate}/fields/{formTemplateField}', [\App\Http\Controllers\Admin\FormTemplateFieldController::class, 'update'])->name('form-templates.fields.update');
     Route::delete('form-templates/{formTemplate}/fields/{formTemplateField}', [\App\Http\Controllers\Admin\FormTemplateFieldController::class, 'destroy'])->name('form-templates.fields.destroy');
+
+    // Default departments used when a company seeds departments for its sector
+    Route::get('settings', [\App\Http\Controllers\Admin\DefaultDepartmentSettingsController::class, 'index'])->name('settings.index');
+    Route::post('settings/default-departments', [\App\Http\Controllers\Admin\DefaultDepartmentSettingsController::class, 'store'])->name('settings.default-departments.store');
+    Route::put('settings/default-departments/{defaultDepartment}', [\App\Http\Controllers\Admin\DefaultDepartmentSettingsController::class, 'update'])->name('settings.default-departments.update');
+    Route::patch('settings/default-departments/{defaultDepartment}/move', [\App\Http\Controllers\Admin\DefaultDepartmentSettingsController::class, 'move'])->name('settings.default-departments.move');
+    Route::delete('settings/default-departments/{defaultDepartment}', [\App\Http\Controllers\Admin\DefaultDepartmentSettingsController::class, 'destroy'])->name('settings.default-departments.destroy');
     
     // Companies Management (Admin CRUD - no roles/permissions access)
     Route::post('companies/{company}/impersonate', [CompanyController::class, 'impersonate'])->name('companies.impersonate');

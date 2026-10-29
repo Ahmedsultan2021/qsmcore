@@ -62,7 +62,7 @@ const navs = [
                             {{ post.title }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                            {{ post.user?.name || "-" }}
+                            {{ post.author_name || post.user?.name || "-" }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">
                             <span

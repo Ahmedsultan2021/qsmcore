@@ -10,6 +10,8 @@ const props = defineProps({
 const mobileMenuOpen = ref(false)
 
 const authorName = computed(() => {
+    const custom = (props.blogPost.author_name || '').trim()
+    if (custom) return custom
     const user = props.blogPost.user || {}
     const full = [user.fname, user.lname].filter(Boolean).join(' ').trim()
     return full || user.name || 'Admin'

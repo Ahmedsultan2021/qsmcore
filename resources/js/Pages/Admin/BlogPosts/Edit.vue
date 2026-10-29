@@ -10,6 +10,7 @@ const props = defineProps({
 
 const form = useForm({
     title: props.blogPost.title || "",
+    author_name: props.blogPost.author_name || "",
     content: props.blogPost.content || "",
     excerpt: props.blogPost.excerpt || "",
     featured_image: props.blogPost.featured_image || "",
@@ -51,6 +52,24 @@ const submit = () => {
                         class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                     />
                     <div v-if="form.errors.title" class="mt-1 text-sm text-red-600">{{ form.errors.title }}</div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="author_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Author name
+                    </label>
+                    <input
+                        id="author_name"
+                        v-model="form.author_name"
+                        type="text"
+                        maxlength="255"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                        placeholder="Name shown on the public blog"
+                    />
+                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                        This is the name visitors see. It does not have to match the account that created the post. Leave it blank to use your account name.
+                    </p>
+                    <div v-if="form.errors.author_name" class="mt-1 text-sm text-red-600">{{ form.errors.author_name }}</div>
                 </div>
 
                 <div class="mb-4">

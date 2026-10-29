@@ -18,6 +18,7 @@ class BlogPost extends Model
         'featured_image',
         'is_published',
         'user_id',
+        'author_name',
         'published_at',
     ];
 

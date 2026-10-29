@@ -42,10 +42,12 @@ class BlogPostController extends Controller
             'content' => 'required|string',
             'excerpt' => 'nullable|string|max:500',
             'featured_image' => 'nullable|string|max:255',
+            'author_name' => 'nullable|string|max:255',
             'is_published' => 'boolean',
             'published_at' => 'nullable|date',
         ]);
 
+        $validated['author_name'] = trim((string) ($validated['author_name'] ?? '')) ?: null;
         $validated['slug'] = Str::slug($validated['title']);
         $validated['user_id'] = auth()->id();
 
@@ -91,9 +93,12 @@ class BlogPostController extends Controller
             'content' => 'required|string',
             'excerpt' => 'nullable|string|max:500',
             'featured_image' => 'nullable|string|max:255',
+            'author_name' => 'nullable|string|max:255',
             'is_published' => 'boolean',
             'published_at' => 'nullable|date',
         ]);
+
+        $validated['author_name'] = trim((string) ($validated['author_name'] ?? '')) ?: null;
 
         if ($blogPost->title !== $validated['title']) {
             $validated['slug'] = Str::slug($validated['title']);

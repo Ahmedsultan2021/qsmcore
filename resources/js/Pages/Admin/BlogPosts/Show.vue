@@ -33,7 +33,7 @@ const deleteBlogPost = () => {
                 <div class="flex-1">
                     <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">{{ blogPost.title }}</h1>
                     <div class="flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-400 mb-4">
-                        <span>By {{ blogPost.user?.name || "Unknown" }}</span>
+                        <span>By {{ blogPost.author_name || blogPost.user?.name || "Unknown" }}</span>
                         <span v-if="blogPost.published_at">
                             • {{ new Date(blogPost.published_at).toLocaleDateString() }}
                         </span>

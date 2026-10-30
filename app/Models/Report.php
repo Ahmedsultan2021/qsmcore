@@ -36,6 +36,48 @@ class Report extends Model
         });
     }
 
+    public function scopeForTheme($query, ?string $slug)
+    {
+        if (!in_array($slug, ['safety', 'quality'], true)) {
+            return $query;
+        }
+
+        return $query->whereHas(
+            'department.formTemplates.themes',
+            fn ($theme) => $theme->where('form_themes.slug', $slug)
+        );
+    }
+
+    /**
+     * Safety / quality label from the report's forms, then its department templates.
+     */
+    public function themeLabel(): string
+    {
+        $fromForms = $this->forms
+            ->map(fn ($form) => $form->formTemplate)
+            ->filter()
+            ->flatMap(fn ($template) => $template->themes)
+            ->pluck('name')
+            ->filter()
+            ->unique()
+            ->values();
+
+        if ($fromForms->isNotEmpty()) {
+            return $fromForms->join(' · ');
+        }
+
+        $fromDepartment = $this->department?->formTemplates
+            ?->flatMap(fn ($template) => $template->themes)
+            ->pluck('name')
+            ->filter()
+            ->unique()
+            ->values();
+
+        return $fromDepartment && $fromDepartment->isNotEmpty()
+            ? $fromDepartment->join(' · ')
+            : '—';
+    }
+
     public function department()
     {
         return $this->belongsTo(Department::class);

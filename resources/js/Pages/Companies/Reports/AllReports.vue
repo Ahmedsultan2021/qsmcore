@@ -36,6 +36,8 @@ const navs = computed(() => [
 
 const filterForm = useForm({
     department_id: props.filters?.department_id || '',
+    report_type: props.filters?.report_type || '',
+    state: props.filters?.state || '',
 });
 
 const applyFilters = () => {
@@ -47,6 +49,8 @@ const applyFilters = () => {
 
 const clearFilters = () => {
     filterForm.department_id = '';
+    filterForm.report_type = '';
+    filterForm.state = '';
     applyFilters();
 };
 
@@ -95,7 +99,7 @@ const startDownload = () => {
 
         <!-- Filters -->
         <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 mt-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Department
@@ -109,6 +113,34 @@ const startDownload = () => {
                         <option v-for="department in departments" :key="department.id" :value="department.id">
                             {{ department.name }}
                         </option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Type
+                    </label>
+                    <select
+                        v-model="filterForm.report_type"
+                        @change="applyFilters()"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                        <option value="">All types</option>
+                        <option value="safety">Safety</option>
+                        <option value="quality">Quality</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Status
+                    </label>
+                    <select
+                        v-model="filterForm.state"
+                        @change="applyFilters()"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    >
+                        <option value="">All statuses</option>
+                        <option value="open">Open</option>
+                        <option value="closed">Closed</option>
                     </select>
                 </div>
                 <div class="flex items-end">

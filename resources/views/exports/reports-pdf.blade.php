@@ -92,6 +92,9 @@
                 @if ($department)
                     — {{ $department->name }}
                 @endif
+                @if (!empty($reportType))
+                    — {{ ucfirst($reportType) }}
+                @endif
             </div>
         </div>
         <div class="meta">

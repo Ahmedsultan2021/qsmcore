@@ -16,8 +16,11 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class CompanyReportsExport implements FromCollection, WithHeadings, WithMapping, WithStyles, WithColumnWidths, WithTitle
 {
-    public function __construct(private int $companyId, private ?int $departmentId = null)
-    {
+    public function __construct(
+        private int $companyId,
+        private ?int $departmentId = null,
+        private ?string $themeSlug = null,
+    ) {
     }
 
     public function collection(): Collection
@@ -25,6 +28,7 @@ class CompanyReportsExport implements FromCollection, WithHeadings, WithMapping,
         $query = Report::query()
             ->with(['department', 'creator'])
             ->whereHas('department', fn ($q) => $q->where('company_id', $this->companyId))
+            ->forTheme($this->themeSlug)
             ->latest();
 
         if ($this->departmentId) {

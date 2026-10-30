@@ -12,6 +12,7 @@ use App\Http\Controllers\Companies\CompanyAuditController;
 use App\Http\Controllers\Companies\CompanyCapaController;
 use App\Http\Controllers\Companies\CompanyLibraryController;
 use App\Http\Controllers\Auth\EmployeeAuthController;
+use App\Models\Audit;
 use App\Models\Capa;
 use App\Models\Department;
 use App\Models\HelpDocument;
@@ -59,33 +60,53 @@ Route::middleware('auth:employee')->prefix('companies')->name('companies.')->gro
         }
 
         // Base query scope: optionally filter by report theme (safety / quality)
-        $themeSlug = $request->input('report_type'); // 'safety', 'quality', or null
+        $themeSlug = in_array($request->input('report_type'), ['safety', 'quality'], true)
+            ? $request->input('report_type')
+            : null;
         $reportScope = fn ($q) => $q->whereIn('department_id', $filteredDeptIds)
-            ->when($themeSlug, fn ($q2) => $q2->whereHas(
-                'department.formTemplates.themes',
-                fn ($q3) => $q3->where('form_themes.slug', $themeSlug)
-            ));
+            ->forTheme($themeSlug);
+
+        $departmentId = $request->filled('department') ? (int) $request->input('department') : null;
 
         // KPI counts
         $openSafety = Report::whereIn('department_id', $filteredDeptIds)
             ->whereNotIn('status', ['approved', 'rejected'])
-            ->whereHas('department.formTemplates.themes', fn ($q) => $q->where('form_themes.slug', 'safety'))
+            ->forTheme('safety')
             ->count();
 
         $openQuality = Report::whereIn('department_id', $filteredDeptIds)
             ->whereNotIn('status', ['approved', 'rejected'])
-            ->whereHas('department.formTemplates.themes', fn ($q) => $q->where('form_themes.slug', 'quality'))
+            ->forTheme('quality')
             ->count();
 
         $closedReports = Report::where($reportScope)
             ->whereIn('status', ['approved', 'rejected'])
             ->count();
 
-        $overdueCAPAs = Capa::where('company_id', $companyId)
+        $overdueCapaQuery = Capa::where('company_id', $companyId)
             ->where('status', '!=', 'closed')
             ->whereNotNull('due_date')
-            ->whereDate('due_date', '<', now())
-            ->count();
+            ->whereDate('due_date', '<', now()->toDateString())
+            ->when($departmentId, fn ($q) => $q->where('department_id', $departmentId));
+
+        $overdueCAPAs = (clone $overdueCapaQuery)->count();
+        $earliestOverdueDue = (clone $overdueCapaQuery)->orderBy('due_date')->value('due_date');
+
+        $nextCapa = Capa::where('company_id', $companyId)
+            ->where('status', '!=', 'closed')
+            ->whereNotNull('due_date')
+            ->when($departmentId, fn ($q) => $q->where('department_id', $departmentId))
+            ->orderBy('due_date')
+            ->first(['id', 'title', 'due_date', 'status']);
+
+        $nextAudit = Audit::where('company_id', $companyId)
+            ->whereDate('audit_date', '>=', now()->toDateString())
+            ->when($departmentId, fn ($q) => $q->whereHas(
+                'reports',
+                fn ($reports) => $reports->where('department_id', $departmentId)
+            ))
+            ->orderBy('audit_date')
+            ->first(['id', 'name', 'audit_date']);
 
         // Report status breakdown — cast counts to int to avoid JS string concatenation
         $statusCounts = Report::where($reportScope)
@@ -96,7 +117,7 @@ Route::middleware('auth:employee')->prefix('companies')->name('companies.')->gro
 
         // Recent 5 reports
         $recentReports = Report::where($reportScope)
-            ->with('department')
+            ->with(['department.formTemplates.themes', 'forms.formTemplate.themes'])
             ->latest()
             ->limit(5)
             ->get()
@@ -104,6 +125,7 @@ Route::middleware('auth:employee')->prefix('companies')->name('companies.')->gro
                 'id'     => $r->id,
                 'title'  => $r->title,
                 'dept'   => $r->department?->name,
+                'type'   => $r->themeLabel(),
                 'status' => $r->status,
                 'date'   => $r->report_date?->format('d-M-Y'),
                 'url'    => route('companies.departments.reports.show', [$r->department_id, $r->id]),
@@ -112,7 +134,7 @@ Route::middleware('auth:employee')->prefix('companies')->name('companies.')->gro
         // Open safety reports sidebar
         $openSafetyAlerts = Report::whereIn('department_id', $filteredDeptIds)
             ->whereNotIn('status', ['approved', 'rejected'])
-            ->whereHas('department.formTemplates.themes', fn ($q) => $q->where('form_themes.slug', 'safety'))
+            ->forTheme('safety')
             ->with('department')
             ->latest()
             ->limit(3)
@@ -124,7 +146,8 @@ Route::middleware('auth:employee')->prefix('companies')->name('companies.')->gro
                 'url'    => route('companies.departments.reports.show', [$r->department_id, $r->id]),
             ]);
 
-        // Top 5 departments by report volume (with percentage)
+        // Top 5 departments by report volume. Percent is of every matching report.
+        $totalVol = Report::where($reportScope)->count();
         $rawVolume = Report::where($reportScope)
             ->selectRaw('department_id, COUNT(*) as cnt')
             ->groupBy('department_id')
@@ -132,11 +155,10 @@ Route::middleware('auth:employee')->prefix('companies')->name('companies.')->gro
             ->limit(5)
             ->get();
 
-        $totalVol = $rawVolume->sum('cnt') ?: 1;
         $volumeByDept = $rawVolume->map(fn ($r) => [
             'name'    => $departments->firstWhere('id', $r->department_id)?->name ?? 'Unknown',
             'count'   => (int) $r->cnt,
-            'percent' => (int) round($r->cnt / $totalVol * 100),
+            'percent' => $totalVol > 0 ? (int) round($r->cnt / $totalVol * 100) : 0,
         ]);
 
         return Inertia::render('Companies/Dashboard', [
@@ -151,6 +173,22 @@ Route::middleware('auth:employee')->prefix('companies')->name('companies.')->gro
             'recentReports'    => $recentReports,
             'openSafetyAlerts' => $openSafetyAlerts,
             'volumeByDept'     => $volumeByDept,
+            'attention'        => [
+                'overdueDue' => $earliestOverdueDue
+                    ? \Illuminate\Support\Carbon::parse($earliestOverdueDue)->format('d M Y')
+                    : null,
+                'nextCapa' => $nextCapa ? [
+                    'title'    => $nextCapa->title,
+                    'due_date' => $nextCapa->due_date?->format('d M Y'),
+                    'overdue'  => $nextCapa->due_date && $nextCapa->due_date->toDateString() < now()->toDateString(),
+                    'url'      => route('companies.capa.show', $nextCapa->id),
+                ] : null,
+                'nextAudit' => $nextAudit ? [
+                    'name' => $nextAudit->name,
+                    'date' => $nextAudit->audit_date?->format('d M Y'),
+                    'url'  => route('companies.audits.show', $nextAudit->id),
+                ] : null,
+            ],
         ]);
     })->name('dashboard');
 

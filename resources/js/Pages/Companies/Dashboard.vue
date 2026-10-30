@@ -14,6 +14,7 @@ const props = defineProps({
     recentReports:    { type: Array,  default: () => [] },
     openSafetyAlerts: { type: Array,  default: () => [] },
     volumeByDept:     { type: Array,  default: () => [] },
+    attention:        { type: Object, default: () => ({ overdueDue: null, nextCapa: null, nextAudit: null }) },
 });
 
 const page = usePage();
@@ -43,8 +44,18 @@ const showDepartmentPicker = ref(false);
 const selectedDepartmentId = ref("");
 
 const openNewReport = () => {
+    if (props.departments.length === 1) {
+        router.visit(route("companies.departments.reports.create", { department: props.departments[0].id }));
+        return;
+    }
     selectedDepartmentId.value = "";
     showDepartmentPicker.value = true;
+};
+
+const listQuery = (extra = {}) => {
+    const query = { ...extra };
+    if (filters.value.department) query.department_id = filters.value.department;
+    return query;
 };
 
 const goToCreateReport = () => {
@@ -54,12 +65,47 @@ const goToCreateReport = () => {
 };
 
 // KPI cards driven by real stats
-const statCards = computed(() => [
-    { label: "Open Safety Reports",  value: props.stats.openSafety,    tone: "bg-rose-100",    text: "text-rose-900" },
-    { label: "Open Quality Reports",  value: props.stats.openQuality,   tone: "bg-amber-100",   text: "text-amber-900" },
-    { label: "Closed Reports",        value: props.stats.closedReports, tone: "bg-emerald-100", text: "text-emerald-900" },
-    { label: "Overdue CAPAs",         value: props.stats.overdueCAPAs,  tone: "bg-sky-100",     text: "text-sky-900" },
-]);
+const statCards = computed(() => {
+    const overdue = Number(props.stats.overdueCAPAs || 0);
+    const overdueOn = overdue > 0;
+    const closedQuery = { state: "closed" };
+    if (filters.value.reportType) closedQuery.report_type = filters.value.reportType;
+
+    return [
+        {
+            label: "Open Safety Reports",
+            value: props.stats.openSafety,
+            tone: "bg-rose-100",
+            text: "text-rose-900",
+            note: null,
+            href: route("companies.reports.index", listQuery({ report_type: "safety", state: "open" })),
+        },
+        {
+            label: "Open Quality Reports",
+            value: props.stats.openQuality,
+            tone: "bg-amber-100",
+            text: "text-amber-900",
+            note: null,
+            href: route("companies.reports.index", listQuery({ report_type: "quality", state: "open" })),
+        },
+        {
+            label: "Closed Reports",
+            value: props.stats.closedReports,
+            tone: "bg-emerald-100",
+            text: "text-emerald-900",
+            note: null,
+            href: route("companies.reports.index", listQuery(closedQuery)),
+        },
+        {
+            label: "Overdue CAPAs",
+            value: overdue,
+            tone: overdueOn ? "bg-rose-100" : "bg-sky-100",
+            text: overdueOn ? "text-rose-900" : "text-sky-900",
+            note: overdueOn && props.attention?.overdueDue ? `Earliest due ${props.attention.overdueDue}` : null,
+            href: route("companies.capa.index", listQuery({ overdue: 1 })),
+        },
+    ];
+});
 
 // Report status legend driven by real counts
 const STATUS_CONFIG = {
@@ -110,6 +156,11 @@ const STATUS_BADGE = {
     rejected:  "bg-rose-100 text-rose-700",
 };
 const badgeClass = (status) => STATUS_BADGE[status] ?? "bg-slate-100 text-slate-700";
+const statusLabel = (status) => STATUS_CONFIG[status]?.label ?? status;
+
+const totalReportsCaption = computed(() =>
+    filters.value.department || filters.value.reportType ? "in the current view" : "across all departments"
+);
 
 // Safety alerts: open reports under departments with at least one safety-themed template (from backend)
 const safetyAlerts = computed(() => props.openSafetyAlerts ?? []);
@@ -120,11 +171,18 @@ const alertDotClass = (status) => {
     return "bg-blue-400";
 };
 
+const exportParams = () => {
+    const params = new URLSearchParams();
+    if (filters.value.department) params.set("department_id", filters.value.department);
+    if (filters.value.reportType) params.set("report_type", filters.value.reportType);
+    const query = params.toString();
+    return query ? `?${query}` : "";
+};
 const exportExcel = () => {
-    window.location.href = "/companies/reports/export/excel";
+    window.location.href = `/companies/reports/export/excel${exportParams()}`;
 };
 const exportPdf = () => {
-    window.open("/companies/reports/export/pdf", "_blank", "noopener");
+    window.open(`/companies/reports/export/pdf${exportParams()}`, "_blank", "noopener");
 };
 </script>
 
@@ -194,16 +252,45 @@ const exportPdf = () => {
             <section class="lg:col-span-9 space-y-6">
                 <!-- KPI Cards -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-                    <div
+                    <Link
                         v-for="c in statCards"
                         :key="c.label"
-                        class="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm overflow-hidden"
+                        :href="c.href"
+                        class="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm overflow-hidden hover:shadow-md transition"
                     >
                         <div class="p-4" :class="c.tone">
                             <div class="text-sm font-semibold" :class="c.text">{{ c.label }}</div>
                             <div class="mt-1 text-3xl font-extrabold text-gray-900">{{ c.value }}</div>
+                            <div v-if="c.note" class="mt-1 text-xs font-semibold" :class="c.text">{{ c.note }}</div>
                         </div>
-                    </div>
+                    </Link>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <Link
+                        :href="attention.nextCapa?.url || route('companies.capa.index')"
+                        class="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm p-4 hover:shadow-md transition"
+                    >
+                        <div class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Next CAPA</div>
+                        <div v-if="attention.nextCapa" class="mt-2">
+                            <div class="font-extrabold text-gray-900 dark:text-white truncate">{{ attention.nextCapa.title }}</div>
+                            <div class="mt-1 text-sm font-semibold" :class="attention.nextCapa.overdue ? 'text-rose-600' : 'text-gray-600 dark:text-gray-300'">
+                                Due {{ attention.nextCapa.due_date }}
+                            </div>
+                        </div>
+                        <div v-else class="mt-2 text-sm text-gray-400">No open CAPA with a due date</div>
+                    </Link>
+                    <Link
+                        :href="attention.nextAudit?.url || route('companies.audits.index')"
+                        class="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm p-4 hover:shadow-md transition"
+                    >
+                        <div class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Next audit</div>
+                        <div v-if="attention.nextAudit" class="mt-2">
+                            <div class="font-extrabold text-gray-900 dark:text-white truncate">{{ attention.nextAudit.name }}</div>
+                            <div class="mt-1 text-sm font-semibold text-gray-600 dark:text-gray-300">{{ attention.nextAudit.date }}</div>
+                        </div>
+                        <div v-else class="mt-2 text-sm text-gray-400">No upcoming audit</div>
+                    </Link>
                 </div>
 
                 <!-- Mid row -->
@@ -239,7 +326,7 @@ const exportPdf = () => {
                             <div v-for="v in volumeByDept" :key="v.name">
                                 <div class="flex justify-between text-xs text-gray-600 dark:text-gray-300 mb-1">
                                     <span class="truncate max-w-[70%]">{{ v.name }}</span>
-                                    <span>{{ v.percent }}%</span>
+                                    <span>{{ v.count }} · {{ v.percent }}%</span>
                                 </div>
                                 <div class="h-2.5 rounded-full bg-gray-100 dark:bg-gray-700 overflow-hidden">
                                     <div class="h-2.5 bg-blue-600 rounded-full transition-all" :style="{ width: v.percent + '%' }"></div>
@@ -273,7 +360,7 @@ const exportPdf = () => {
                             <div class="mt-3 text-3xl font-extrabold text-gray-900 dark:text-white">
                                 {{ Object.values(statusCounts).reduce((a, b) => a + Number(b), 0) }}
                             </div>
-                            <div class="mt-1 text-xs text-gray-500 dark:text-gray-400">across all departments</div>
+                            <div class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ totalReportsCaption }}</div>
                         </div>
                     </div>
                 </div>
@@ -295,13 +382,14 @@ const exportPdf = () => {
                                         <th class="text-left font-semibold px-4 py-3">ID</th>
                                         <th class="text-left font-semibold px-4 py-3">Title</th>
                                         <th class="text-left font-semibold px-4 py-3">Dept.</th>
+                                        <th class="text-left font-semibold px-4 py-3">Type</th>
                                         <th class="text-left font-semibold px-4 py-3">Status</th>
                                         <th class="text-left font-semibold px-4 py-3">Date</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                                     <tr v-if="!recentReports.length">
-                                        <td colspan="6" class="px-4 py-6 text-center text-sm text-gray-400">No reports yet</td>
+                                        <td colspan="7" class="px-4 py-6 text-center text-sm text-gray-400">No reports yet</td>
                                     </tr>
                                     <tr
                                         v-for="(r, index) in recentReports"
@@ -313,9 +401,10 @@ const exportPdf = () => {
                                         <td class="px-4 py-3 font-semibold text-blue-600 dark:text-blue-400">#{{ r.id }}</td>
                                         <td class="px-4 py-3 text-gray-900 dark:text-white">{{ r.title }}</td>
                                         <td class="px-4 py-3 text-gray-700 dark:text-gray-200">{{ r.dept }}</td>
+                                        <td class="px-4 py-3 text-gray-700 dark:text-gray-200">{{ r.type || "—" }}</td>
                                         <td class="px-4 py-3">
                                             <span class="inline-flex items-center px-2 py-1 rounded-lg text-xs font-bold" :class="badgeClass(r.status)">
-                                                {{ r.status }}
+                                                {{ statusLabel(r.status) }}
                                             </span>
                                         </td>
                                         <td class="px-4 py-3 text-gray-600 dark:text-gray-300">{{ r.date }}</td>

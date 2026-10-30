@@ -34,9 +34,19 @@ class CompanyReportController extends Controller
             })
             ->with(['department', 'creator']);
         
-        // Filter by department
-        if ($request->has('department_id') && $request->department_id) {
+        if ($request->filled('department_id')) {
             $query->where('department_id', $request->department_id);
+        }
+
+        $theme = $this->reportTheme($request);
+        if ($theme) {
+            $query->forTheme($theme);
+        }
+
+        if ($request->input('state') === 'open') {
+            $query->whereNotIn('status', ['approved', 'rejected']);
+        } elseif ($request->input('state') === 'closed') {
+            $query->whereIn('status', ['approved', 'rejected']);
         }
         
         $reports = $query->latest()->paginate(10)->withQueryString();
@@ -48,7 +58,7 @@ class CompanyReportController extends Controller
         return Inertia::render('Companies/Reports/AllReports', [
             'reports' => $reports,
             'departments' => $departments,
-            'filters' => $request->only(['department_id']),
+            'filters' => $request->only(['department_id', 'report_type', 'state']),
         ]);
     }
 
@@ -73,7 +83,10 @@ class CompanyReportController extends Controller
 
         $filename = 'reports-' . now()->format('Y-m-d_His') . '.xlsx';
 
-        return Excel::download(new CompanyReportsExport($companyId, $departmentId), $filename);
+        return Excel::download(
+            new CompanyReportsExport($companyId, $departmentId, $this->reportTheme($request)),
+            $filename
+        );
     }
 
     /**
@@ -91,9 +104,12 @@ class CompanyReportController extends Controller
                 ->firstOrFail();
         }
 
+        $theme = $this->reportTheme($request);
+
         $query = Report::query()
             ->with(['department', 'creator'])
             ->whereHas('department', fn ($q) => $q->where('company_id', $companyId))
+            ->forTheme($theme)
             ->latest();
 
         if ($department) {
@@ -104,6 +120,7 @@ class CompanyReportController extends Controller
             'reports'     => $query->get(),
             'company'     => $authEmployee->company,
             'department'  => $department,
+            'reportType'  => $theme,
             'generatedAt' => now()->format('Y-m-d H:i'),
         ]);
     }
@@ -664,6 +681,13 @@ class CompanyReportController extends Controller
 
         return redirect()->route('companies.departments.reports.index', $department->id)
             ->with('success', 'Report deleted successfully');
+    }
+
+    private function reportTheme(Request $request): ?string
+    {
+        $theme = $request->input('report_type');
+
+        return in_array($theme, ['safety', 'quality'], true) ? $theme : null;
     }
 }
 

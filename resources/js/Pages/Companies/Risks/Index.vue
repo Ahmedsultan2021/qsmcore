@@ -12,14 +12,83 @@ const props = defineProps({
     filters: Object,
     categories: Object,
     statuses: Object,
+    stats: {
+        type: Object,
+        default: () => ({
+            openSafety: 0,
+            openQuality: 0,
+            closedReports: 0,
+            overdueCAPAs: 0,
+            overdueDue: null,
+        }),
+    },
+    pressure: {
+        type: Object,
+        default: () => ({ departments: 0 }),
+    },
 });
 
 const viewMode = ref('list');
 const search = ref(props.filters?.search || '');
-const selectedDepartment = ref(props.filters?.department_id || '');
+const selectedDepartment = ref(props.filters?.department_id ? String(props.filters.department_id) : '');
 const selectedStatus = ref(props.filters?.status || '');
 const selectedCategory = ref(props.filters?.category || '');
 const selectedRiskLevel = ref(props.filters?.risk_level || '');
+
+const statCards = computed(() => {
+    const departmentId = selectedDepartment.value || undefined;
+    const query = (extra) => {
+        const params = { ...extra };
+        if (departmentId) params.department_id = departmentId;
+        return params;
+    };
+    const overdue = Number(props.stats?.overdueCAPAs || 0);
+    const overdueOn = overdue > 0;
+
+    return [
+        {
+            label: "Open Safety Reports",
+            value: props.stats?.openSafety ?? 0,
+            tone: "bg-rose-50 dark:bg-rose-950/30",
+            text: "text-rose-900 dark:text-rose-200",
+            note: null,
+            href: route("companies.reports.index", query({ report_type: "safety", state: "open" })),
+        },
+        {
+            label: "Open Quality Reports",
+            value: props.stats?.openQuality ?? 0,
+            tone: "bg-amber-50 dark:bg-amber-950/30",
+            text: "text-amber-900 dark:text-amber-200",
+            note: null,
+            href: route("companies.reports.index", query({ report_type: "quality", state: "open" })),
+        },
+        {
+            label: "Closed Reports",
+            value: props.stats?.closedReports ?? 0,
+            tone: "bg-emerald-50 dark:bg-emerald-950/30",
+            text: "text-emerald-900 dark:text-emerald-200",
+            note: null,
+            href: route("companies.reports.index", query({ state: "closed" })),
+        },
+        {
+            label: "Overdue CAPAs",
+            value: overdue,
+            tone: overdueOn ? "bg-rose-50 dark:bg-rose-950/30" : "bg-sky-50 dark:bg-sky-950/30",
+            text: overdueOn ? "text-rose-900 dark:text-rose-200" : "text-sky-900 dark:text-sky-200",
+            note: overdueOn && props.stats?.overdueDue ? `Earliest due ${props.stats.overdueDue}` : null,
+            href: route("companies.capa.index", query({ overdue: 1 })),
+        },
+    ];
+});
+
+const signalClass = (key) => {
+    const classes = {
+        treatment_overdue: "bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-300",
+        active_exposure: "bg-amber-100 text-amber-900 dark:bg-amber-900/30 dark:text-amber-200",
+        quality_exposure: "bg-sky-100 text-sky-900 dark:bg-sky-900/30 dark:text-sky-200",
+    };
+    return classes[key] || "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300";
+};
 
 const navs = computed(() => [
     { name: "Dashboard", linkName: "companies.dashboard" },
@@ -140,6 +209,31 @@ watch([search], () => {
             :addSearchInput="false"
         />
 
+        <div
+            v-if="pressure.departments > 0"
+            class="mt-6 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950 dark:border-amber-900/40 dark:bg-amber-950/40 dark:text-amber-100"
+        >
+            {{ pressure.departments }}
+            {{ pressure.departments === 1 ? "department has" : "departments have" }}
+            operational pressure from open reports or overdue CAPAs. Assessed scores stay as entered — the badge marks what to review.
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mt-6">
+            <Link
+                v-for="card in statCards"
+                :key="card.label"
+                :href="card.href"
+                class="rounded-lg border border-gray-200 dark:border-gray-700 p-4 shadow-sm transition hover:shadow-md"
+                :class="card.tone"
+            >
+                <div class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                    {{ card.label }}
+                </div>
+                <div class="mt-2 text-3xl font-extrabold" :class="card.text">{{ card.value }}</div>
+                <div v-if="card.note" class="mt-1 text-xs text-gray-600 dark:text-gray-300">{{ card.note }}</div>
+            </Link>
+        </div>
+
         <!-- Filters Section -->
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mt-6">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
@@ -165,8 +259,8 @@ watch([search], () => {
                         class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white text-sm"
                     >
                         <option value="">All Departments</option>
-                        <option v-for="dept in departments" :key="dept.id" :value="dept.id">
-                            {{ dept.name }}
+                        <option v-for="dept in departments" :key="dept.id" :value="String(dept.id)">
+                            {{ dept.name }}{{ dept.heat ? " · Heat" : "" }}
                         </option>
                     </select>
                 </div>
@@ -304,6 +398,14 @@ watch([search], () => {
                                         </div>
                                         <div class="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
                                             {{ risk.description }}
+                                        </div>
+                                        <div v-if="risk.signal" class="mt-2">
+                                            <span
+                                                class="inline-flex px-2 py-0.5 text-xs font-semibold rounded-full"
+                                                :class="signalClass(risk.signal.key)"
+                                            >
+                                                {{ risk.signal.label }}
+                                            </span>
                                         </div>
                                     </div>
                                 </div>

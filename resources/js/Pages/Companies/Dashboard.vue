@@ -347,7 +347,7 @@ const exportPdf = () => {
                             <span class="text-white/90">›</span>
                         </button>
                         <Link
-                            :href="route('companies.risks.index')"
+                            :href="route('companies.risks.index', filters.department ? { department_id: filters.department } : {})"
                             class="w-full inline-flex items-center justify-between px-4 py-3 rounded-2xl bg-slate-100 text-gray-900 font-extrabold border border-gray-200 hover:bg-slate-50 transition"
                         >
                             <span>View Risk Register</span>

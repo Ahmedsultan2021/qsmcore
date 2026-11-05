@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Companies;
 
 use App\Http\Controllers\Controller;
-use App\Models\Risk;
 use App\Models\Department;
 use App\Models\Employee;
+use App\Models\Risk;
+use App\Support\CompanyDashboardStats;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -18,7 +19,7 @@ class CompanyRiskController extends Controller
     public function index(Request $request)
     {
         $employee = Auth::guard('employee')->user();
-        
+
         $query = Risk::with(['department', 'riskOwner'])
             ->whereHas('department', function ($q) use ($employee) {
                 $q->where('company_id', $employee->company_id);
@@ -57,22 +58,43 @@ class CompanyRiskController extends Controller
         // Search
         if ($request->has('search') && $request->search) {
             $query->where(function ($q) use ($request) {
-                $q->where('title', 'like', '%' . $request->search . '%')
-                  ->orWhere('description', 'like', '%' . $request->search . '%')
-                  ->orWhere('risk_code', 'like', '%' . $request->search . '%');
+                $q->where('title', 'like', '%'.$request->search.'%')
+                    ->orWhere('description', 'like', '%'.$request->search.'%')
+                    ->orWhere('risk_code', 'like', '%'.$request->search.'%');
             });
         }
 
-        $risks = $query->latest()->paginate(15);
-        
-        $departments = Department::where('company_id', $employee->company_id)
-            ->select('id', 'name')
-            ->orderBy('name')
-            ->get();
+        $risks = $query->latest()->paginate(15)->withQueryString();
+
+        $context = CompanyDashboardStats::make(
+            (int) $employee->company_id,
+            $request->filled('department_id') ? (int) $request->department_id : null,
+            null,
+        )->registerContext();
+
+        $risks->getCollection()->transform(function (Risk $risk) use ($context) {
+            $departmentSignal = $context['signals'][(int) $risk->department_id] ?? [
+                'open_safety' => 0,
+                'open_quality' => 0,
+                'overdue_capas' => 0,
+            ];
+            $risk->setAttribute('signal', CompanyDashboardStats::signalFor(
+                (string) $risk->status,
+                (string) $risk->category,
+                $departmentSignal,
+            ));
+            $risk->syncOriginalAttribute('signal');
+
+            return $risk;
+        });
 
         return Inertia::render('Companies/Risks/Index', [
             'risks' => $risks,
-            'departments' => $departments,
+            'departments' => $context['departments'],
+            'stats' => $context['stats'],
+            'pressure' => [
+                'departments' => $context['pressuredDepartments'],
+            ],
             'filters' => $request->only(['department_id', 'status', 'category', 'risk_level', 'search']),
             'categories' => Risk::categories(),
             'statuses' => Risk::statuses(),
@@ -85,7 +107,7 @@ class CompanyRiskController extends Controller
     public function create(Request $request)
     {
         $employee = Auth::guard('employee')->user();
-        
+
         $departments = Department::where('company_id', $employee->company_id)
             ->select('id', 'name')
             ->orderBy('name')
@@ -98,7 +120,7 @@ class CompanyRiskController extends Controller
             ->map(function ($emp) {
                 return [
                     'id' => $emp->id,
-                    'name' => $emp->fname . ' ' . $emp->lname,
+                    'name' => $emp->fname.' '.$emp->lname,
                 ];
             });
 
@@ -166,7 +188,7 @@ class CompanyRiskController extends Controller
     public function show(Risk $risk)
     {
         $employee = Auth::guard('employee')->user();
-        
+
         // Verify risk belongs to company
         if ((int) $risk->department->company_id !== (int) $employee->company_id) {
             abort(403, 'Unauthorized action.');
@@ -190,7 +212,7 @@ class CompanyRiskController extends Controller
     public function edit(Risk $risk)
     {
         $employee = Auth::guard('employee')->user();
-        
+
         // Verify risk belongs to company
         if ((int) $risk->department->company_id !== (int) $employee->company_id) {
             abort(403, 'Unauthorized action.');
@@ -210,7 +232,7 @@ class CompanyRiskController extends Controller
             ->map(function ($emp) {
                 return [
                     'id' => $emp->id,
-                    'name' => $emp->fname . ' ' . $emp->lname,
+                    'name' => $emp->fname.' '.$emp->lname,
                 ];
             });
 
@@ -232,7 +254,7 @@ class CompanyRiskController extends Controller
     public function update(Request $request, Risk $risk)
     {
         $employee = Auth::guard('employee')->user();
-        
+
         // Verify risk belongs to company
         if ((int) $risk->department->company_id !== (int) $employee->company_id) {
             abort(403, 'Unauthorized action.');
@@ -284,7 +306,7 @@ class CompanyRiskController extends Controller
     public function destroy(Risk $risk)
     {
         $employee = Auth::guard('employee')->user();
-        
+
         // Verify risk belongs to company
         if ((int) $risk->department->company_id !== (int) $employee->company_id) {
             abort(403, 'Unauthorized action.');
@@ -302,7 +324,7 @@ class CompanyRiskController extends Controller
     public function departmentRisks(Department $department)
     {
         $employee = Auth::guard('employee')->user();
-        
+
         // Verify department belongs to company
         if ((int) $department->company_id !== (int) $employee->company_id) {
             abort(403, 'Unauthorized action.');

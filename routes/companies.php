@@ -1,22 +1,19 @@
 <?php
 
-use App\Http\Controllers\Companies\CompanyEmployeeController;
+use App\Http\Controllers\Auth\EmployeeAuthController;
+use App\Http\Controllers\Companies\CompanyAuditController;
+use App\Http\Controllers\Companies\CompanyCapaController;
 use App\Http\Controllers\Companies\CompanyDepartmentController;
-use App\Http\Controllers\Companies\CompanyReportController;
+use App\Http\Controllers\Companies\CompanyEmployeeController;
 use App\Http\Controllers\Companies\CompanyFormController;
 use App\Http\Controllers\Companies\CompanyFormFieldController;
 use App\Http\Controllers\Companies\CompanyFormSubmissionController;
+use App\Http\Controllers\Companies\CompanyLibraryController;
+use App\Http\Controllers\Companies\CompanyReportController;
 use App\Http\Controllers\Companies\CompanyReportFileController;
 use App\Http\Controllers\Companies\CompanyRiskController;
-use App\Http\Controllers\Companies\CompanyAuditController;
-use App\Http\Controllers\Companies\CompanyCapaController;
-use App\Http\Controllers\Companies\CompanyLibraryController;
-use App\Http\Controllers\Auth\EmployeeAuthController;
-use App\Models\Audit;
-use App\Models\Capa;
-use App\Models\Department;
 use App\Models\HelpDocument;
-use App\Models\Report;
+use App\Support\CompanyDashboardStats;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -40,156 +37,18 @@ Route::middleware('auth:employee')->prefix('companies')->name('companies.')->gro
     Route::post('/logout', [EmployeeAuthController::class, 'destroy'])->name('logout');
     Route::post('/leave-impersonation', [EmployeeAuthController::class, 'leaveImpersonation'])->name('leave-impersonation');
     Route::get('/ping', fn () => response()->json(['ok' => true]))->name('ping');
-    
-    Route::get('/dashboard', function (\Illuminate\Http\Request $request) {
+
+    Route::get('/dashboard', function (Illuminate\Http\Request $request) {
         $authEmployee = Auth::guard('employee')->user();
-        $companyId    = $authEmployee->company_id;
-
-        $departments = Department::query()
-            ->where('company_id', $companyId)
-            ->orderBy('name')
-            ->get(['id', 'name']);
-
-        $deptIds = $departments->pluck('id');
-
-        // Apply department filter if provided
-        if ($request->filled('department')) {
-            $filteredDeptIds = $deptIds->intersect([(int) $request->input('department')]);
-        } else {
-            $filteredDeptIds = $deptIds;
-        }
-
-        // Base query scope: optionally filter by report theme (safety / quality)
         $themeSlug = in_array($request->input('report_type'), ['safety', 'quality'], true)
             ? $request->input('report_type')
             : null;
-        $reportScope = fn ($q) => $q->whereIn('department_id', $filteredDeptIds)
-            ->forTheme($themeSlug);
 
-        $departmentId = $request->filled('department') ? (int) $request->input('department') : null;
-
-        // KPI counts
-        $openSafety = Report::whereIn('department_id', $filteredDeptIds)
-            ->whereNotIn('status', ['approved', 'rejected'])
-            ->forTheme('safety')
-            ->count();
-
-        $openQuality = Report::whereIn('department_id', $filteredDeptIds)
-            ->whereNotIn('status', ['approved', 'rejected'])
-            ->forTheme('quality')
-            ->count();
-
-        $closedReports = Report::where($reportScope)
-            ->whereIn('status', ['approved', 'rejected'])
-            ->count();
-
-        $overdueCapaQuery = Capa::where('company_id', $companyId)
-            ->where('status', '!=', 'closed')
-            ->whereNotNull('due_date')
-            ->whereDate('due_date', '<', now()->toDateString())
-            ->when($departmentId, fn ($q) => $q->where('department_id', $departmentId));
-
-        $overdueCAPAs = (clone $overdueCapaQuery)->count();
-        $earliestOverdueDue = (clone $overdueCapaQuery)->orderBy('due_date')->value('due_date');
-
-        $nextCapa = Capa::where('company_id', $companyId)
-            ->where('status', '!=', 'closed')
-            ->whereNotNull('due_date')
-            ->when($departmentId, fn ($q) => $q->where('department_id', $departmentId))
-            ->orderBy('due_date')
-            ->first(['id', 'title', 'due_date', 'status']);
-
-        $nextAudit = Audit::where('company_id', $companyId)
-            ->whereDate('audit_date', '>=', now()->toDateString())
-            ->when($departmentId, fn ($q) => $q->whereHas(
-                'reports',
-                fn ($reports) => $reports->where('department_id', $departmentId)
-            ))
-            ->orderBy('audit_date')
-            ->first(['id', 'name', 'audit_date']);
-
-        // Report status breakdown — cast counts to int to avoid JS string concatenation
-        $statusCounts = Report::where($reportScope)
-            ->selectRaw('status, COUNT(*) as cnt')
-            ->groupBy('status')
-            ->pluck('cnt', 'status')
-            ->map(fn ($v) => (int) $v);
-
-        // Recent 5 reports
-        $recentReports = Report::where($reportScope)
-            ->with(['department.formTemplates.themes', 'forms.formTemplate.themes'])
-            ->latest()
-            ->limit(5)
-            ->get()
-            ->map(fn ($r) => [
-                'id'     => $r->id,
-                'title'  => $r->title,
-                'dept'   => $r->department?->name,
-                'type'   => $r->themeLabel(),
-                'status' => $r->status,
-                'date'   => $r->report_date?->format('d-M-Y'),
-                'url'    => route('companies.departments.reports.show', [$r->department_id, $r->id]),
-            ]);
-
-        // Open safety reports sidebar
-        $openSafetyAlerts = Report::whereIn('department_id', $filteredDeptIds)
-            ->whereNotIn('status', ['approved', 'rejected'])
-            ->forTheme('safety')
-            ->with('department')
-            ->latest()
-            ->limit(3)
-            ->get()
-            ->map(fn ($r) => [
-                'id'     => $r->id,
-                'title'  => $r->title,
-                'status' => $r->status,
-                'url'    => route('companies.departments.reports.show', [$r->department_id, $r->id]),
-            ]);
-
-        // Top 5 departments by report volume. Percent is of every matching report.
-        $totalVol = Report::where($reportScope)->count();
-        $rawVolume = Report::where($reportScope)
-            ->selectRaw('department_id, COUNT(*) as cnt')
-            ->groupBy('department_id')
-            ->orderByDesc('cnt')
-            ->limit(5)
-            ->get();
-
-        $volumeByDept = $rawVolume->map(fn ($r) => [
-            'name'    => $departments->firstWhere('id', $r->department_id)?->name ?? 'Unknown',
-            'count'   => (int) $r->cnt,
-            'percent' => $totalVol > 0 ? (int) round($r->cnt / $totalVol * 100) : 0,
-        ]);
-
-        return Inertia::render('Companies/Dashboard', [
-            'departments'   => $departments,
-            'stats'         => [
-                'openSafety'    => $openSafety,
-                'openQuality'   => $openQuality,
-                'closedReports' => $closedReports,
-                'overdueCAPAs'  => $overdueCAPAs,
-            ],
-            'statusCounts'     => $statusCounts,
-            'recentReports'    => $recentReports,
-            'openSafetyAlerts' => $openSafetyAlerts,
-            'volumeByDept'     => $volumeByDept,
-            'attention'        => [
-                'overdueDue' => $earliestOverdueDue
-                    ? \Illuminate\Support\Carbon::parse($earliestOverdueDue)->format('d M Y')
-                    : null,
-                'nextCapa' => $nextCapa ? [
-                    'title'    => $nextCapa->title,
-                    'due_date' => $nextCapa->due_date?->format('d M Y'),
-                    'overdue'  => $nextCapa->due_date && $nextCapa->due_date->toDateString() < now()->toDateString(),
-                    'url'      => route('companies.capa.show', $nextCapa->id),
-                ] : null,
-                'nextAudit' => $nextAudit ? [
-                    'name' => $nextAudit->name,
-                    'date' => $nextAudit->audit_date?->format('d M Y'),
-                    'url'  => route('companies.audits.show', $nextAudit->id),
-                ] : null,
-            ],
-        ]);
+        return Inertia::render('Companies/Dashboard', CompanyDashboardStats::make(
+            (int) $authEmployee->company_id,
+            $request->filled('department') ? (int) $request->input('department') : null,
+            $themeSlug,
+        )->dashboardPayload());
     })->name('dashboard');
 
     // CAPA Management
@@ -217,40 +76,40 @@ Route::middleware('auth:employee')->prefix('companies')->name('companies.')->gro
             'documents' => $documents,
         ]);
     })->name('help');
-    
+
     // Employees routes (for companies portal - with roles & permissions)
     Route::resource('employees', CompanyEmployeeController::class);
-    
+
     // Departments routes (for companies portal)
     Route::post('departments/seed-defaults', [CompanyDepartmentController::class, 'seedDefaults'])->name('departments.seed-defaults');
     Route::resource('departments', CompanyDepartmentController::class);
-    
+
     // Risks routes (for risk register)
     Route::resource('risks', CompanyRiskController::class);
     Route::get('departments/{department}/risks', [CompanyRiskController::class, 'departmentRisks'])->name('departments.risks.index');
-    
+
     // Reports routes (nested under departments) - scoped so report must belong to department
     Route::resource('departments.reports', CompanyReportController::class)->scoped();
     Route::get('reports', [CompanyReportController::class, 'allReports'])->name('reports.index');
     Route::get('reports/export/excel', [CompanyReportController::class, 'exportExcel'])->name('reports.export.excel');
-    Route::get('reports/export/pdf',   [CompanyReportController::class, 'exportPdf'])->name('reports.export.pdf');
-    
+    Route::get('reports/export/pdf', [CompanyReportController::class, 'exportPdf'])->name('reports.export.pdf');
+
     // Audits routes (audit tracker)
     Route::resource('audits', CompanyAuditController::class);
-    
+
     // Forms routes (for companies portal)
     Route::get('forms/templates/bank', [CompanyFormController::class, 'templateBank'])->name('forms.templates.bank');
     Route::post('forms/from-template', [CompanyFormController::class, 'addFromTemplate'])->name('forms.from-template');
     Route::get('forms/template/download', [CompanyFormController::class, 'downloadTemplate'])->name('forms.template.download');
     Route::resource('forms', CompanyFormController::class);
     Route::post('forms/{form}/import', [CompanyFormController::class, 'importFields'])->name('forms.import');
-    
+
     // Form Fields routes (nested under forms)
     Route::post('forms/{form}/fields', [CompanyFormFieldController::class, 'store'])->name('forms.fields.store');
     Route::put('forms/{form}/fields/{formField}', [CompanyFormFieldController::class, 'update'])->name('forms.fields.update');
     Route::delete('forms/{form}/fields/{formField}', [CompanyFormFieldController::class, 'destroy'])->name('forms.fields.destroy');
     Route::post('forms/{form}/fields/update-order', [CompanyFormFieldController::class, 'updateOrder'])->name('forms.fields.update-order');
-    
+
     // Single report download (PDF / Word)
     Route::get('departments/{department}/reports/{report}/download', [CompanyReportController::class, 'downloadReport'])->name('departments.reports.download')->scopeBindings();
 
@@ -279,6 +138,7 @@ Route::get('/employee/dashboard', function () {
     if (auth()->guard('employee')->check()) {
         return redirect()->route('companies.dashboard');
     }
+
     // If not authenticated, redirect to companies login
     return redirect()->route('companies.login');
 })->name('employee.dashboard');
